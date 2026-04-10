@@ -19,5 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("bookingApp.urls"))
+    path("", include("bookingApp.urls")),
+    # καθε request που αρχιζει με /api/users/ θα ψαξει στο users/urls.py
+    path("api/users/", include("users.urls"))
 ]
