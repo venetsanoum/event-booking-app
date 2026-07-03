@@ -21,5 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("bookingApp.urls")),
     # καθε request που αρχιζει με /api/users/ θα ψαξει στο users/urls.py
-    path("api/users/", include("users.urls"))
+    path("api/", include("users.urls"))
 ]

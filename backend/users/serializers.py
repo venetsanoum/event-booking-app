@@ -1,14 +1,15 @@
 from rest_framework import serializers
 from .models import CustomUser # σε ποιο model αντιστοιχούν οι serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # έτοιμος serializer του JWT
-# ο serializer:
-# ελέγχει fields
-# κάνει validation
-# δημιουργεί user
-# αποθηκεύει στη βάση
-# επιστρέφει αποτέλεσμα
-# έχουμε 2 διαφορετικούς serializers (register και Login)
-
+""" 
+ο serializer:
+ελέγχει fields
+κάνει validation
+δημιουργεί user
+αποθηκεύει στη βάση
+επιστρέφει αποτέλεσμα
+έχουμε 2 διαφορετικούς serializers (register και Login)
+"""
 # Φτιαξε serializer βασισμενο σε Django Model
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -36,8 +37,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             "role"
         ]
 # μέχρι εδω ο serializer δεχεται JSON, το συνδεει με CustomUser και ξέρει ποια fields επιτρέπονται
-    # τωρα πρεπει να κανει validate τον χρήστη που κάνει εγγραφή
-    # args: τι εστειλε ο χρήστης
+    """ τωρα πρεπει να κανει validate τον χρήστη που κάνει εγγραφή
+     args: τι εστειλε ο χρήστης """
     def validate(self, args):
         if args["password"] != args["passwordbar"]:
             raise serializers.ValidationError("Password dont match!")
@@ -66,8 +67,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data["password"])
         # τώρα θα γίνει save στη βάση
         user.save()
-
         return user # το επιστρέφει στο view
+    """  το όνομα χρήστη χρησιμοποιείται
+     ήδη από κάποιον άλλο χρήστη, η εφαρμογή θα πρέπει να τον προτρέπει να εισαγάγει
+     ένα καινούργιο όνομα χρήστη."""
+    def validate_username(self, usrnm):
+        if CustomUser.objects.filter(username=usrnm).exists():
+            raise serializers.ValidationError("username already exists!")
+        return usrnm
 # TokenObtainPairSerializer: ετοιμος serializer του JWT που παίρνει username/password
 # ελέγχει αν είναι σωστά, δημιουργεί tokens
 class LoginSerializer(TokenObtainPairSerializer):
@@ -81,5 +88,50 @@ class LoginSerializer(TokenObtainPairSerializer):
         data["username"] = self.user.username
         data["role"] = self.user.role
         return data
-
-
+# η προβολή των στοιχείων προφίλ ενός χρήστη
+class MeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CustomUser
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "address",
+            "city",
+            "country",
+            "afm",
+            "latitude",
+            "longitude",
+            "role"
+        ]
+class UsersListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CustomUser
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "role",
+            "is_approved",
+        ]
+class UserInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CustomUser
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "phone",
+            "address",
+            "city",
+            "country",
+            "afm",
+            "latitude",
+            "longitude",
+            "role"
+        ]

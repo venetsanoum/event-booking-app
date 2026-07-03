@@ -1,9 +1,13 @@
 from rest_framework import generics, status
 from rest_framework.response import Response # το αντικειμενο του θα επιστρέφει το api
-from .serializers import RegisterSerializer, LoginSerializer
+from .serializers import RegisterSerializer, LoginSerializer, MeSerializer, UsersListSerializer, UserInfoSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAppAdmin
+from .models import CustomUser
 # ουσιαστικά φτιάχνω ενα view που ακολουθεί το create object μέσω API
 # εδω θέλουμε endpoint τύπου create για την εγγραφή
+# POST /register/
 class RegisterView(generics.CreateAPIView):
     # ποιος serializer θα χρησιμοποιηθεί σε αυτό το view
     serializer_class = RegisterSerializer
@@ -32,5 +36,24 @@ class RegisterView(generics.CreateAPIView):
 # επισης δεν χρειαζεται post, το κανει μόνο του 
 # παιρνει request, φτιαχνει serializer καλεί τη validate
 # και επιστρέφει tokens αν πήγαν όλα καλά
+# POST /login/
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
+
+# GET /me/
+class MeView(generics.RetrieveAPIView):
+    serializer_class = MeSerializer
+    permission_classes = [IsAuthenticated] # κανόνες πρόσβασης ενός view
+    # request.user: περιέχει τον χρήστη που αντιστοιχεί στο token που έστειλε το request
+    def get_object(self):
+        return self.request.user
+# GET /users/
+class UsersListView(generics.ListAPIView):
+    serializer_class = UsersListSerializer
+    permission_classes = [IsAppAdmin]
+    queryset = CustomUser.objects.all()
+# GET /users/{id}
+class UserInfoView(generics.RetrieveAPIView):
+    serializer_class = UserInfoSerializer
+    permission_classes = [IsAppAdmin]
+    queryset = CustomUser.objects.all()
