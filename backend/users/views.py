@@ -1,5 +1,5 @@
 from rest_framework import generics, status
-from rest_framework.response import Response
+from rest_framework.response import Response # το αντικειμενο του θα επιστρέφει το api
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 # ουσιαστικά φτιάχνω ενα view που ακολουθεί το create object μέσω API
@@ -8,10 +8,10 @@ class RegisterView(generics.CreateAPIView):
     # ποιος serializer θα χρησιμοποιηθεί σε αυτό το view
     serializer_class = RegisterSerializer
 
-    # override την default create
+    # override την default create. Καλειται αυτοματα οταν γινει POST
     # request: το HTTP request που ηρθε απο το frontend
     def create(self, request, *args, **kwargs):
-        # δημιουργεί instances του serializer που ορίστηκε πριν
+        # δημιουργεί instances του serializer που ορίστηκε πριν. request.data: το DRF το εχει μετατρέψει αυτοματα σε python object
         serializer = self.get_serializer(data=request.data)
         # ελεγχει αν υπαρχουν τα απαραίτητα fields στον serializer, 
         # αν ειναι σωστοί οι τύποι και αν περνάει το validate που εγραψα

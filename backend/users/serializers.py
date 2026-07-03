@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from .models import CustomUser
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .models import CustomUser # σε ποιο model αντιστοιχούν οι serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # έτοιμος serializer του JWT
 # ο serializer:
 # ελέγχει fields
 # κάνει validation
 # δημιουργεί user
 # αποθηκεύει στη βάση
 # επιστρέφει αποτέλεσμα
+# έχουμε 2 διαφορετικούς serializers (register και Login)
 
 # Φτιαξε serializer βασισμενο σε Django Model
 class RegisterSerializer(serializers.ModelSerializer):
@@ -45,6 +46,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return args
     
     def create(self, validated_data):
+        # δημιουργία python object
         user = CustomUser(
             username=validated_data["username"],
             email=validated_data.get("email", ""),
@@ -62,18 +64,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         )
         # κανει hash το password
         user.set_password(validated_data["password"])
+        # τώρα θα γίνει save στη βάση
         user.save()
 
-        return user
+        return user # το επιστρέφει στο view
 # TokenObtainPairSerializer: ετοιμος serializer του JWT που παίρνει username/password
 # ελέγχει αν είναι σωστά, δημιουργεί tokens
 class LoginSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        # κανει authentication
+        # κανει authentication (βρίσκει user, ελέγχει password, δημιουργεί JWT και επιστρέφει "access", "refresh")
         data = super().validate(attrs)
+        # extra κανόνας
         if not self.user.is_approved and not self.user.is_superuser:
             raise serializers.ValidationError("Access Denied!")\
-        # στελνω ονομα και ρολο στο frontend
+        # στελνω επιπλέον το ονομα και τον ρολο στο frontend
         data["username"] = self.user.username
         data["role"] = self.user.role
         return data
