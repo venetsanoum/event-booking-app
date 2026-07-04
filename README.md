@@ -1,4 +1,21 @@
 # event-booking-app
-```python manage.py makemigrations```
-```python manage.py migrate```
-```python manage.py runserver```
+ 
+* Run commands
+    * ```python manage.py makemigrations```
+    * ```python manage.py migrate```
+    * ```python manage.py runserver```
+
+* New app creation
+    * ```python manage.py startapp events```
+
+* To check get requests from terminal ```curl -H "Authorization: Bearer <access_token>" http://127.0.0.1:8000/api/<url>```
+
+User App
+---
+* Based on **CustomUser** model. There are the 3 roles (attendee, organizer, admin)
+* Register Serializer validates password and roles (a user cannot regsiter as admin). If username already exists an error is raised. Also creates new python object user and saves it.
+* MyProfile is for users profile info
+* UsersList is so that admin can see a list of all the users
+* UserInfo is to see info of a specific user
+* UserApproval is so that admin can approve or reject a pending request
+* PendingUsers is so that admin can see a list of all pending users

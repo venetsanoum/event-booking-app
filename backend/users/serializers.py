@@ -61,7 +61,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             latitude=validated_data.get("latitude", None),
             longitude=validated_data.get("longitude", None),
             role=validated_data.get("role", ""),
-            is_approved=False, # ο διοργανωτης θα κανει approve μια εγγραφή
+            #is_approved=False, # ο διοργανωτης θα κανει approve μια εγγραφή,
+            approval_status="PENDING"
         )
         # κανει hash το password
         user.set_password(validated_data["password"])
@@ -82,14 +83,14 @@ class LoginSerializer(TokenObtainPairSerializer):
         # κανει authentication (βρίσκει user, ελέγχει password, δημιουργεί JWT και επιστρέφει "access", "refresh")
         data = super().validate(attrs)
         # extra κανόνας
-        if not self.user.is_approved and not self.user.is_superuser:
+        if not self.user.approval_status == "APPROVED" and not self.user.is_superuser:
             raise serializers.ValidationError("Access Denied!")\
         # στελνω επιπλέον το ονομα και τον ρολο στο frontend
         data["username"] = self.user.username
         data["role"] = self.user.role
         return data
 # η προβολή των στοιχείων προφίλ ενός χρήστη
-class MeSerializer(serializers.ModelSerializer):
+class MyProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
         fields = [
@@ -115,7 +116,7 @@ class UsersListSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
-            "is_approved",
+            "approval_status",
         ]
 class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -134,4 +135,24 @@ class UserInfoSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude",
             "role"
+        ]
+class UserApprovalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CustomUser
+        fields=["approval_status"]
+    # only pending requests can be edited to rejected or approved
+    def validate_approval_status(self, value):
+        if self.isinstance.approval_status != "PENDING":
+            raise serializers.ValidationError("Only pending requests can be changed!")
+        return value
+class PendingUsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CustomUser
+        fields = [
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "role",
+            "approval_status",
         ]

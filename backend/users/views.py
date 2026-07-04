@@ -1,6 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response # το αντικειμενο του θα επιστρέφει το api
-from .serializers import RegisterSerializer, LoginSerializer, MeSerializer, UsersListSerializer, UserInfoSerializer
+from .serializers import RegisterSerializer, LoginSerializer, MyProfileSerializer, UsersListSerializer, UserInfoSerializer, UserApprovalSerializer
+from .serializers import PendingUsersSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAppAdmin
@@ -32,17 +33,14 @@ class RegisterView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED # δημιουργία νέου χρήστη
         )
-# θα επιστρέψει response και status code μόνο του
-# επισης δεν χρειαζεται post, το κανει μόνο του 
-# παιρνει request, φτιαχνει serializer καλεί τη validate
-# και επιστρέφει tokens αν πήγαν όλα καλά
+# θα επιστρέψει response και status code by default
 # POST /login/
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
 
 # GET /me/
-class MeView(generics.RetrieveAPIView):
-    serializer_class = MeSerializer
+class MyProfileView(generics.RetrieveAPIView):
+    serializer_class = MyProfileSerializer
     permission_classes = [IsAuthenticated] # κανόνες πρόσβασης ενός view
     # request.user: περιέχει τον χρήστη που αντιστοιχεί στο token που έστειλε το request
     def get_object(self):
@@ -57,3 +55,13 @@ class UserInfoView(generics.RetrieveAPIView):
     serializer_class = UserInfoSerializer
     permission_classes = [IsAppAdmin]
     queryset = CustomUser.objects.all()
+# PATCH /api/admin/users/{id}/approval/ (approval νέου χρήστη από τον admin)
+class UserApprovalView(generics.UpdateAPIView):
+    serializer_class=UserApprovalSerializer
+    permission_classes =[IsAppAdmin]
+    queryset = CustomUser.objects.all()
+# GET /api/admin/users/pending
+class PendingUsersView(generics.ListAPIView):
+    serializer_class = PendingUsersSerializer
+    permission_classes =[IsAppAdmin]
+    queryset = CustomUser.objects.filter(approval_status="PENDING")
