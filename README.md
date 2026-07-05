@@ -19,3 +19,12 @@ User App
 * UserInfo is to see info of a specific user
 * UserApproval is so that admin can approve or reject a pending request
 * PendingUsers is so that admin can see a list of all pending users
+
+Event App
+---
+Σχεσιακή Βάση Δεδομένων:
+* event - category M-N
+* event - tickettype 1-N (1 event έχει πολλά είδη εισιτηρίων)
+* custom user - booking 1-N (ενας χρήστης κάνει πολλές κρατήσεις)
+* event - booking 1-N (ένα event έχει πολλές κρατήσεις)
+* ticketType - booking 1-N

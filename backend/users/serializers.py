@@ -142,7 +142,7 @@ class UserApprovalSerializer(serializers.ModelSerializer):
         fields=["approval_status"]
     # only pending requests can be edited to rejected or approved
     def validate_approval_status(self, value):
-        if self.isinstance.approval_status != "PENDING":
+        if self.instance.approval_status != "PENDING":
             raise serializers.ValidationError("Only pending requests can be changed!")
         return value
 class PendingUsersSerializer(serializers.ModelSerializer):
