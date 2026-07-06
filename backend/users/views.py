@@ -54,7 +54,7 @@ class UsersListView(generics.ListAPIView):
 class UserInfoView(generics.RetrieveAPIView):
     serializer_class = UserInfoSerializer
     permission_classes = [IsAppAdmin]
-    queryset = CustomUser.objects.all()
+    queryset = CustomUser.objects.all() # ουσιαστικά το base query set
 # PATCH /api/admin/users/{id}/approval/ (approval νέου χρήστη από τον admin)
 class UserApprovalView(generics.UpdateAPIView):
     serializer_class=UserApprovalSerializer
