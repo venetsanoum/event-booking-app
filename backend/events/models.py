@@ -8,15 +8,16 @@ class Category(models.Model):
 class Event(models.Model):
     EVENT_STATUS=[("DRAFT", "draft"), ("PUBLISHED", "published"), ("CANCELLED", "cancelled")]
     title = models.CharField(max_length=100, blank=True)
+    organizer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # Event - Category N->M σχέση
-    category=models.ManyToManyField(Category)
+    category=models.ManyToManyField(Category, blank=True)
     eventType=models.TextField()
     venue=models.CharField(max_length=100, blank=True)
     address=models.CharField(max_length=200, blank=True)
     city=models.CharField(max_length=100, blank=True)
     country=models.CharField(max_length=100, blank=True)
     latitude=models.DecimalField(max_digits=9, decimal_places=6)
-    longtitude=models.DecimalField(max_digits=9, decimal_places=6)
+    longitude=models.DecimalField(max_digits=9, decimal_places=6)
     startDateTime=models.DateTimeField()
     endDateTime=models.DateTimeField()
     capacity=models.IntegerField(default=0)

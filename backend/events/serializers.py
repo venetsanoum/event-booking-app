@@ -7,7 +7,8 @@ from .models import Event, TicketType
 class CreateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
-        fields="_all__"
+        fields="__all__"
+        read_only_fields=["organizer"]
     def validate(self, args):
         if(args["startDateTime"] > args["endDateTime"]):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
@@ -18,12 +19,24 @@ class CreateEventSerializer(serializers.ModelSerializer):
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
-        fields="_all__"
+        fields="__all__"
+        read_only_fields=["event"]
     def validate(self, args):
-        event=args["event"]
+        # event=args["event"] λάθος γιατί:
+        # το args περιέχει τα δεδομένα του request που έχουν περάσει
+        # τους αρχικούς ελέγχους του serializer.
+        # Δεν περιέχει δεδομένα που θα προστεθούν αργότερα μέσω του save().
+
+        # Το event δεν υπάρχει εδώ, γιατί το:
+        # serializer.save(event=event)
+        # εκτελείται μετά το validate().
+
+        # Άρα για να χρησιμοποιήσουμε το event μέσα στο validate(),
+        # το περνάμε μέσω του serializer context από το view.
+        event=self.context["event"]        
         total=0
         # για ό,τι είναι ήδη στη βάση αποθηκευμένο
-        for ticket in event.ticket_type.all():
+        for ticket in event.ticket_types.all():
             total += ticket.quantity
         if(args["available"] > args["quantity"]):
             raise serializers.ValidationError("Available tickets cannot exceed quantity")
