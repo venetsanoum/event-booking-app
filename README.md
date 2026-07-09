@@ -28,3 +28,5 @@ Event App
 * custom user - booking 1-N (ενας χρήστης κάνει πολλές κρατήσεις)
 * event - booking 1-N (ένα event έχει πολλές κρατήσεις)
 * ticketType - booking 1-N
+
+Για τις εικόνες: έγινε χρήση του Pillow (πηγή: https://medium.com/@prashantmaharjan5/complete-guide-to-image-uploads-in-django-4f24e0422708)

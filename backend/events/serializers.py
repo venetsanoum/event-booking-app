@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event, TicketType
+from .models import Event, TicketType, EventImage, Booking
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
@@ -43,5 +43,62 @@ class TicketTypeSerializer(serializers.ModelSerializer):
         if(total + args["quantity"]> event.capacity):
             raise serializers.ValidationError("Quantity of all ticket types cannot exceed total capacity of the event")
         return args
-
+class EventImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=EventImage
+        fields="__all__"
+        read_only_fields=["event"]
+class MyEventsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields=[
+            "id",
+            "title",
+            "startDateTime",
+            "endDateTime",
+            "venue",
+            "address",
+            "country"
+        ]
+class BookingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Booking
+        fields="__all__"
+class SingleEventDetailsSerializer(serializers.ModelSerializer):
+    bookings=BookingSerializer(many=True, read_only=True)
+    class Meta:
+        model=Event
+        fields=[
+            "id",
+            "title",
+            "startDateTime",
+            "endDateTime",
+            "venue",
+            "address",
+            "country",
+            "bookings"
+        ]
+class EditEventSerializer(serializers.ModelSerializer):
+    bookings=BookingSerializer(many=True)
+    class Meta:
+        model=Event
+        fields = [
+            "id",
+            "title",
+            "organizer",
+            "category",
+            "eventType",
+            "venue",
+            "address",
+            "city",
+            "country",
+            "latitude",
+            "longitude",
+            "startDateTime",
+            "endDateTime",
+            "capacity",
+            "description",
+            "status",
+            "bookings"
+        ]
         

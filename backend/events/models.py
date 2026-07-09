@@ -6,7 +6,7 @@ class Category(models.Model):
     name=models.CharField(max_length=100)
 
 class Event(models.Model):
-    EVENT_STATUS=[("DRAFT", "draft"), ("PUBLISHED", "published"), ("CANCELLED", "cancelled")]
+    EVENT_STATUS=[("DRAFT", "draft"), ("PUBLISHED", "published"), ("CANCELLED", "cancelled"), ("COMPLETED", "completed")]
     title = models.CharField(max_length=100, blank=True)
     organizer = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     # Event - Category N->M σχέση
@@ -23,7 +23,10 @@ class Event(models.Model):
     capacity=models.IntegerField(default=0)
     description=models.TextField()
     status=models.CharField(max_length=20, choices=EVENT_STATUS)
-
+# ένα event έχει πολλές εικόνες
+class EventImage(models.Model):
+    event=models.ForeignKey(Event, on_delete=models.CASCADE, related_name="images")
+    photo=models.ImageField(upload_to="events")
 class TicketType(models.Model):
     name=models.CharField(max_length=100, blank=True)
     price=models.DecimalField(max_digits=10, decimal_places=2)
@@ -41,6 +44,6 @@ class Booking(models.Model):
     cost=models.DecimalField(max_digits=10, decimal_places=2)
     status=models.CharField(max_length=20, choices=BOOKING_STATUS)
     # Event - Booking 1->N σχέση
-    event=models.ForeignKey(Event, on_delete=models.CASCADE)
+    event=models.ForeignKey(Event, on_delete=models.CASCADE, related_name="bookings")
     # TicketType - Booking 1->N σχέση
     ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE)
