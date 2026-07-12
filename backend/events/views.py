@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, SingleEventDetailsSerializer, EditEventSerializer
+from .serializers import BookEventSerializer
 from .models import Event
 from rest_framework.response import Response
 from .permissions import isOrganizer,isEventOrganizer
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 # POST /events
 class CreateEventView(generics.CreateAPIView):
@@ -68,9 +70,29 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all()
     def perform_destroy(self, instance):
         if instance.status != "DRAFT" and instance.bookings.exists():
-            raise serializers.ValidationError("Event must be draft or must not have bookings")
+            raise serializers.ValidationError("A published event with bookings cannot be deleted")
         instance.delete()
-    # TODO: cancel
-
+    def perform_update(self, serializer):
+        event=self.get_object()
+        newstatus=serializer.validated_data.get("status", event.status) # αυτό που επέστρεψε το frontend (το update)
+        # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
+        if newstatus == "CANCELLED" and event.status != "PUBLISHED":
+            raise serializers.ValidationError("Only published events can be cancelled")
+        serializer.save()
+# # POST /events/{id}/book-event
+# class BookEventView(generics.CreateAPIView):
+#     serializer_class=BookEventSerializer
+#     permission_classes=[IsAuthenticated]
+#     def create(self, request, *args, **kwargs):
+#         event_id=self.kwargs["pk"]
+#         event=Event.objects.get(id=event_id)
+#         serializer=self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save(event=event)
+#         return Response({
+#             "message": "Booking completed"
+#         },
+#         status=status.HTTP_201_CREATED
+#         )
 
 
