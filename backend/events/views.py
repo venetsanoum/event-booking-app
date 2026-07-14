@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, SingleEventDetailsSerializer, EditEventSerializer
-from .serializers import BookEventSerializer
 from .models import Event
 from rest_framework.response import Response
 from .permissions import isOrganizer,isEventOrganizer
@@ -12,9 +11,10 @@ class CreateEventView(generics.CreateAPIView):
     serializer_class=CreateEventSerializer
     permission_classes=[isOrganizer]
     def create(self, request, *args, **kwargs):
-        serializer=self.get_serializer(data=request.data)
+        serializer=self.get_serializer(data=request.data) # το view φτιάχνει serializer
         serializer.is_valid(raise_exception=True)
-        serializer.save(organizer=request.user)
+        # δημιουργία του αντικειμένου
+        serializer.save(organizer=request.user) # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
         return Response(
             {
                 "message": "First step of event creation is complete"
@@ -56,7 +56,7 @@ class MyEventsView(generics.ListAPIView):
     serializer_class=MyEventsSerializer
     permission_classes=[isOrganizer]
     def get_queryset(self):
-        return Event.objects.filter(organizer=self.request.user, status="PUBLISHED")
+        return Event.objects.filter(organizer=self.request.user, status="DRAFT")
     
 # GET events/{id}/bookings
 class SingleEventDetailsView(generics.RetrieveAPIView):
