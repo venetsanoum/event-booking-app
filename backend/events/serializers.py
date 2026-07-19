@@ -101,4 +101,6 @@ class EditEventSerializer(serializers.ModelSerializer):
             "status",
             "bookings"
         ]
-        
+class CancelNotification(serializers.Serializer):
+    notification=serializers.CharField()
+    

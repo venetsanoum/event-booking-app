@@ -146,6 +146,8 @@ class UserApprovalSerializer(serializers.ModelSerializer):
         # value -> νέα τιμή
         if self.instance.approval_status != "PENDING":
             raise serializers.ValidationError("Only pending requests can be changed!")
+        if value not in ["APPROVED", "REJECTED"]:
+            raise serializers.ValidationError("Status can only be changed to approved or rejected")
         return value
 class PendingUsersSerializer(serializers.ModelSerializer):
     class Meta:

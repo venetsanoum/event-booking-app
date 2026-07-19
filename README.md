@@ -1,5 +1,5 @@
 # event-booking-app
- 
+```django-admin startproject backend```
 * Run commands
     * ```python manage.py makemigrations```
     * ```python manage.py migrate```
