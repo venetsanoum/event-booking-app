@@ -12,7 +12,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # έ�
 """
 # Φτιαξε serializer βασισμενο σε Django Model
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True) # δεν θα επιστραφεί στο response αυτο το πεδίο ειναι μόνο για το δεχτει το api endpoint 
     # για confirmation
     passwordbar = serializers.CharField(write_only=True)
 

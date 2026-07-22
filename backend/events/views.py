@@ -80,21 +80,3 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
         if newstatus == "CANCELLED" and event.status != "PUBLISHED":
             raise serializers.ValidationError("Only published events can be cancelled")
         serializer.save()
-# # POST /events/{id}/book-event
-# class BookEventView(generics.CreateAPIView):
-#     serializer_class=BookEventSerializer
-#     permission_classes=[IsAuthenticated]
-#     def create(self, request, *args, **kwargs):
-#         event_id=self.kwargs["pk"]
-#         event=Event.objects.get(id=event_id)
-#         serializer=self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         serializer.save(event=event)
-#         return Response({
-#             "message": "Booking completed"
-#         },
-#         status=status.HTTP_201_CREATED
-#         )
-# POST /events/{id}/cancel-notification
-
-
