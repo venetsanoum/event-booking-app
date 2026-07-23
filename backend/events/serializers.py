@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import Event, TicketType, EventImage, Booking
+from .models import Event, TicketType, EventImage
+from booking.serializers import BookingSerializer
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
@@ -60,10 +61,6 @@ class MyEventsSerializer(serializers.ModelSerializer):
             "address",
             "country"
         ]
-class BookingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Booking
-        fields="__all__"
 class SingleEventDetailsSerializer(serializers.ModelSerializer):
     bookings=BookingSerializer(many=True, read_only=True)
     class Meta:
