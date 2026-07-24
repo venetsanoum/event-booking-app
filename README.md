@@ -43,3 +43,8 @@ Event App
     * PUT/PATCH/DELETE events/{id}/edit
 
 For images: We are using Pillow (source: https://medium.com/@prashantmaharjan5/complete-guide-to-image-uploads-in-django-4f24e0422708)
+
+Search
+---
+* django-filter
+* All the query parameters that the endpoint accepts are defined in EventFilter class in file events/filters.py.

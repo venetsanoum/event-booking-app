@@ -97,4 +97,9 @@ class EditEventSerializer(serializers.ModelSerializer):
             "status",
         ]
 
-    
+class SearchEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields=["title", "category", "eventType","venue",
+        "address", "city", "country","startDateTime","endDateTime",
+        "description",]

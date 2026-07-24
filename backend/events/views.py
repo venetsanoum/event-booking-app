@@ -1,11 +1,14 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, SingleEventDetailsSerializer, EditEventSerializer
+from .serializers import SearchEventSerializer
 from .models import Event
+from .filters import EventFilter
 from rest_framework.response import Response
 from .permissions import isOrganizer,isEventOrganizer
 from rest_framework.permissions import IsAuthenticated
-from rest_framework import views
+from rest_framework import views, filters
+from django_filters.rest_framework import DjangoFilterBackend
 # Create your views here.
 # POST /events
 class CreateEventView(generics.CreateAPIView):
@@ -80,3 +83,11 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
         if newstatus == "CANCELLED" and event.status != "PUBLISHED":
             raise serializers.ValidationError("Only published events can be cancelled")
         serializer.save()
+# search events page
+# TODO: pagination
+class SearchEventView(generics.ListAPIView):
+    queryset=Event.objects.filter(status="PUBLISHED")
+    serializer_class=SearchEventSerializer
+    filter_backends=[DjangoFilterBackend]
+    filterset_class = EventFilter
+
