@@ -76,7 +76,6 @@ class SingleEventDetailsSerializer(serializers.ModelSerializer):
             "bookings"
         ]
 class EditEventSerializer(serializers.ModelSerializer):
-    bookings=BookingSerializer(many=True)
     class Meta:
         model=Event
         fields = [
@@ -96,8 +95,6 @@ class EditEventSerializer(serializers.ModelSerializer):
             "capacity",
             "description",
             "status",
-            "bookings"
         ]
-class CancelNotification(serializers.Serializer):
-    notification=serializers.CharField()
+
     
