@@ -1,10 +1,13 @@
 from django.shortcuts import render
 from rest_framework import generics, status
-from .serializers import CreateBookingSerializer
+from .serializers import CreateBookingSerializer, BookingSerializer
 from rest_framework.response import Response
 from events.models import Event
 from django.utils.timezone import now
+from .models import Booking
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
+
 class CreateBookingView(generics.CreateAPIView):
     serializer_class=CreateBookingSerializer
     def create(self, request, *args, **kwargs):
@@ -29,3 +32,9 @@ class CreateBookingView(generics.CreateAPIView):
             },
             status=status.HTTP_201_CREATED 
         )
+
+class MyBookingsView(generics.ListAPIView):
+    serializer_class=BookingSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        return Booking.objects.filter(attendee=self.request.user)
