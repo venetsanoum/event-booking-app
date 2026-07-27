@@ -44,3 +44,9 @@ class SingleBookingDetailsView(generics.RetrieveAPIView):
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
         return Booking.objects.filter(attendee=self.request.user)
+
+class BookingsForOrganizerView(generics.ListAPIView):
+    serializer_class=BookingSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        return Booking.objects.filter(event=self.kwargs["event_id"], event__organizer=self.request.user)
