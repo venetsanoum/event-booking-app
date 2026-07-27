@@ -6,6 +6,7 @@ from events.models import Event
 from django.utils.timezone import now
 from .models import Booking
 from rest_framework.permissions import IsAuthenticated
+from permissions import IsEventOrganizer
 # Create your views here.
 
 class CreateBookingView(generics.CreateAPIView):
@@ -47,6 +48,6 @@ class SingleBookingDetailsView(generics.RetrieveAPIView):
 
 class BookingsForOrganizerView(generics.ListAPIView):
     serializer_class=BookingSerializer
-    permission_classes=[IsAuthenticated]
+    permission_classes=[IsAuthenticated, IsEventOrganizer]
     def get_queryset(self):
-        return Booking.objects.filter(event=self.kwargs["event_id"], event__organizer=self.request.user)
+        return Booking.objects.filter(event=self.kwargs["event_id"])
