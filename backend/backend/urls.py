@@ -24,7 +24,8 @@ urlpatterns = [
     # καθε request που αρχιζει με /api/ θα ψαξει στο users/urls.py
     path("api/", include("users.urls")),
     path("events/", include("events.urls")),
-    path("booking/", include("booking.urls"))
+    path("booking/", include("booking.urls")),
+    path("messaging/", include("messaging.urls"))
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

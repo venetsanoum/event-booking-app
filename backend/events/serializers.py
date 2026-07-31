@@ -103,3 +103,4 @@ class SearchEventSerializer(serializers.ModelSerializer):
         fields=["title", "category", "eventType","venue",
         "address", "city", "country","startDateTime","endDateTime",
         "description",]
+        ordering=["startDateTime"]
