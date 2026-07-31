@@ -4,3 +4,6 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model=Message
         fields=["receiver", "event", "subject", "content"]
+class MessageInfo(serializers.ModelSerializer):
+    class Meta:
+        fields="__all__"
