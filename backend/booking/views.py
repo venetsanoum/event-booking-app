@@ -6,7 +6,7 @@ from events.models import Event
 from django.utils.timezone import now
 from .models import Booking
 from rest_framework.permissions import IsAuthenticated
-from permissions import IsEventOrganizer
+from .permissions import IsEventOrganizer
 # Create your views here.
 
 class CreateBookingView(generics.CreateAPIView):
@@ -27,6 +27,8 @@ class CreateBookingView(generics.CreateAPIView):
                         status="PENDING",
                         time=now()
                         ) 
+        ticket_type.available=ticket_type.available - number
+        ticket_type.save()
         return Response(
             {
                 "message": "First step of booking creation is complete"
