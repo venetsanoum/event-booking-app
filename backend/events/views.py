@@ -84,7 +84,6 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
             raise serializers.ValidationError("Only published events can be cancelled")
         serializer.save()
 # search events page
-# TODO: pagination
 class SearchEventView(generics.ListAPIView):
     queryset=Event.objects.filter(status="PUBLISHED")
     serializer_class=SearchEventSerializer

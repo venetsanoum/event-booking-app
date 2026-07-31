@@ -6,8 +6,8 @@ class EventFilter(filters.FilterSet):
     category=filters.ModelMultipleChoiceFilter(query_set=Category.objects.all())
     min_price=filters.NumberFilter(field_name="ticket_types__price", lookup_expr="gte")
     max_price=filters.NumberFilter(field_name="ticket_types__price", lookup_expr="lte")
-    from_date=filters.DateFilter(field_name="startDateTime", lookup_expr="gte")
-    to_date=filters.DateFilter(field_name="endDateTime", lookup_expr="lte")
+    from_date=filters.DateFilter(field_name="time", lookup_expr="gte")
+    #to_date=filters.DateFilter(field_name="endDateTime", lookup_expr="lte")
     city=filters.CharFilter(field_name="city", lookup_expr="icontains")
 
     # search bar που δέχεται τίτλο, περιγραφή
@@ -16,4 +16,4 @@ class EventFilter(filters.FilterSet):
                                | Q(description__icontains=value))
     class Meta:
         model=Event
-        fields=["category", "city", "from_date", "to_date", "min_price", "max_price"]
+        fields=["category", "city", "from_date", "min_price", "max_price"]
