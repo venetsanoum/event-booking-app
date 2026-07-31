@@ -4,7 +4,7 @@ from .serializers import CreateBookingSerializer, BookingSerializer
 from rest_framework.response import Response
 from events.models import Event
 from django.utils.timezone import now
-from .models import Booking
+from .models import Booking, BookingItems
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsEventOrganizer
 # Create your views here.
@@ -16,19 +16,21 @@ class CreateBookingView(generics.CreateAPIView):
         event=Event.objects.get(id=event_id)
         serializer=self.get_serializer(data=request.data) # το view φτιάχνει serializer
         serializer.is_valid(raise_exception=True)
-        ticket_type=serializer.validated_data["ticket_type"]
-        number=serializer.validated_data["number"]
-        price=ticket_type.price
-        cost=number * price
+        items=serializer.validated_data.pop("items")
+        total_cost=0
+        for item in items:
+            total_cost += item["number"] * item["ticket_type"].price
+            item["ticket_type"].available -= item["number"]
+            item["ticket_type"].save()
         # δημιουργία του αντικειμένου
-        serializer.save(attendee=request.user,
+        booking = serializer.save(attendee=request.user,
                         event=event,
-                        cost=cost,
+                        cost=total_cost,
                         status="PENDING",
                         time=now()
                         ) 
-        ticket_type.available=ticket_type.available - number
-        ticket_type.save()
+        for item in items:
+            BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
         return Response(
             {
                 "message": "First step of booking creation is complete"
