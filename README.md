@@ -41,10 +41,38 @@ Event App
     * GET events/my-events
     * GET events/{id}/bookings
     * PUT/PATCH/DELETE events/{id}/edit
+* Search
 
-For images: We are using Pillow (source: https://medium.com/@prashantmaharjan5/complete-guide-to-image-uploads-in-django-4f24e0422708)
+    * django-filter
+    * All the query parameters that the endpoint accepts are defined in EventFilter class in file events/filters.py.
 
-Search
+
+**For images: We are using Pillow (source: https://medium.com/@prashantmaharjan5/complete-guide-to-image-uploads-in-django-4f24e0422708)**
+
+Booking App
 ---
-* django-filter
-* All the query parameters that the endpoint accepts are defined in EventFilter class in file events/filters.py.
+* Relational Database
+    * attendee - booking 1-N
+    * event - booking 1-N
+
+* Endpoints
+
+Messaging App
+---
+* Relational Database
+    * sender - message 1-N
+    * receiver - message 1-N
+* Endpoints
+    * POST /messages/{eventid} : create a message based on an event
+    * GET /messages/inbox
+    * GET /messages/sent
+    * GET /messages/unread
+    * GET /messages/unread-count : number of new messages
+    * GET /messages/{id}
+    * PATCH /messages/inbox/{id} : delete a message from inbox. Delete here is not deletion from the database. Its just that the message will not be shown in the lists, since a message can be "deleted" by someone from inbox but the other person might not have deleted the message from sent.
+    * PATCH /messages/sent/{id} : delete a message from sent
+
+
+TODO:
+* open map
+* message otan akurvnetai ekdhlwsh
