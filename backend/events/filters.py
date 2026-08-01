@@ -7,7 +7,7 @@ class EventFilter(filters.FilterSet):
     min_price=filters.NumberFilter(field_name="ticket_types__price", lookup_expr="gte")
     max_price=filters.NumberFilter(field_name="ticket_types__price", lookup_expr="lte")
     from_date=filters.DateFilter(field_name="time", lookup_expr="gte")
-    #to_date=filters.DateFilter(field_name="endDateTime", lookup_expr="lte")
+    to_date=filters.DateFilter(field_name="endDateTime", lookup_expr="lte")
     city=filters.CharFilter(field_name="city", lookup_expr="icontains")
 
     # search bar που δέχεται τίτλο, περιγραφή

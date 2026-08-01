@@ -14,3 +14,5 @@ class Message(models.Model):
     subject=models.CharField(max_length=200)
     sendDateTime=models.DateTimeField()
     isRead=models.BooleanField(default=False)
+    isDeletedBySender=models.BooleanField(default=False)
+    isDeletedByReceiver=models.BooleanField(default=False)
