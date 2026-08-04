@@ -74,5 +74,8 @@ Messaging App
 
 
 TODO:
-* open map
-* message otan akurvnetai ekdhlwsh
+* oxi pending stis krathseis: check
+* provolh twn "energwn ekdhlwsewn": check
+* tropopoihsh tupwn eisithriwn 
+* ekleisa 6 eisithria omws einai 92 diathesima
+* aposotolh mhnumatos meta th krathsh

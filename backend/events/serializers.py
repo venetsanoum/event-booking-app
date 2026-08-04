@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Event, TicketType, EventImage
+from .models import Event, TicketType, EventImage, Category
 from booking.serializers import BookingSerializer
 """ 
     Διαχείριση Εκδηλώσεων 
@@ -61,20 +61,6 @@ class MyEventsSerializer(serializers.ModelSerializer):
             "address",
             "country"
         ]
-class SingleEventDetailsSerializer(serializers.ModelSerializer):
-    bookings=BookingSerializer(many=True, read_only=True)
-    class Meta:
-        model=Event
-        fields=[
-            "id",
-            "title",
-            "startDateTime",
-            "endDateTime",
-            "venue",
-            "address",
-            "country",
-            "bookings"
-        ]
 class EditEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
@@ -104,3 +90,31 @@ class SearchEventSerializer(serializers.ModelSerializer):
         "address", "city", "country","startDateTime","endDateTime",
         "description",]
         ordering=["startDateTime"]
+class CategoryInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Category
+        fields="__all__"
+class EventInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields="__all__"
+class TicketTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TicketType
+        fields="__all__"
+class EventDetailsSerializer(serializers.ModelSerializer):
+    ticket_types=TicketTypeSerializer(many=True, read_only=True)
+    image=EventImageSerializer(many=True, read_only=True)
+    class Meta:
+        model=Event
+        fields=[
+            "id",
+            "title",
+            "startDateTime",
+            "endDateTime",
+            "venue",
+            "address",
+            "country",
+            "ticket_types",
+            "image"
+        ]
