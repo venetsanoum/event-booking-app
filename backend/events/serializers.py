@@ -4,7 +4,6 @@ from booking.serializers import BookingSerializer
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
-# POST /api/events -> δημιουργία νέας εκδήλωσης
 class CreateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
@@ -16,12 +15,14 @@ class CreateEventSerializer(serializers.ModelSerializer):
         if(args["capacity"] <= 0):
             raise serializers.ValidationError("Capacity must be a positive integer")
         return args
-# POST /api/events/{id}/ticket-type -> τύποι εισιτηρίων για μια εκδήλωση (αφού δημιουργηθεί η εκδήλωση στη βάση)
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
-        fields="__all__"
-        read_only_fields=["event"]
+        fields=[
+            "name",
+            "price",
+            "quantity"
+        ]
     def validate(self, args):
         # event=args["event"] λάθος γιατί:
         # το args περιέχει τα δεδομένα του request που έχουν περάσει
@@ -39,8 +40,6 @@ class TicketTypeSerializer(serializers.ModelSerializer):
         # για ό,τι είναι ήδη στη βάση αποθηκευμένο
         for ticket in event.ticket_types.all():
             total += ticket.quantity
-        if(args["available"] > args["quantity"]):
-            raise serializers.ValidationError("Available tickets cannot exceed quantity")
         if(total + args["quantity"]> event.capacity):
             raise serializers.ValidationError("Quantity of all ticket types cannot exceed total capacity of the event")
         return args
@@ -49,7 +48,12 @@ class EventImageSerializer(serializers.ModelSerializer):
         model=EventImage
         fields="__all__"
         read_only_fields=["event"]
+class TicketTypeInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TicketType
+        fields="__all__"
 class MyEventsSerializer(serializers.ModelSerializer):
+    ticket_types=TicketTypeInfoSerializer(read_only=True, many=True)
     class Meta:
         model=Event
         fields=[
@@ -59,7 +63,9 @@ class MyEventsSerializer(serializers.ModelSerializer):
             "endDateTime",
             "venue",
             "address",
-            "country"
+            "country",
+            "capacity",
+            "ticket_types"
         ]
 class EditEventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -98,12 +104,8 @@ class EventInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
         fields="__all__"
-class TicketTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=TicketType
-        fields="__all__"
 class EventDetailsSerializer(serializers.ModelSerializer):
-    ticket_types=TicketTypeSerializer(many=True, read_only=True)
+    ticket_types=TicketTypeInfoSerializer(many=True, read_only=True)
     image=EventImageSerializer(many=True, read_only=True)
     class Meta:
         model=Event

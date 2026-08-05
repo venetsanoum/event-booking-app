@@ -26,13 +26,13 @@ class InboxView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Message.objects.filter(receiver=self.request.user)
+        return Message.objects.filter(receiver=self.request.user, isDeletedByReceiver=False)
 # GET /messages/sent
 class SentView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Message.objects.filter(sender=self.request.user)
+        return Message.objects.filter(sender=self.request.user, isDeletedBySender=False)
 # GET /messages/unread
 class UnreadView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
@@ -46,11 +46,11 @@ class UnreadView(generics.ListAPIView):
 class UnreadCountView(APIView):
     permission_classes=[IsAuthenticated]
     def get(self, request):
-        count=Message.objects.filter(receiver=request.user, isRead=False).count()
+        count=Message.objects.filter(receiver=request.user, isRead=False, isDeletedByReceiver=False).count()
         return Response({
             "unread":count
         })
-# GET /messages/{id}
+# GET /messages/details/{id}
 class MessageDetailsView(generics.RetrieveAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
@@ -63,7 +63,7 @@ class MessageDetailsView(generics.RetrieveAPIView):
             instance.save()
         serializer=self.get_serializer(instance)
         return Response(serializer.data)
-# PATCH /messages/inbox/{id}
+# PATCH /messages/delete/inbox/{id}
 class DeleteMessageFromInboxView(APIView):
     permission_classes=[IsAuthenticated]
     def get_object(self, request, pk):
@@ -78,7 +78,7 @@ class DeleteMessageFromInboxView(APIView):
         serializer=MessageInfoSerializer(message)
         return Response(serializer.data)
     
-# PATCH /messages/sent/{id}
+# PATCH /messages/delete/sent/{id}
 class DeleteMessageFromSentView(APIView):
     permission_classes=[IsAuthenticated]
     def get_object(self, request, pk):

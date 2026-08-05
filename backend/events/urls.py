@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView
+from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView
 from .views import SearchEventView, AddCategoryView, AllCategoriesView, AllEventsView, EventDetailsView, MyDraftEventsView
 urlpatterns=[
     path("", CreateEventView.as_view(), name="event-creation"), # δημιουργια νεας εκδηλωσης
@@ -12,6 +12,6 @@ urlpatterns=[
     path("category/", AddCategoryView.as_view(), name="category"), # νεα κατηγορια απο τον admin
     path("category-list/", AllCategoriesView.as_view(), name="category-list"), # προβολή ολων των κατηγοριων απο τον admin
     path("all/", AllEventsView.as_view(), name="all"), # λιστα με ολα τα events
-    path("details/<int:pk>/", EventDetailsView.as_view(), name="details") # λεπτομερειες για καποιο event
-    
+    path("details/<int:pk>/", EventDetailsView.as_view(), name="details"), # λεπτομερειες για καποιο event
+    path("all-ticket-types/", AllTicketTypesView.as_view(), name="all-ticket-types"),
 ]

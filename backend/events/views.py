@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, EditEventSerializer
 from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer
-from .models import Event, Category
+from .models import Event, Category, TicketType
 from .filters import EventFilter
 from rest_framework.response import Response
 from .permissions import isOrganizer,isEventOrganizer
@@ -27,23 +27,6 @@ class CreateEventView(generics.CreateAPIView):
                 "message": "First step of event creation is complete"
             },
             status=status.HTTP_201_CREATED 
-        )
-# POST events/{id}/ticket-type 
-class TicketTypeView(generics.CreateAPIView):
-    serializer_class=TicketTypeSerializer
-    permission_classes=[IsAuthenticated ,isOrganizer, isEventOrganizer]
-    def create(self, request, *args, **kwargs):
-        event_id=self.kwargs["pk"]
-        event = Event.objects.get(id=event_id)
-        # περνάμε σαν context το event στο serializer ώστε
-        # να χρησιμοποιηθεί στο validation
-        serializer=self.get_serializer(data=request.data, context={"event":event}) 
-        serializer.is_valid(raise_exception=True)
-        serializer.save(event=event) # περνάμε και το event ωστε να αποθηκευτει
-        return Response({
-            "message": "Ticket Type created"
-        },
-        status=status.HTTP_201_CREATED
         )
 # POST events/{id}/images
 class EventImageView(generics.CreateAPIView):
@@ -85,6 +68,10 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
         event=self.get_object()
         oldstatus=event.status
         newstatus=serializer.validated_data.get("status", oldstatus) # αυτό που επέστρεψε το frontend (το update)
+        newcapacity=serializer.validated_data.get("capacity", event.capacity)
+        total_quant = sum(tick.quantity for tick in event.ticket_types.all())
+        if newcapacity < total_quant:
+            raise serializers.ValidationError("New capacity is lower than current tickets quantity")
         # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
         if newstatus == "CANCELLED" and oldstatus != "PUBLISHED":
             raise serializers.ValidationError("Only published events can be cancelled")
@@ -129,3 +116,28 @@ class EventDetailsView(generics.RetrieveAPIView):
     serializer_class=EventDetailsSerializer
     #permission_classes=[IsAuthenticated]
     queryset=Event.objects.all()
+
+# --------------------------Ticket Types Endpoints -------------------------- #
+# POST events/{id}/ticket-type 
+class TicketTypeView(generics.CreateAPIView):
+    serializer_class=TicketTypeSerializer
+    permission_classes=[IsAuthenticated ,isOrganizer, isEventOrganizer]
+    def create(self, request, *args, **kwargs):
+        event_id=self.kwargs["pk"]
+        event = Event.objects.get(id=event_id)
+        # περνάμε σαν context το event στο serializer ώστε
+        # να χρησιμοποιηθεί στο validation
+        print(self.get_serializer_class())
+        serializer=self.get_serializer(data=request.data, context={"event":event}) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save(event=event, available=serializer.validated_data["quantity"]) # περνάμε και το event ωστε να αποθηκευτει
+        return Response({
+            "message": "Ticket Type created"
+        },
+        status=status.HTTP_201_CREATED
+        )
+# GET events/ticket-types
+class AllTicketTypesView(generics.ListAPIView):
+    serializer_class=TicketTypeSerializer
+    #permission_classes=[IsAuthenticated]
+    queryset=TicketType.objects.all()

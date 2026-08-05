@@ -7,6 +7,8 @@ from django.utils.timezone import now
 from .models import Booking, BookingItems
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsEventOrganizer
+from messaging.models import Message
+import datetime
 # Create your views here.
 
 class CreateBookingView(generics.CreateAPIView):
@@ -31,6 +33,15 @@ class CreateBookingView(generics.CreateAPIView):
                         ) 
         for item in items:
             BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
+        confirmation_message=Message(
+            subject="Confirmation Message",
+            content="lalalal",
+            sender=event.organizer,
+            receiver=self.request.user,
+            event=event,
+            sendDateTime=datetime.datetime.now()
+        )
+        confirmation_message.save()
         return Response(
             {
                 "message": "First step of booking creation is complete"
@@ -43,7 +54,21 @@ class MyBookingsView(generics.ListAPIView):
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
         return Booking.objects.filter(attendee=self.request.user)
-
+class MyCompletedBookingsView(generics.ListAPIView):
+    serializer_class=BookingSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+            return Booking.objects.filter(attendee=self.request.user, event__status="COMPLETED")
+class MyUpcomingBookingsView(generics.ListAPIView):
+    serializer_class=BookingSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+            return Booking.objects.filter(attendee=self.request.user, event__status="PUBLISHED")
+class MyCancelledBookingsView(generics.ListAPIView):
+    serializer_class=BookingSerializer
+    permission_classes=[IsAuthenticated]
+    def get_queryset(self):
+        return Booking.objects.filter(attendee=self.request.user, event__status="CANCELLED")
 class SingleBookingDetailsView(generics.RetrieveAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]

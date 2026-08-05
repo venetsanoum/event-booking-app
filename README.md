@@ -74,8 +74,5 @@ Messaging App
 
 
 TODO:
-* oxi pending stis krathseis: check
-* provolh twn "energwn ekdhlwsewn": check
-* tropopoihsh tupwn eisithriwn 
-* ekleisa 6 eisithria omws einai 92 diathesima
-* aposotolh mhnumatos meta th krathsh
+* tropopoihsh tupwn eisithriwn - PATCH gia tickeitypes endpoint
+* periodikh ergasia gia na ginontai completed ta events otan perasei h hmeromhnia

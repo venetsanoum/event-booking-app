@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Booking, BookingItems
 from users.models import CustomUser
+from events.models import Event
 """ 
     Διαχείριση Κρατήσεων 
                             """
@@ -17,9 +18,22 @@ class BookerSerializer(serializers.ModelSerializer):
             "last_name",
             "email"
         ]
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields=[
+            "id",
+            "title",
+            "startDateTime",
+            "endDateTime",
+            "venue",
+            "address",
+            "country"
+        ]
 class BookingSerializer(serializers.ModelSerializer):
     items=BookingItemSerializer(many=True, read_only=True)
     attendee=BookerSerializer(read_only=True)
+    event=EventSerializer(read_only=True)
     class Meta:
         model=Booking
         fields="__all__"
