@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Event, TicketType, EventImage, Category
-from booking.serializers import BookingSerializer
+import datetime
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
@@ -14,7 +14,15 @@ class CreateEventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
         if(args["capacity"] <= 0):
             raise serializers.ValidationError("Capacity must be a positive integer")
+        if(args["startDateTime"] < datetime.now()): # !!
+            raise serializers.ValidationError("Start date cannot be in the past")
         return args
+class EventImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=EventImage
+        fields="__all__"
+        read_only_fields=["event"]
+# ---------------- Ticket Type Serializers ---------------- #
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
@@ -37,21 +45,55 @@ class TicketTypeSerializer(serializers.ModelSerializer):
         # το περνάμε μέσω του serializer context από το view.
         event=self.context["event"]        
         total=0
+        if args["quantity"] <= 0:
+            raise serializers.ValidationError("Quantity must be a positive integer")
+        if args["price"] <= 0:
+            raise serializers.ValidationError("Price must be positive")
         # για ό,τι είναι ήδη στη βάση αποθηκευμένο
         for ticket in event.ticket_types.all():
             total += ticket.quantity
         if(total + args["quantity"]> event.capacity):
             raise serializers.ValidationError("Quantity of all ticket types cannot exceed total capacity of the event")
         return args
-class EventImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=EventImage
-        fields="__all__"
-        read_only_fields=["event"]
 class TicketTypeInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model=TicketType
         fields="__all__"
+class TicketTypeEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=TicketType
+        fields=[
+            "name",
+            "price",
+            "quantity"
+        ]
+    def validate(self, args):
+        ticket_type=self.instance
+        event=ticket_type.event
+        id=ticket_type.id
+        new_quantity=args.get("quantity", ticket_type.quantity)
+        new_price=args.get("price", ticket_type.price)
+        capacity=event.capacity
+        other_tickets=event.ticket_types.exclude(id=id)
+        sold=ticket_type.quantity-ticket_type.available
+        if new_quantity < sold:
+            raise serializers.ValidationError("New quantity is less than already sold tickets")
+        total_quant=sum(tick.quantity for tick in other_tickets)
+        if total_quant + new_quantity > capacity:
+            raise serializers.ValidationError("With new quantity, the total quantity of ticket types has exceeded total capacity of the event")
+        if new_quantity <= 0:
+            raise serializers.ValidationError("Quantity must be positive")
+        if new_price <= 0:
+            raise serializers.ValidationError("Price must be positive")
+        return args
+    def update(self, instance, validated_data):
+        if "quantity" in validated_data:
+            old_quant=instance.quantity
+            new_quant=validated_data["quantity"]
+            sold=old_quant-instance.available
+            instance.available=new_quant-sold
+        return super().update(instance, validated_data)
+# ------------------------------------------------------------------------- #
 class MyEventsSerializer(serializers.ModelSerializer):
     ticket_types=TicketTypeInfoSerializer(read_only=True, many=True)
     class Meta:
@@ -88,7 +130,22 @@ class EditEventSerializer(serializers.ModelSerializer):
             "description",
             "status",
         ]
-
+    def validate(self, args):
+        event=self.instance
+        new_capacity=args.get("capacity", event.capacity)
+        new_status=args.get("status", event.status)
+        old_status=event.status
+        total_quant = sum(tick.quantity for tick in event.ticket_types.all())
+        if new_capacity < total_quant:
+            raise serializers.ValidationError("New capacity is lower than current tickets quantity")
+        # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
+        if new_status == "CANCELLED" and old_status != "PUBLISHED":
+            raise serializers.ValidationError("Only published events can be cancelled")
+        new_start=args.get("startDateTime", event.startDateTime)
+        new_end=args.get("startDateTime", event.endDatetTime)
+        if new_start < new_end:
+            raise serializers.ValidationError("Start date time must be before end date time")
+        return args
 class SearchEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
@@ -112,6 +169,7 @@ class EventDetailsSerializer(serializers.ModelSerializer):
         fields=[
             "id",
             "title",
+            "capacity",
             "startDateTime",
             "endDateTime",
             "venue",

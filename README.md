@@ -1,6 +1,7 @@
 # event-booking-app
 ```django-admin startproject backend```
 * Run commands
+    * ```source venv/bin/activate```
     * ```python manage.py makemigrations```
     * ```python manage.py migrate```
     * ```python manage.py runserver```
@@ -18,13 +19,13 @@ User App
 * UserApproval is so that admin can approve or reject a pending request
 * PendingUsers is so that admin can see a list of all pending users
 * Endpoints
-    * POST api/users/register
-    * POST api/users/login
-    * GET api/users/profile
-    * GET api/admin/users
-    * GET api/admin/users/{id}
-    * PATCH api/admin/users/{id}/approval
-    * GET api/admin/users/pending
+    * POST users/register
+    * POST users/login
+    * GET users/profile
+    * GET admin/users
+    * GET admin/users/{id}
+    * PATCH admin/users/{id}/approval
+    * GET admin/users/pending
 
 Event App
 ---
@@ -39,8 +40,20 @@ Event App
     * POST events/{id}/ticket-types
     * POST events/{id}/images
     * GET events/my-events
-    * GET events/{id}/bookings
+    * GET events/my-drafted-events
+    * GET events/my-cancelled-events
+    * GET events/my-completed-events
     * PUT/PATCH/DELETE events/{id}/edit
+    * GET events/search/<query_params>
+    * POST events/category : admin can add new categories to the app
+    * GET events/category-list
+    * GET events/all : get a list of all kinds of events (published, cancelled, completed, drafted)
+    * GET events/active : get a list of all published events (currently active)
+    * GET events/details/{id}
+    ***ticket types endpoints***
+    * GET events/all-ticket-types : see all kinds of ticket types exists in all events
+    * GET events/<int:pk>/event-ticket-types/ : get all ticket types of a specific event
+    * PATCH events/<int:pk>/ticket-types/<int:ticket_type_id>/ : edit price, name and quantity of a ticket type of a specific event
 * Search
 
     * django-filter
@@ -56,7 +69,13 @@ Booking App
     * event - booking 1-N
 
 * Endpoints
-
+    * POST booking/create/{event_id}
+    * GET booking/my-bookings
+    * GET booking/my-cancelled-bookings
+    * GET booking/my-upcoming-bookings
+    * GET booking/my-completed-bookings
+    * GET booking/{booking_id}
+    * GET booking/event/{event_id} -> all bookings for a specific event
 Messaging App
 ---
 * Relational Database
@@ -74,5 +93,5 @@ Messaging App
 
 
 TODO:
-* tropopoihsh tupwn eisithriwn - PATCH gia tickeitypes endpoint
 * periodikh ergasia gia na ginontai completed ta events otan perasei h hmeromhnia
+* delete ticket types checks

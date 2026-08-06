@@ -22,7 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     # καθε request που αρχιζει με /api/ θα ψαξει στο users/urls.py
-    path("api/", include("users.urls")),
+    path("users/", include("users.urls")),
     path("events/", include("events.urls")),
     path("booking/", include("booking.urls")),
     path("messaging/", include("messaging.urls"))

@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, EditEventSerializer
-from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer
+from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer
 from .models import Event, Category, TicketType
+from booking.models import BookingItems
 from .filters import EventFilter
 from rest_framework.response import Response
 from .permissions import isOrganizer,isEventOrganizer
@@ -49,6 +50,18 @@ class MyEventsView(generics.ListAPIView):
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user, status="PUBLISHED")
+# GET events/my-cancelled-events
+class MyCancelledEventsView(generics.ListAPIView):
+    serializer_class=MyEventsSerializer
+    permission_classes=[IsAuthenticated, isOrganizer]
+    def get_queryset(self):
+        return Event.objects.filter(organizer=self.request.user, status="CANCELLED")
+# GET events/my-completed-events
+class MyCompletedEventsView(generics.ListAPIView):
+    serializer_class=MyEventsSerializer
+    permission_classes=[IsAuthenticated, isOrganizer]
+    def get_queryset(self):
+        return Event.objects.filter(organizer=self.request.user, status="COMPLETED")
 # GET events/my-drafted-events
 class MyDraftEventsView(generics.ListAPIView):
     serializer_class=MyEventsSerializer
@@ -68,13 +81,6 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
         event=self.get_object()
         oldstatus=event.status
         newstatus=serializer.validated_data.get("status", oldstatus) # αυτό που επέστρεψε το frontend (το update)
-        newcapacity=serializer.validated_data.get("capacity", event.capacity)
-        total_quant = sum(tick.quantity for tick in event.ticket_types.all())
-        if newcapacity < total_quant:
-            raise serializers.ValidationError("New capacity is lower than current tickets quantity")
-        # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
-        if newstatus == "CANCELLED" and oldstatus != "PUBLISHED":
-            raise serializers.ValidationError("Only published events can be cancelled")
         serializer.save()
         # στελνεται μηνυμα σε ολους οσους εχουν κανει κρατηση σε καποιο event το οποιο ακυρωθηκε
         if newstatus == "CANCELLED" and oldstatus != "CANCELLED":
@@ -106,15 +112,19 @@ class AllCategoriesView(generics.ListAPIView):
     serializer_class=CategoryInfoSerializer
     permission_classes=[IsAuthenticated]
     queryset=Category.objects.all()
+# GET events/active
+class AllActiveEventsView(generics.ListAPIView):
+    serializer_class=MyEventsSerializer
+    def get_queryset(self):
+        return Event.objects.all(status="PUBLISHED")
 # GET events/all
 class AllEventsView(generics.ListAPIView):
     serializer_class=MyEventsSerializer
-    #permission_classes=[IsAuthenticated]
+    permission_classes=[IsAppAdmin]
     queryset=Event.objects.all()
 # GET events/details/{id}
 class EventDetailsView(generics.RetrieveAPIView):
     serializer_class=EventDetailsSerializer
-    #permission_classes=[IsAuthenticated]
     queryset=Event.objects.all()
 
 # --------------------------Ticket Types Endpoints -------------------------- #
@@ -139,5 +149,25 @@ class TicketTypeView(generics.CreateAPIView):
 # GET events/ticket-types
 class AllTicketTypesView(generics.ListAPIView):
     serializer_class=TicketTypeSerializer
-    #permission_classes=[IsAuthenticated]
     queryset=TicketType.objects.all()
+
+# PATCH events/{event_id}/ticket-types/{ticket_id}
+class EditTicketTypesView(generics.UpdateAPIView):
+    serializer_class=TicketTypeEditSerializer
+    queryset=TicketType.objects.all()
+    permission_classes=[IsAuthenticated, isEventOrganizer]
+# GET events/{id}/event-ticket-types
+class EventTicketTypesView(generics.ListAPIView):
+    serializer_class=TicketTypeSerializer
+    queryset=TicketType.objects.all()
+
+# DELETE events/{event_id}/ticket-types/{ticket_id}
+# TODO: only drafts, allagh capacity
+class DeleteTicketTypeView(generics.DestroyAPIView):
+    queryset=TicketType.objects.all()
+    permission_classes=[IsAuthenticated, isEventOrganizer]
+    def perform_destroy(self, instance):
+        if BookingItems.objects.filter(ticket_type=instance).exists():
+            raise serializers.ValidationError("Cannot delete ticket type that has bookings")
+        instance.delete()
+        return super().perform_destroy(instance)
