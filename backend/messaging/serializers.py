@@ -13,7 +13,8 @@ class EventInfoSerializer(serializers.ModelSerializer):
             "title",
             "venue",
             "address",
-            "city"
+            "city",
+            "startDateTime"
         ]
 class MessageInfoSerializer(serializers.ModelSerializer):
     event=EventInfoSerializer(serializers.ModelSerializer)

@@ -42,12 +42,14 @@ class CreateBookingSerializer(serializers.ModelSerializer):
     items=BookingItemSerializer(many=True)
     class Meta:
         model=Booking
-        fields="__all__"
-        read_only_fields=["attendee", "cost", "event", "time"]
+        fields=["items"]
     def validate(self, args):
+        event=self.context["event"]
         for item in args["items"]:
             if(item["number"] > item["ticket_type"].available):
                 raise serializers.ValidationError("Too many tickets of this type")
             if(item["number"] <= 0):
                 raise serializers.ValidationError("Number of tickets must be positive")
+            if item["ticket_type"].event != event:
+                raise serializers.ValidationError("This type of ticket does not belong to this event")
         return args

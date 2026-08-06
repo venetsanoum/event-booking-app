@@ -3,20 +3,20 @@ from rest_framework import generics, status
 from .serializers import CreateBookingSerializer, BookingSerializer
 from rest_framework.response import Response
 from events.models import Event
-from django.utils.timezone import now
+from django.utils import timezone
 from .models import Booking, BookingItems
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsEventOrganizer
 from messaging.models import Message
-import datetime
+from django.shortcuts import get_object_or_404
 # Create your views here.
 
 class CreateBookingView(generics.CreateAPIView):
     serializer_class=CreateBookingSerializer
     def create(self, request, *args, **kwargs):
         event_id=self.kwargs["event_id"]
-        event=Event.objects.get(id=event_id)
-        serializer=self.get_serializer(data=request.data) # το view φτιάχνει serializer
+        event=get_object_or_404(Event, id=event_id, status="PUBLISHED")
+        serializer=self.get_serializer(data=request.data, context={"event":event}) # το view φτιάχνει serializer
         serializer.is_valid(raise_exception=True)
         items=serializer.validated_data.pop("items")
         total_cost=0
@@ -28,8 +28,7 @@ class CreateBookingView(generics.CreateAPIView):
         booking = serializer.save(attendee=request.user,
                         event=event,
                         cost=total_cost,
-                        #status="PENDING",
-                        time=now()
+                        time=timezone.now()
                         ) 
         for item in items:
             BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
@@ -39,7 +38,7 @@ class CreateBookingView(generics.CreateAPIView):
             sender=event.organizer,
             receiver=self.request.user,
             event=event,
-            sendDateTime=datetime.datetime.now()
+            sendDateTime=timezone.now()
         )
         confirmation_message.save()
         return Response(

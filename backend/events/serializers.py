@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import Event, TicketType, EventImage, Category
-import datetime
+from django.utils import timezone
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
@@ -14,7 +14,7 @@ class CreateEventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
         if(args["capacity"] <= 0):
             raise serializers.ValidationError("Capacity must be a positive integer")
-        if(args["startDateTime"] < datetime.now()): # !!
+        if(args["startDateTime"] < timezone.now()): # !!
             raise serializers.ValidationError("Start date cannot be in the past")
         return args
 class EventImageSerializer(serializers.ModelSerializer):
@@ -22,6 +22,11 @@ class EventImageSerializer(serializers.ModelSerializer):
         model=EventImage
         fields="__all__"
         read_only_fields=["event"]
+# ---------------- Category Serializer ---------------- #
+class CategoryInfoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Category
+        fields="__all__"
 # ---------------- Ticket Type Serializers ---------------- #
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,22 +99,9 @@ class TicketTypeEditSerializer(serializers.ModelSerializer):
             instance.available=new_quant-sold
         return super().update(instance, validated_data)
 # ------------------------------------------------------------------------- #
-class MyEventsSerializer(serializers.ModelSerializer):
-    ticket_types=TicketTypeInfoSerializer(read_only=True, many=True)
-    class Meta:
-        model=Event
-        fields=[
-            "id",
-            "title",
-            "startDateTime",
-            "endDateTime",
-            "venue",
-            "address",
-            "country",
-            "capacity",
-            "ticket_types"
-        ]
 class EditEventSerializer(serializers.ModelSerializer):
+    ticket_types=TicketTypeInfoSerializer(read_only=True, many=True)
+    category=CategoryInfoSerializer(read_only=True, many=True)
     class Meta:
         model=Event
         fields = [
@@ -129,6 +121,7 @@ class EditEventSerializer(serializers.ModelSerializer):
             "capacity",
             "description",
             "status",
+            "ticket_types"
         ]
     def validate(self, args):
         event=self.instance
@@ -142,21 +135,18 @@ class EditEventSerializer(serializers.ModelSerializer):
         if new_status == "CANCELLED" and old_status != "PUBLISHED":
             raise serializers.ValidationError("Only published events can be cancelled")
         new_start=args.get("startDateTime", event.startDateTime)
-        new_end=args.get("startDateTime", event.endDatetTime)
-        if new_start < new_end:
+        new_end=args.get("endDateTime", event.endDateTime)
+        if new_start > new_end:
             raise serializers.ValidationError("Start date time must be before end date time")
         return args
 class SearchEventSerializer(serializers.ModelSerializer):
+    category=CategoryInfoSerializer(read_only=True, many=True)
     class Meta:
         model=Event
         fields=["title", "category", "eventType","venue",
         "address", "city", "country","startDateTime","endDateTime",
         "description",]
         ordering=["startDateTime"]
-class CategoryInfoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=Category
-        fields="__all__"
 class EventInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
@@ -164,12 +154,16 @@ class EventInfoSerializer(serializers.ModelSerializer):
 class EventDetailsSerializer(serializers.ModelSerializer):
     ticket_types=TicketTypeInfoSerializer(many=True, read_only=True)
     image=EventImageSerializer(many=True, read_only=True)
+    category=CategoryInfoSerializer(many=True, read_only=True)
+    reserved=serializers.SerializerMethodField()
     class Meta:
         model=Event
         fields=[
             "id",
             "title",
             "capacity",
+            "reserved",
+            "category",
             "startDateTime",
             "endDateTime",
             "venue",
@@ -178,3 +172,5 @@ class EventDetailsSerializer(serializers.ModelSerializer):
             "ticket_types",
             "image"
         ]
+    def get_reserved(self, obj):
+        return sum(tick.quantity-tick.available for tick in obj.ticket_types.all())

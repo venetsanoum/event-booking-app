@@ -1,18 +1,19 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
-from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, MyEventsSerializer, EditEventSerializer
-from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer
+from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, EditEventSerializer
+from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer, TicketTypeInfoSerializer
 from .models import Event, Category, TicketType
 from booking.models import BookingItems
 from .filters import EventFilter
 from rest_framework.response import Response
-from .permissions import isOrganizer,isEventOrganizer
+from .permissions import isOrganizer,isEventOrganizer, isEventOrganizerTicketEdition, isDraftedEvent
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import views, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from messaging.models import Message
 import datetime
 from users.permissions import IsAppAdmin
+from django.shortcuts import get_object_or_404
 # Create your views here.
 # POST /events
 class CreateEventView(generics.CreateAPIView):
@@ -46,25 +47,25 @@ class EventImageView(generics.CreateAPIView):
         )
 # GET events/my-events
 class MyEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user, status="PUBLISHED")
 # GET events/my-cancelled-events
 class MyCancelledEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user, status="CANCELLED")
 # GET events/my-completed-events
 class MyCompletedEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user, status="COMPLETED")
 # GET events/my-drafted-events
 class MyDraftEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
         return Event.objects.filter(organizer=self.request.user, status="DRAFT")
@@ -114,18 +115,20 @@ class AllCategoriesView(generics.ListAPIView):
     queryset=Category.objects.all()
 # GET events/active
 class AllActiveEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     def get_queryset(self):
-        return Event.objects.all(status="PUBLISHED")
+        return Event.objects.filter(status="PUBLISHED")
 # GET events/all
 class AllEventsView(generics.ListAPIView):
-    serializer_class=MyEventsSerializer
+    serializer_class=EventDetailsSerializer
     permission_classes=[IsAppAdmin]
     queryset=Event.objects.all()
 # GET events/details/{id}
 class EventDetailsView(generics.RetrieveAPIView):
     serializer_class=EventDetailsSerializer
     queryset=Event.objects.all()
+    def get_queryset(self):
+        return Event.objects.filter(status="PUBLISHED")
 
 # --------------------------Ticket Types Endpoints -------------------------- #
 # POST events/{id}/ticket-type 
@@ -151,23 +154,25 @@ class AllTicketTypesView(generics.ListAPIView):
     serializer_class=TicketTypeSerializer
     queryset=TicketType.objects.all()
 
-# PATCH events/{event_id}/ticket-types/{ticket_id}
+# PATCH events/{event_id}/ticket-types/{ticket_id:pk}
 class EditTicketTypesView(generics.UpdateAPIView):
     serializer_class=TicketTypeEditSerializer
-    queryset=TicketType.objects.all()
-    permission_classes=[IsAuthenticated, isEventOrganizer]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
+    def get_queryset(self):
+        return TicketType.objects.filter(event_id=self.kwargs["event_id"])
 # GET events/{id}/event-ticket-types
 class EventTicketTypesView(generics.ListAPIView):
-    serializer_class=TicketTypeSerializer
+    serializer_class=TicketTypeInfoSerializer
     queryset=TicketType.objects.all()
 
-# DELETE events/{event_id}/ticket-types/{ticket_id}
-# TODO: only drafts, allagh capacity
+# DELETE events/{event_id}/ticket-types/{ticket_id:pk}
+# TODO: only drafts, allagh capacity ??? 
 class DeleteTicketTypeView(generics.DestroyAPIView):
-    queryset=TicketType.objects.all()
-    permission_classes=[IsAuthenticated, isEventOrganizer]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
     def perform_destroy(self, instance):
         if BookingItems.objects.filter(ticket_type=instance).exists():
             raise serializers.ValidationError("Cannot delete ticket type that has bookings")
-        instance.delete()
         return super().perform_destroy(instance)
+    def get_queryset(self):
+        event_id=self.kwargs["event_id"]
+        return TicketType.objects.filter(event_id=event_id)
