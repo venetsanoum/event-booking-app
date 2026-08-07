@@ -8,6 +8,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         timenow=timezone.now()
         events=Event.objects.filter(
-            endDatetTime__lt=timenow,
+            endDateTime__lt=timenow,
             status="PUBLISHED")
         events.update(status="COMPLETED")

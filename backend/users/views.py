@@ -6,9 +6,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAppAdmin
 from .models import CustomUser
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
 # ουσιαστικά φτιάχνω ενα view που ακολουθεί το create object μέσω API
 # εδω θέλουμε endpoint τύπου create για την εγγραφή
-# POST /register/
+# POST users/register/
 class RegisterView(generics.CreateAPIView):
     # ποιος serializer θα χρησιμοποιηθεί σε αυτό το view
     serializer_class = RegisterSerializer
@@ -34,33 +36,41 @@ class RegisterView(generics.CreateAPIView):
             status=status.HTTP_201_CREATED # δημιουργία νέου χρήστη
         )
 # θα επιστρέψει response και status code by default
-# POST /login/
+# POST users/login/
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
-
-# GET /me/
+# POST users/logout
+class LogoutView(APIView):
+    def post(self, request):
+        try:
+            token=RefreshToken(request.data["refresh"])
+            token.blacklist()
+            return Response(status=205)
+        except Exception:
+            return Response(status=400)
+# GET users/me/
 class MyProfileView(generics.RetrieveAPIView):
     serializer_class = MyProfileSerializer
     permission_classes = [IsAuthenticated] # κανόνες πρόσβασης ενός view
     # request.user: περιέχει τον χρήστη που αντιστοιχεί στο token που έστειλε το request
     def get_object(self):
         return self.request.user
-# GET /users/
+# GET /users/admin/users/
 class UsersListView(generics.ListAPIView):
     serializer_class = UsersListSerializer
     permission_classes = [IsAppAdmin]
     queryset = CustomUser.objects.all()
-# GET /users/{id}
+# GET users/admin/users/{id}
 class UserInfoView(generics.RetrieveAPIView):
     serializer_class = UserInfoSerializer
     permission_classes = [IsAppAdmin]
     queryset = CustomUser.objects.all() # ουσιαστικά το base query set
-# PATCH /api/admin/users/{id}/approval/ (approval νέου χρήστη από τον admin)
+# PATCH /users/admin/users/{id}/approval/ (approval νέου χρήστη από τον admin)
 class UserApprovalView(generics.UpdateAPIView):
     serializer_class=UserApprovalSerializer
     permission_classes =[IsAppAdmin]
     queryset = CustomUser.objects.all()
-# GET /api/admin/users/pending
+# GET /users/admin/users/pending
 class PendingUsersView(generics.ListAPIView):
     serializer_class = PendingUsersSerializer
     permission_classes =[IsAppAdmin]
