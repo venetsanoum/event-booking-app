@@ -129,8 +129,11 @@ class EditEventSerializer(serializers.ModelSerializer):
         new_status=args.get("status", event.status)
         old_status=event.status
         total_quant = sum(tick.quantity for tick in event.ticket_types.all())
+        sold=sum(tick.quantity-tick.available for tick in event.ticket_types.all())
         if new_capacity < total_quant:
             raise serializers.ValidationError("New capacity is lower than current tickets quantity")
+        if new_capacity < sold:
+            raise serializers.ValidationError("New capacity cannot be lower than the number of already sold tickets")
         # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
         if new_status == "CANCELLED" and old_status != "PUBLISHED":
             raise serializers.ValidationError("Only published events can be cancelled")
@@ -146,14 +149,14 @@ class SearchEventSerializer(serializers.ModelSerializer):
         fields=["title", "category", "eventType","venue",
         "address", "city", "country","startDateTime","endDateTime",
         "description",]
-        ordering=["startDateTime"]
+        #ordering=["startDateTime"]
 class EventInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
         fields="__all__"
 class EventDetailsSerializer(serializers.ModelSerializer):
     ticket_types=TicketTypeInfoSerializer(many=True, read_only=True)
-    image=EventImageSerializer(many=True, read_only=True)
+    images=EventImageSerializer(many=True, read_only=True)
     category=CategoryInfoSerializer(many=True, read_only=True)
     reserved=serializers.SerializerMethodField()
     class Meta:
@@ -164,13 +167,18 @@ class EventDetailsSerializer(serializers.ModelSerializer):
             "capacity",
             "reserved",
             "category",
+            "description",
             "startDateTime",
             "endDateTime",
+            "status",
             "venue",
             "address",
             "country",
+            "city",
+            "latitude",
+            "longitude",
             "ticket_types",
-            "image"
+            "images"
         ]
     def get_reserved(self, obj):
         return sum(tick.quantity-tick.available for tick in obj.ticket_types.all())

@@ -100,7 +100,7 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
                 cancellation_message.save()
 # search events page
 class SearchEventView(generics.ListAPIView):
-    queryset=Event.objects.filter(status="PUBLISHED")
+    queryset=Event.objects.filter(status="PUBLISHED").order_by("startDateTime")
     serializer_class=SearchEventSerializer
     filter_backends=[DjangoFilterBackend]
     filterset_class = EventFilter

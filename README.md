@@ -95,5 +95,5 @@ Messaging App
 TODO:
 * periodikh ergasia gia na ginontai completed ta events otan perasei h hmeromhnia : https://stackoverflow.com/questions/11788821/best-way-to-delete-a-django-model-instance-after-a-certain-date
 * proegkatesthmenos admin **check mallon**
-* tls
+* ssl/tls
 * documentation gia logout

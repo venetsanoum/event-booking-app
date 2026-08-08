@@ -8,6 +8,9 @@ from .permissions import IsAppAdmin
 from .models import CustomUser
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.views import APIView
+from events.models import Event
+from events.serializers import EventDetailsSerializer
+from rest_framework_xml.renderers import XMLRenderer
 # ουσιαστικά φτιάχνω ενα view που ακολουθεί το create object μέσω API
 # εδω θέλουμε endpoint τύπου create για την εγγραφή
 # POST users/register/
@@ -75,3 +78,9 @@ class PendingUsersView(generics.ListAPIView):
     serializer_class = PendingUsersSerializer
     permission_classes =[IsAppAdmin]
     queryset = CustomUser.objects.filter(approval_status="PENDING")
+# GET /users/admin/events
+class EventsForAdminView(generics.ListAPIView):
+    serializer_class=EventDetailsSerializer
+    permission_classes=[IsAppAdmin]
+    queryset=Event.objects.all()
+    renderer_classes=[XMLRenderer]
