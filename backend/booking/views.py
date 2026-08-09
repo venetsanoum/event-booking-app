@@ -28,6 +28,7 @@ class CreateBookingView(generics.CreateAPIView):
         booking = serializer.save(attendee=request.user,
                         event=event,
                         cost=total_cost,
+                        status="CONFIRMED",
                         time=timezone.now()
                         ) 
         for item in items:

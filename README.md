@@ -97,3 +97,5 @@ TODO:
 * proegkatesthmenos admin **check mallon**
 * ssl/tls
 * documentation gia logout
+* booking status?
+* polla h ena item ana booking?

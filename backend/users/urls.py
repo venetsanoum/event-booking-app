@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LoginView, MyProfileView, UsersListView, UserInfoView, UserApprovalView, PendingUsersView, LogoutView, EventsForAdminView
+from .views import RegisterView, LoginView, MyProfileView, UsersListView, UserInfoView, UserApprovalView, PendingUsersView, LogoutView
 
 urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
@@ -10,5 +10,4 @@ urlpatterns = [
     path("admin/users/<int:pk>/", UserInfoView.as_view(), name="user-info"),
     path("admin/users/<int:pk>/approval/", UserApprovalView.as_view(), name="user-approval"),
     path("admin/users/pending/", PendingUsersView.as_view(), name="pending-users"),
-    path("admin/events/", EventsForAdminView.as_view(), name="all-events")
 ]   
