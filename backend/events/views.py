@@ -88,6 +88,8 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
             all_bookings = event.bookings.all()
             for booking in all_bookings:
                 user=booking.attendee
+                booking.status="CANCELLED"
+                booking.save()
                 cancellation_message=Message(
                     subject="Event Cancellation",
                     content="lalalal....",
