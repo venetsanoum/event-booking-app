@@ -14,6 +14,7 @@ from messaging.models import Message
 import datetime
 from users.permissions import IsAppAdmin
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
 # Create your views here.
 # POST /events
 class CreateEventView(generics.CreateAPIView):
@@ -106,6 +107,13 @@ class SearchEventView(generics.ListAPIView):
     serializer_class=SearchEventSerializer
     filter_backends=[DjangoFilterBackend]
     filterset_class = EventFilter
+# GET events/cities
+class CitiesView(APIView):
+    def get(self, request):
+        cities=(
+            Event.objects.filter(status="PUBLISHED").values_list("city", flat=True).distinct().order_by("city")
+        )
+        return Response(cities)
 # POST events/category
 class AddCategoryView(generics.CreateAPIView):
     serializer_class=CategoryInfoSerializer

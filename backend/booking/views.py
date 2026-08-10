@@ -2,13 +2,14 @@ from django.shortcuts import render
 from rest_framework import generics, status
 from .serializers import CreateBookingSerializer, BookingSerializer
 from rest_framework.response import Response
-from events.models import Event
+from events.models import Event, TicketType
 from django.utils import timezone
 from .models import Booking, BookingItems
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsEventOrganizer
 from messaging.models import Message
 from django.shortcuts import get_object_or_404
+from rest_framework.views import APIView
 # Create your views here.
 
 class CreateBookingView(generics.CreateAPIView):
@@ -80,3 +81,34 @@ class BookingsForOrganizerView(generics.ListAPIView):
     permission_classes=[IsAuthenticated, IsEventOrganizer]
     def get_queryset(self):
         return Booking.objects.filter(event=self.kwargs["event_id"])
+
+class CancelBooking(APIView):
+    permission_classes=[IsAuthenticated, IsEventOrganizer]
+    def patch(self, request, event_id, booking_id):
+        event=get_object_or_404(Event, id=event_id)
+        booking=get_object_or_404(Booking, id=booking_id, event=event)
+        if booking.status == "CANCELLED":
+            return Response(
+                {"details":"Booking already cancelled"},
+                 status=status.HTTP_400_BAD_REQUEST
+            )
+        booking.status="CANCELLED"
+        booking.save()
+        cancellation_message=Message(
+            subject="Cancellation Message",
+            content="lalalal",
+            sender=event.organizer,
+            receiver=booking.attendee,
+            event=event,
+            sendDateTime=timezone.now()
+        )
+        cancellation_message.save()
+        for item in booking.items.all():
+            ticket=item.ticket_type
+            ticket.available+=item.number
+            ticket.save()
+        return Response(
+            {"details":"Booking successfully cancelled"},
+            status=status.HTTP_200_OK
+        )
+        
