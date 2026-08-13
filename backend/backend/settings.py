@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "events",
     "booking",
     "messaging",
-    "exports"
+    "exports",
+    "recommendation"
 ]
 
 MIDDLEWARE = [

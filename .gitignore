@@ -14,3 +14,7 @@ db.sqlite3
 
 # mac
 .DS_Store
+
+backend/recommendation/rel_event_csvs/
+media/
+logs/
