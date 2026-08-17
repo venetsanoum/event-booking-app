@@ -41,5 +41,6 @@ def load_interactions():
         elif row["not_interested"] == 1:
             preference=-1
         S.append((user_id, event_id, preference))
-    print(S[:10])
-load_interactions()
+    return S, users_mapping, events_mapping
+#     print(S[:10])
+# load_interactions()
