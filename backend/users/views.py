@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response # το αντικειμενο του θα επιστρέφει το api
 from .serializers import RegisterSerializer, LoginSerializer, MyProfileSerializer, UsersListSerializer, UserInfoSerializer, UserApprovalSerializer
-from .serializers import PendingUsersSerializer
+from .serializers import PendingUsersSerializer, EditMyProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAppAdmin
@@ -53,6 +53,12 @@ class MyProfileView(generics.RetrieveAPIView):
     serializer_class = MyProfileSerializer
     permission_classes = [IsAuthenticated] # κανόνες πρόσβασης ενός view
     # request.user: περιέχει τον χρήστη που αντιστοιχεί στο token που έστειλε το request
+    def get_object(self):
+        return self.request.user
+# PATCH /users/me/edit/
+class EditMyProfileView(generics.UpdateAPIView):
+    serializer_class=EditMyProfileSerializer
+    permission_classes=[IsAuthenticated]
     def get_object(self):
         return self.request.user
 # GET /users/admin/users/

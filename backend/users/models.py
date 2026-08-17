@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="ATTENDEE")
-    #is_approved = models.BooleanField(default=False)
+    profile_photo = models.ImageField(upload_to="users", blank=True, null=True)
     approval_status = models.CharField(max_length=20, choices=APPROVAL_CHOICES, default="PENDING")
     def __str__(self):
         return self.username

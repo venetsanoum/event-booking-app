@@ -3,6 +3,7 @@ from .models import CustomUser # σε ποιο model αντιστοιχούν ο
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # έτοιμος serializer του JWT
 from events.models import Event, TicketType, Category, EventImage
 from booking.models import Booking, BookingItems
+from .validators import validate_pass_strength, validate_afm_strength, validate_phone_number_strength
 """ 
 ο serializer:
 ελέγχει fields
@@ -42,6 +43,9 @@ class RegisterSerializer(serializers.ModelSerializer):
     """ τωρα πρεπει να κανει validate τον χρήστη που κάνει εγγραφή
      args: τι εστειλε ο χρήστης """
     def validate(self, args):
+        validate_pass_strength(args["password"])
+        validate_afm_strength(args["afm"])
+        validate_phone_number_strength(args["phone"])
         if args["password"] != args["passwordbar"]:
             raise serializers.ValidationError("Password dont match!")
         if args.get("role") == "ADMIN":
@@ -107,8 +111,50 @@ class MyProfileSerializer(serializers.ModelSerializer):
             "afm",
             "latitude",
             "longitude",
-            "role"
+            "role",
+            "profile_photo"
         ]
+class EditMyProfileSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    passwordbar = serializers.CharField(write_only=True)
+    class Meta:
+        model=CustomUser
+        fields=[
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "passwordbar",
+            "address",
+            "phone",
+            "city",
+            "country",
+            "afm",
+            "profile_photo"
+        ]
+    def validate(self, attrs):
+        password=attrs.get("password")
+        passwordbar=attrs.get("passwordbar")
+
+        if "phone" in attrs:
+            validate_phone_number_strength(attrs["phone"])
+        if "afm" in attrs:
+            validate_afm_strength(attrs["afm"])
+        if password is not None or passwordbar is not None:
+            validate_pass_strength(password)
+            if password != passwordbar:
+                raise serializers.ValidationError("Password dont match")
+        if "username" in attrs:
+            if CustomUser.objects.filter(username=attrs["username"]).exclude(id=self.instance.id).exists():
+                raise serializers.ValidationError("Username already exists")
+        return attrs
+    def update(self, instance, validated_data):
+        password=validated_data.pop("password", None)
+        if password:
+            instance.set_password(password)
+        return super().update(instance, validated_data)
+        
 class UsersListSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
