@@ -1,9 +1,8 @@
 import pandas as pd
 def load_interactions():
     # φόρτωμα αρχείου
-    event_interest=pd.read_csv("rel_event_csvs/event_interest.csv")
+    event_interest=pd.read_csv("recommendation/rel_event_csvs/event_interest.csv")
     users=event_interest["user"].dropna().unique()
-    print("here")
     # mapping users {
     # 8438 : 0
     # 32 : 1
@@ -33,7 +32,7 @@ def load_interactions():
     # S: σύνολο για τα γνωστά ζεύγη χρήστη-αντικειμένου
     # Θα περιλαμβάνει [user_id, event_id, preference(1,-1)]
     S=[]
-    for id, row in interactions.iterrows():
+    for _, row in interactions.iterrows():
         user_id=users_mapping[int(row["user"])]
         event_id=events_mapping[int(row["event"])]
         if row["interested"] == 1:
@@ -42,5 +41,3 @@ def load_interactions():
             preference=-1
         S.append((user_id, event_id, preference))
     return S, users_mapping, events_mapping
-#     print(S[:10])
-# load_interactions()
