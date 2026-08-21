@@ -34,3 +34,10 @@ class TicketType(models.Model):
     available=models.IntegerField(default=0)
     # Event - TicketType 1->N σχέση
     event=models.ForeignKey(Event, on_delete=models.CASCADE, related_name="ticket_types")
+# ιστορικό προβολών εκδηλώσεων
+class EventView(models.Model):
+    user=models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    event=models.ForeignKey(Event, on_delete=models.CASCADE)
+    viewed_at=models.DateTimeField(auto_now_add=True)
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=["user", "event"], name="unique-views")]

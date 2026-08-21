@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView
-from .views import SearchEventView, AddCategoryView, AllCategoriesView, AllEventsView, EventDetailsView, MyDraftEventsView, CitiesView
+from .views import SearchEventView, AddCategoryView, AllCategoriesView, AllEventsView, EventDetailsView, MyDraftEventsView, CitiesView, EventViewView
 from .views import MyCancelledEventsView, MyCompletedEventsView, AllActiveEventsView, EditTicketTypesView, EventTicketTypesView, DeleteTicketTypeView
 urlpatterns=[
     path("", CreateEventView.as_view(), name="event-creation"), # δημιουργια νεας εκδηλωσης
@@ -21,5 +21,6 @@ urlpatterns=[
     path("<int:pk>/event-ticket-types/", EventTicketTypesView.as_view(), name="event-ticket-types"), # ολα τα tickettypes ενος συγκεκριμένου event
     path("<int:event_id>/ticket-types/<int:pk>/", EditTicketTypesView.as_view(), name="edit-ticket-types"), # επεξεργασια τυπου εισιτηριου
     path("<int:event_id>/delete-ticket-types/<int:pk>/", DeleteTicketTypeView.as_view(), name="delete-ticket-types"), # delete ticket type
-    path("cities/", CitiesView.as_view(), name="cities")
+    path("cities/", CitiesView.as_view(), name="cities"),
+    path("event-view/", EventViewView.as_view(), name="views")
 ]

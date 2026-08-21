@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import generics, status, serializers
-from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, EditEventSerializer
+from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, EditEventSerializer, EventViewSerializer
 from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer, TicketTypeInfoSerializer
-from .models import Event, Category, TicketType
+from .models import Event, Category, TicketType, EventView
 from booking.models import BookingItems
 from .filters import EventFilter
 from rest_framework.response import Response
@@ -139,7 +139,15 @@ class EventDetailsView(generics.RetrieveAPIView):
     queryset=Event.objects.all()
     def get_queryset(self):
         return Event.objects.filter(status="PUBLISHED")
-
+    def retrieve(self, request, *args, **kwargs):
+        event=self.get_object()
+        if request.user.is_authenticated:
+            EventView.objects.get_or_create(
+                user=request.user,
+                event=event
+            )
+        serializer=self.get_serializer(event)
+        return Response(serializer.data)
 # --------------------------Ticket Types Endpoints -------------------------- #
 # POST events/{id}/ticket-type 
 class TicketTypeView(generics.CreateAPIView):
@@ -186,3 +194,8 @@ class DeleteTicketTypeView(generics.DestroyAPIView):
     def get_queryset(self):
         event_id=self.kwargs["event_id"]
         return TicketType.objects.filter(event_id=event_id)
+
+class EventViewView(generics.ListAPIView):
+    permission_classes=[IsAppAdmin]
+    serializer_class=EventViewSerializer
+    queryset=EventView.objects.all()

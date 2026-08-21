@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer # έ�
 from events.models import Event, TicketType, Category, EventImage
 from booking.models import Booking, BookingItems
 from .validators import validate_pass_strength, validate_afm_strength, validate_phone_number_strength
+from users.utils.geocoding import get_coordinates
 """ 
 ο serializer:
 ελέγχει fields
@@ -35,8 +36,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             "city",
             "country",
             "afm",
-            "latitude",
-            "longitude",
             "role"
         ]
 # μέχρι εδω ο serializer δεχεται JSON, το συνδεει με CustomUser και ξέρει ποια fields επιτρέπονται
@@ -53,6 +52,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return args
     
     def create(self, validated_data):
+        latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
         # δημιουργία python object
         user = CustomUser(
             username=validated_data["username"],
@@ -64,8 +64,8 @@ class RegisterSerializer(serializers.ModelSerializer):
             city=validated_data.get("city", ""),
             country=validated_data.get("country", ""),
             afm=validated_data.get("afm", ""),
-            latitude=validated_data.get("latitude", None),
-            longitude=validated_data.get("longitude", None),
+            latitude=latitude,
+            longitude=longitude,
             role=validated_data.get("role", ""),
             #is_approved=False, # ο διοργανωτης θα κανει approve μια εγγραφή,
             approval_status="PENDING"

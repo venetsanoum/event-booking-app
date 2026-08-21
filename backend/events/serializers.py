@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from .models import Event, TicketType, EventImage, Category
+from .models import Event, TicketType, EventImage, Category, EventView
 from django.utils import timezone
+from users.utils.geocoding import get_coordinates
 """ 
     Διαχείριση Εκδηλώσεων 
                             """
@@ -8,7 +9,7 @@ class CreateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
         fields="__all__"
-        read_only_fields=["organizer"]
+        read_only_fields=["organizer", "latitude", "longitude"]
     def validate(self, args):
         if(args["startDateTime"] > args["endDateTime"]):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
@@ -17,6 +18,11 @@ class CreateEventSerializer(serializers.ModelSerializer):
         if(args["startDateTime"] < timezone.now()): # !!
             raise serializers.ValidationError("Start date cannot be in the past")
         return args
+    def create(self, validated_data):
+        latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
+        event=Event(**validated_data, latitude=latitude, longitude=longitude)
+        event.save()
+        return event
 class EventImageSerializer(serializers.ModelSerializer):
     class Meta:
         model=EventImage
@@ -182,3 +188,7 @@ class EventDetailsSerializer(serializers.ModelSerializer):
         ]
     def get_reserved(self, obj):
         return sum(tick.quantity-tick.available for tick in obj.ticket_types.all())
+class EventViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=EventView
+        fields="__all__"
