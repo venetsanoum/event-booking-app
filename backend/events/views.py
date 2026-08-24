@@ -76,6 +76,7 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes=[IsAuthenticated, isOrganizer, isEventOrganizer]
     queryset = Event.objects.all()        
     def perform_destroy(self, instance):
+        # μόνο draft εκδηλώσεις μπορούν να διαγραφούν
         if instance.status != "DRAFT" and instance.bookings.exists():
             raise serializers.ValidationError("A published event with bookings cannot be deleted")
         instance.delete()
@@ -184,7 +185,6 @@ class EventTicketTypesView(generics.ListAPIView):
     queryset=TicketType.objects.all()
 
 # DELETE events/{event_id}/ticket-types/{ticket_id:pk}
-# TODO: only drafts, allagh capacity ??? 
 class DeleteTicketTypeView(generics.DestroyAPIView):
     permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
     def perform_destroy(self, instance):
