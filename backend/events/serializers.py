@@ -9,7 +9,7 @@ class CreateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
         fields="__all__"
-        read_only_fields=["organizer", "latitude", "longitude"]
+        read_only_fields=["organizer", "latitude", "longitude", "status"]
     def validate(self, args):
         if(args["startDateTime"] > args["endDateTime"]):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
@@ -23,6 +23,48 @@ class CreateEventSerializer(serializers.ModelSerializer):
         event=Event(**validated_data, latitude=latitude, longitude=longitude)
         event.save()
         return event
+class CreateDraftEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields="__all__"
+        read_only_fields=["organizer", "latitude", "longitude", "status"]
+    def create(self, validated_data):
+        address=validated_data.get("address")
+        city=validated_data.get("city")
+        country=validated_data.get("country")
+        latitude=None
+        longitude=None
+        if address and city and country:
+            latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
+        event=Event(**validated_data, latitude=latitude, longitude=longitude)
+        event.save()
+        return event
+class PublishEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields="__all__"
+        read_only_fields=["organizer","latitude", "longitude", "status"]
+    def validate(self, args):
+        event=self.instance
+        if not event.title:
+            raise serializers.ValidationError("Title is required")
+        if not event.venue:
+            raise serializers.ValidationError("Venue is required")
+        if not event.address:
+            raise serializers.ValidationError("Address is required")
+        if not event.city:
+            raise serializers.ValidationError("City is required")
+        if not event.country:
+            raise serializers.ValidationError("Cuntry is required")
+        if not event.description:
+            raise serializers.ValidationError("Description is required")
+        if event.startDateTime >= event.endDateTime:
+            raise serializers.ValidationError("Start DateTime must be before end DateTime")
+        if(event.capacity <= 0):
+            raise serializers.ValidationError("Capacity must be a positive integer")
+        if(event.startDateTime < timezone.now()): # !!
+            raise serializers.ValidationError("Start date cannot be in the past")
+        return args
 class EventImageSerializer(serializers.ModelSerializer):
     class Meta:
         model=EventImage

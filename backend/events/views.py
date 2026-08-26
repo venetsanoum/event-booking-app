@@ -2,6 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, EditEventSerializer, EventViewSerializer
 from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer, TicketTypeInfoSerializer
+from .serializers import CreateDraftEventSerializer, PublishEventSerializer
 from .models import Event, Category, TicketType, EventView
 from booking.models import BookingItems
 from .filters import EventFilter
@@ -24,10 +25,27 @@ class CreateEventView(generics.CreateAPIView):
         serializer=self.get_serializer(data=request.data) # το view φτιάχνει serializer
         serializer.is_valid(raise_exception=True)
         # δημιουργία του αντικειμένου
-        serializer.save(organizer=request.user) # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
+        event=serializer.save(organizer=request.user, status="DRAFT") # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
         return Response(
             {
-                "message": "First step of event creation is complete"
+                "message": "First step of event creation is complete",
+                "event_id":event.id,
+            },
+            status=status.HTTP_201_CREATED 
+        )
+# POST events/draft-events
+class CreateDarftEventView(generics.CreateAPIView):
+    serializer_class=CreateDraftEventSerializer
+    permission_classes=[IsAuthenticated,isOrganizer]
+    def create(self, request, *args, **kwargs):
+        serializer=self.get_serializer(data=request.data) # το view φτιάχνει serializer
+        serializer.is_valid(raise_exception=True)
+        # δημιουργία του αντικειμένου
+        event=serializer.save(organizer=request.user, status="DRAFT") # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
+        return Response(
+            {
+                "message": "Event is saved as draft",
+                "event_id":event.id
             },
             status=status.HTTP_201_CREATED 
         )
@@ -46,6 +64,27 @@ class EventImageView(generics.CreateAPIView):
         },
         status=status.HTTP_201_CREATED
         )
+# POST events/{id}/publish
+class PublishEventView(generics.CreateAPIView):
+    serializer_class=PublishEventSerializer
+    permission_classes=[IsAuthenticated, isEventOrganizer]
+    def post(self, request, *args, **kwargs):
+        event=get_object_or_404(Event, id=kwargs["id"])
+        if event.status != "DRAFT":
+            return Response(
+                {"error": "only draft events can be published"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = self.get_serializer(event, data={})
+        serializer.is_valid(raise_exception=True)
+
+        event.status="PUBLISHED"
+        event.save()
+        return Response(
+            {"message":"Event published succesfully"},
+            status=status.HTTP_200_OK
+        )
+
 # GET events/my-events
 class MyEventsView(generics.ListAPIView):
     serializer_class=EventDetailsSerializer
