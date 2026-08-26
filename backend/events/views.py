@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import generics, status, serializers
 from .serializers import CreateEventSerializer, TicketTypeSerializer, EventImageSerializer, EditEventSerializer, EventViewSerializer
 from .serializers import SearchEventSerializer, CategoryInfoSerializer, EventDetailsSerializer, TicketTypeEditSerializer, TicketTypeInfoSerializer
-from .serializers import CreateDraftEventSerializer, PublishEventSerializer
+from .serializers import CreateDraftEventSerializer
 from .models import Event, Category, TicketType, EventView
 from booking.models import BookingItems
 from .filters import EventFilter
@@ -16,6 +16,7 @@ import datetime
 from users.permissions import IsAppAdmin
 from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
+from django.utils import timezone
 # Create your views here.
 # POST /events
 class CreateEventView(generics.CreateAPIView):
@@ -66,18 +67,37 @@ class EventImageView(generics.CreateAPIView):
         )
 # POST events/{id}/publish
 class PublishEventView(generics.CreateAPIView):
-    serializer_class=PublishEventSerializer
     permission_classes=[IsAuthenticated, isEventOrganizer]
     def post(self, request, *args, **kwargs):
-        event=get_object_or_404(Event, id=kwargs["id"])
+        event=get_object_or_404(Event, id=kwargs["pk"])
         if event.status != "DRAFT":
             return Response(
                 {"error": "only draft events can be published"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        serializer = self.get_serializer(event, data={})
-        serializer.is_valid(raise_exception=True)
-
+        if not event.title:
+            raise serializers.ValidationError("Title is required")
+        if not event.venue:
+            raise serializers.ValidationError("Venue is required")
+        if not event.address:
+            raise serializers.ValidationError("Address is required")
+        if not event.city:
+            raise serializers.ValidationError("City is required")
+        if not event.country:
+            raise serializers.ValidationError("Country is required")
+        if not event.description:
+            raise serializers.ValidationError("Description is required")
+        if event.startDateTime >= event.endDateTime:
+            raise serializers.ValidationError("Start DateTime must be before end DateTime")
+        if(event.capacity <= 0):
+            raise serializers.ValidationError("Capacity must be a positive integer")
+        if(event.startDateTime < timezone.now()): # !!
+            raise serializers.ValidationError("Start date cannot be in the past")
+        if not event.ticket_types.exists():
+            return Response(
+                {"error":"There has to be at least one ticket type"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         event.status="PUBLISHED"
         event.save()
         return Response(
@@ -118,29 +138,37 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
         # μόνο draft εκδηλώσεις μπορούν να διαγραφούν
         if instance.status != "DRAFT" and instance.bookings.exists():
             raise serializers.ValidationError("A published event with bookings cannot be deleted")
-        instance.delete()
-    def perform_update(self, serializer):
-        event=self.get_object()
-        oldstatus=event.status
-        newstatus=serializer.validated_data.get("status", oldstatus) # αυτό που επέστρεψε το frontend (το update)
-        serializer.save()
-        # στελνεται μηνυμα σε ολους οσους εχουν κανει κρατηση σε καποιο event το οποιο ακυρωθηκε
-        if newstatus == "CANCELLED" and oldstatus != "CANCELLED":
-            all_bookings = event.bookings.all()
-            for booking in all_bookings:
-                user=booking.attendee
-                booking.status="CANCELLED"
-                booking.save()
-                cancellation_message=Message(
-                    subject="Event Cancellation",
-                    content="lalalal....",
-                    sender=event.organizer,
-                    receiver=user,
-                    event=event,
-                    sendDateTime=datetime.datetime.now()
-
-                )
-                cancellation_message.save()
+        instance.delete() 
+# POST events/{id}/cancel/
+class CancelEventView(generics.UpdateAPIView):
+    permission_classes=[IsAuthenticated, isEventOrganizer]
+    def post(self, request, *args, **kwargs):
+        event=get_object_or_404(Event, id=kwargs["pk"])
+        if event.status != "PUBLISHED":
+            return Response(
+                {"message":"Only published events can be cancelled"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        event.status="CANCELLED"
+        event.save()
+        all_bookings = event.bookings.all()
+        for booking in all_bookings:
+            user=booking.attendee
+            booking.status="CANCELLED"
+            booking.save()
+            cancellation_message=Message(
+                subject="Event Cancellation",
+                content="lalalal....",
+                sender=event.organizer,
+                receiver=user,
+                event=event,
+                sendDateTime=datetime.datetime.now()
+            )
+            cancellation_message.save()
+        return Response({
+            "message":"Event cancelled succesfully"
+        },
+        status=status.HTTP_200_OK)
 # search events page
 class SearchEventView(generics.ListAPIView):
     queryset=Event.objects.filter(status="PUBLISHED").order_by("startDateTime")
