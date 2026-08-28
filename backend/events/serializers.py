@@ -9,7 +9,7 @@ class CreateEventSerializer(serializers.ModelSerializer):
     class Meta:
         model=Event
         fields="__all__"
-        read_only_fields=["organizer", "latitude", "longitude"]
+        read_only_fields=["organizer", "latitude", "longitude", "status"]
     def validate(self, args):
         if(args["startDateTime"] > args["endDateTime"]):
             raise serializers.ValidationError("Start DateTime must be before end DateTime")
@@ -19,9 +19,29 @@ class CreateEventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Start date cannot be in the past")
         return args
     def create(self, validated_data):
+        categories=validated_data.pop("category",[])
         latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
         event=Event(**validated_data, latitude=latitude, longitude=longitude)
         event.save()
+        event.category.set(categories)
+        return event
+class CreateDraftEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Event
+        fields="__all__"
+        read_only_fields=["organizer", "latitude", "longitude", "status"]
+    def create(self, validated_data):
+        address=validated_data.get("address")
+        city=validated_data.get("city")
+        country=validated_data.get("country")
+        latitude=None
+        longitude=None
+        if address and city and country:
+            latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
+        categories=validated_data.pop("category",[])
+        event=Event(**validated_data, latitude=latitude, longitude=longitude)
+        event.save()
+        event.category.set(categories)
         return event
 class EventImageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -106,8 +126,8 @@ class TicketTypeEditSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 # ------------------------------------------------------------------------- #
 class EditEventSerializer(serializers.ModelSerializer):
-    ticket_types=TicketTypeInfoSerializer(read_only=True, many=True)
-    category=CategoryInfoSerializer(read_only=True, many=True)
+    ticket_types=TicketTypeInfoSerializer(many=True)
+    category=serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     class Meta:
         model=Event
         fields = [
@@ -126,23 +146,17 @@ class EditEventSerializer(serializers.ModelSerializer):
             "endDateTime",
             "capacity",
             "description",
-            "status",
             "ticket_types"
         ]
     def validate(self, args):
         event=self.instance
         new_capacity=args.get("capacity", event.capacity)
-        new_status=args.get("status", event.status)
-        old_status=event.status
         total_quant = sum(tick.quantity for tick in event.ticket_types.all())
         sold=sum(tick.quantity-tick.available for tick in event.ticket_types.all())
         if new_capacity < total_quant:
             raise serializers.ValidationError("New capacity is lower than current tickets quantity")
         if new_capacity < sold:
             raise serializers.ValidationError("New capacity cannot be lower than the number of already sold tickets")
-        # αν δεν ηταν published το event και προσπαθήσει να το κανει cancelled αυτό είναι error
-        if new_status == "CANCELLED" and old_status != "PUBLISHED":
-            raise serializers.ValidationError("Only published events can be cancelled")
         new_start=args.get("startDateTime", event.startDateTime)
         new_end=args.get("endDateTime", event.endDateTime)
         if new_start > new_end:

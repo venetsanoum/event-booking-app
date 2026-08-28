@@ -1,9 +1,11 @@
 from django.urls import path
-from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView
+from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView, CreateDarftEventView, PublishEventView
 from .views import SearchEventView, AddCategoryView, AllCategoriesView, AllEventsView, EventDetailsView, MyDraftEventsView, CitiesView, EventViewView
-from .views import MyCancelledEventsView, MyCompletedEventsView, AllActiveEventsView, EditTicketTypesView, EventTicketTypesView, DeleteTicketTypeView
+from .views import MyCancelledEventsView, MyCompletedEventsView, AllActiveEventsView, EditTicketTypesView, EventTicketTypesView, DeleteTicketTypeView, CancelEventView
 urlpatterns=[
-    path("", CreateEventView.as_view(), name="event-creation"), # δημιουργια νεας εκδηλωσης
+    path("", CreateEventView.as_view(), name="event-creation"), # δημιουργια νεας εκδηλωσης,
+    path("draft-event/", CreateDarftEventView.as_view(), name="draft-event"), # προσωρινή αποθήκευση event,
+    path("<int:pk>/publish/", PublishEventView.as_view(), name="publis"), # τελικό ανέβασμα εκδήλωσης
     path("<int:pk>/ticket-types/", TicketTypeView.as_view(), name="ticket-types"), # εισαγωγη τυπου εισιτηριου
     path("<int:pk>/images/", EventImageView.as_view(), name="images"), # εισαγωγη εικονας
     path("my-events/", MyEventsView.as_view(), name="my-events"), # προβολη ολων των published εκδηλωσεων ενος οργανωτη
@@ -22,5 +24,6 @@ urlpatterns=[
     path("<int:event_id>/ticket-types/<int:pk>/", EditTicketTypesView.as_view(), name="edit-ticket-types"), # επεξεργασια τυπου εισιτηριου
     path("<int:event_id>/delete-ticket-types/<int:pk>/", DeleteTicketTypeView.as_view(), name="delete-ticket-types"), # delete ticket type
     path("cities/", CitiesView.as_view(), name="cities"),
-    path("event-view/", EventViewView.as_view(), name="views")
+    path("event-view/", EventViewView.as_view(), name="views"),
+    path("<int:pk>/cancel/", CancelEventView.as_view(), name="cancel")
 ]
