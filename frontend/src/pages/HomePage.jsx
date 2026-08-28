@@ -1,7 +1,6 @@
-import NavBar from '../components/NavBar';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 
-const FrontPage = () => {
+const HomePage = () => {
     return (
         <Box
             sx={{
@@ -16,4 +15,4 @@ const FrontPage = () => {
         </Box>
     );
 };
-export default FrontPage;
+export default HomePage;

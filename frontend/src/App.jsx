@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
+import MainBox from "./components/MainBox";
 
 function App() {
   return (
@@ -20,9 +21,11 @@ function App() {
         }}
       >
         <NavBar />
-        <Routes>
-          <Route path="/" element={<HomePage></HomePage>}/>
-        </Routes>
+        <MainBox>
+          <Routes>
+            <Route path="/" element={<HomePage></HomePage>}/>
+          </Routes>
+        </MainBox>
       </Box>
     </>
   )
