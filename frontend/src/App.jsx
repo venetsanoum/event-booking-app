@@ -4,32 +4,32 @@ import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
 import MainBox from "./components/MainBox";
+import Footer from "./components/Footer";
 
 function App() {
   return (
-    <>
-      <Box
-        sx={{
-            minHeight: "100vh",
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            backgroundImage: "url('/backgroundimage.jpg')",
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-            gap: "110px",
-        }}
-      >
-        <NavBar />
-        <MainBox>
-          <Routes>
-            <Route path="/" element={<HomePage></HomePage>}/>
-          </Routes>
-        </MainBox>
-      </Box>
-    </>
+    <Box
+      sx={{
+          minHeight: "100vh",
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundImage: "url('/backgroundimage.jpg')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          gap: "110px",
+      }}
+    >
+      <NavBar />
+      <MainBox>
+        <Routes>
+          <Route path="/" element={<HomePage></HomePage>}/>
+        </Routes>
+      </MainBox>
+      <Footer/>
+    </Box>
   )
 }
 
