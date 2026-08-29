@@ -11,6 +11,7 @@ function App() {
       <Box
         sx={{
             minHeight: "100vh",
+            width: "100%",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -18,6 +19,7 @@ function App() {
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
             backgroundPosition: "center",
+            gap: "110px",
         }}
       >
         <NavBar />

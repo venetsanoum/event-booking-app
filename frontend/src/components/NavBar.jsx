@@ -2,6 +2,7 @@ import { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import { Box, Typography, Button } from "@mui/material";
+import MyButton from "./MyButton.jsx";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
@@ -17,15 +18,17 @@ const NavBar = () => {
     <Box
       sx={{
         display: "flex",
-        width: "1440px",
+        width: "100%",
         height: "85px",
-        padding: "0 30px",
+        padding: "0 100px",
         justifyContent: "space-between",
         alignItems: "center",
         background: "linear-gradient(180deg, #FFF 34.62%, rgba(255, 255, 255, 0.40) 100%)"
       }}
     >
       <Typography // logo
+        component={Link}
+        to="/"
         sx={{
           display: "flex",
           padding: "10px 15px",
@@ -37,6 +40,7 @@ const NavBar = () => {
           fontStyle: "normal",
           fontWeight: "700",
           lineHeight: "normal",
+          textDecoration: "none",
         }}
       >
         Booking App
@@ -49,21 +53,18 @@ const NavBar = () => {
           gap: "10px",
         }}
       >
-        <Typography
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "22px",
-            color: "black",
-            fontFamily: "Inter",
-            fontSize: "24px",
-            fontStyle: "normal",
-            fontWeight: "500",
-            lineHeight: "normal",
+        <Button 
+          component={Link}
+          to="/"
+          sx={{ 
+            color: "#555", 
+            textTransform: "none",
+            fontSize: "22px",
+            "&:hover": { color: "black" },
           }}
         >
           Αναζήτηση
-        </Typography>
+        </Button>
         <Box
           sx={{
             display: "flex",
@@ -72,48 +73,18 @@ const NavBar = () => {
             gap: "15px",
           }}
         >
-          <Button
-            variant="contained"
+          <MyButton
             // component={Link}
             // to={`/login?redirect=/`}
-            sx={{
-              display: "flex",
-              width: "148px",
-              height: "46px",
-              padding: "15px 25px",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "16px",
-              borderRadius: "8px",
-              background: "black",
-              textTransform: "none",
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
           >
             Σύνδεση
-          </Button>
-          <Button
-            variant="contained"
+          </MyButton>
+          <MyButton
             // component={Link}
             // to={`/login?redirect=/`}
-            sx={{
-              display: "flex",
-              width: "148px",
-              height: "46px",
-              padding: "15px 25px",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "16px",
-              borderRadius: "8px",
-              background: "black",
-              textTransform: "none",
-              fontSize: "20px",
-              fontWeight: "500",
-            }}
           >
             Εγγραφή
-          </Button>
+          </MyButton>
         </Box>
       </Box>
 
