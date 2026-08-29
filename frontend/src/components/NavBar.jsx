@@ -17,6 +17,9 @@ const NavBar = () => {
   return (
     <Box
       sx={{
+        position: "sticky",
+        top: 0,
+        zIndex: 1100,
         display: "flex",
         width: "100%",
         height: "85px",

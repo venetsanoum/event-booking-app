@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 
-const MainBox = () => {
+const MainBox = ({ children }) => {
     return (
         <Box
             sx={{
@@ -17,7 +17,7 @@ const MainBox = () => {
                 backdropFilter: "blur(22.5px)"
             }}
         >
-
+            { children }
         </Box>
     );
 };

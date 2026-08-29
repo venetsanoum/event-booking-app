@@ -6,7 +6,7 @@ const MyButton = ({ children, ...props }) => {
             variant="contained"
             sx={{
               display: "flex",
-              width: "148px",
+            //   width: "148px",
               height: "46px",
               padding: "15px 25px",
               justifyContent: "center",
@@ -16,7 +16,7 @@ const MyButton = ({ children, ...props }) => {
               background: "black",
               textTransform: "none",
               fontSize: "20px",
-              fontWeight: "500",
+              fontWeight: "600",
               "&:hover": { backgroundColor: "#45464D" },
             }}           
             { ...props } 
