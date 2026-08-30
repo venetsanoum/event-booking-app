@@ -77,8 +77,8 @@ const NavBar = () => {
           }}
         >
           <MyButton
-            // component={Link}
-            // to={`/login?redirect=/`}
+            component={Link}
+            to={`/login`}
           >
             Σύνδεση
           </MyButton>

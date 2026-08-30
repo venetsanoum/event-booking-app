@@ -26,6 +26,7 @@ function App() {
       <MainBox>
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}/>
+          <Route path="/login" element={<LoginPage></LoginPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
