@@ -131,8 +131,11 @@ class EditMyProfileSerializer(serializers.ModelSerializer):
             "city",
             "country",
             "afm",
-            "profile_photo"
+            "profile_photo",
+            "latitude",
+            "longitude"
         ]
+        read_only_fields=["latitude", "longitude"]
     def validate(self, attrs):
         password=attrs.get("password")
         passwordbar=attrs.get("passwordbar")
@@ -151,6 +154,16 @@ class EditMyProfileSerializer(serializers.ModelSerializer):
         return attrs
     def update(self, instance, validated_data):
         password=validated_data.pop("password", None)
+        address=validated_data.get("address", instance.address)
+        city=validated_data.get("city", instance.city)
+        country=validated_data.get("country", instance.country)
+        if address!=instance.address or city!=instance.city or country!=instance.country:
+            latitude, longitude=get_coordinates(address, city, country)
+            instance.latitude=latitude
+            instance.longitude=longitude
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
         if password:
             instance.set_password(password)
         return super().update(instance, validated_data)
