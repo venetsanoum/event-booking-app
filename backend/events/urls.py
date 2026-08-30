@@ -1,10 +1,10 @@
 from django.urls import path
-from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView, CreateDarftEventView, PublishEventView
+from .views import CreateEventView, TicketTypeView, EventImageView, MyEventsView, EditEventView, AllTicketTypesView, CreateDraftEventView, PublishEventView
 from .views import SearchEventView, AddCategoryView, AllCategoriesView, AllEventsView, EventDetailsView, MyDraftEventsView, CitiesView, EventViewView
 from .views import MyCancelledEventsView, MyCompletedEventsView, AllActiveEventsView, EditTicketTypesView, EventTicketTypesView, DeleteTicketTypeView, CancelEventView
 urlpatterns=[
     path("", CreateEventView.as_view(), name="event-creation"), # δημιουργια νεας εκδηλωσης,
-    path("draft-event/", CreateDarftEventView.as_view(), name="draft-event"), # προσωρινή αποθήκευση event,
+    path("draft-event/", CreateDraftEventView.as_view(), name="draft-event"), # προσωρινή αποθήκευση event,
     path("<int:pk>/publish/", PublishEventView.as_view(), name="publis"), # τελικό ανέβασμα εκδήλωσης
     path("<int:pk>/ticket-types/", TicketTypeView.as_view(), name="ticket-types"), # εισαγωγη τυπου εισιτηριου
     path("<int:pk>/images/", EventImageView.as_view(), name="images"), # εισαγωγη εικονας

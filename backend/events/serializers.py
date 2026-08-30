@@ -148,6 +148,7 @@ class EditEventSerializer(serializers.ModelSerializer):
             "description",
             "ticket_types"
         ]
+        read_only_fields=["latitude", "longitude"]
     def validate(self, args):
         event=self.instance
         new_capacity=args.get("capacity", event.capacity)
@@ -162,6 +163,18 @@ class EditEventSerializer(serializers.ModelSerializer):
         if new_start > new_end:
             raise serializers.ValidationError("Start date time must be before end date time")
         return args
+    def update(self, instance, validated_data):
+        address=validated_data.get("address", instance.address)
+        city=validated_data.get("city", instance.city)
+        country=validated_data.get("country", instance.country)
+        if address != instance.address or city!= instance.city or country !=instance.country:
+            latitude, longitude=get_coordinates(address, city, country)
+            instance.latitude=latitude
+            instance.longitude=longitude
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        return instance
 class SearchEventSerializer(serializers.ModelSerializer):
     category=CategoryInfoSerializer(read_only=True, many=True)
     class Meta:

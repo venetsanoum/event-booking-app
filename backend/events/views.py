@@ -35,7 +35,7 @@ class CreateEventView(generics.CreateAPIView):
             status=status.HTTP_201_CREATED 
         )
 # POST events/draft-events
-class CreateDarftEventView(generics.CreateAPIView):
+class CreateDraftEventView(generics.CreateAPIView):
     serializer_class=CreateDraftEventSerializer
     permission_classes=[IsAuthenticated,isOrganizer]
     def create(self, request, *args, **kwargs):
