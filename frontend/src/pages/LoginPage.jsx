@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { loginUser } from '../api/authApi';
 import { useAuth } from '../context/AuthContext';
-import { Typography, Box, TextField, Button} from "@mui/material";
+import { Typography, Box, TextField, Button, IconButton, InputAdornment} from "@mui/material";
 import MyButton from '../components/MyButton';
-import { IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
@@ -12,24 +11,26 @@ const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
+    const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false); // για να μην κάνει ο χρήστης double submit
     const { login } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+        setLoading(true);
         try {
-        const response = await loginUser(username, password);
-        login(response.data);
-        console.log('Login επιτυχές:', response.data);
+            const response = await loginUser(username.trim(), password.trim());
+            login(response.data);
+            console.log('Login επιτυχές:', response.data);
         } catch (err) {
-        console.log('Login απέτυχε:', err);
-        setError('Λάθος στοιχεία ή δεν έχεις εγκριθεί ακόμα.');
+            console.log('Login απέτυχε:', err);
+            setError('Λάθος στοιχεία ή δεν έχεις εγκριθεί ακόμα.');
+        } finally {
+            setLoading(false);
         }
     };
 
-    const [showPassword, setShowPassword] = useState(false);
     
     return (
         <>
@@ -58,16 +59,24 @@ const LoginPage = () => {
                 background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
             }}
         >
+            {error && (
+                <Typography sx={{ color: "#d32f2f", fontSize: "18px" }}>
+                    {error}
+                </Typography>
+            )}
             <TextField
                 label="Username"
+                name="username"
+                autoComplete="username" //για password managers
                 fullWidth
                 required
-                type="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
             />
             <TextField
                 label="Κωδικός"
+                name="password"
+                autoComplete="current-password"
                 fullWidth
                 type={showPassword ? "text" : "password"}
                 value={password}
@@ -85,13 +94,14 @@ const LoginPage = () => {
                     },
                 }}
             />
+            
             <Box
                 sx={{
                     display:"flex",
                     alignItems:"center"
                 }}
             >
-                <Typography fontSize={16}> Δεν έχεις λογαριασμό;</Typography>
+                <Typography sx={{fontSize: "18px"}}> Δεν έχεις λογαριασμό;</Typography>
                 <Button 
                     component={Link}
                     to="/signup-choose-type"
@@ -102,8 +112,9 @@ const LoginPage = () => {
             </Box>
             <MyButton
                 type="submit"
+                disabled={loading || !username.trim() || !password.trim()}
             >
-                Σύνδεση
+                {loading ? "Σύνδεση..." : "Σύνδεση"}
             </MyButton>
         </Box>
         </>
