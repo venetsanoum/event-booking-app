@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import '@fontsource/luckiest-guy'
 import MyButton from '../components/MyButton';
+import { Link } from 'react-router-dom';
 
 const HomePage = () => {
     return (
@@ -107,7 +108,10 @@ const HomePage = () => {
                     >
                         Κάνε δωρεάν εγγραφή σε λίγα μονο δευτερόλεπτα και απόλαυσε μια εύκολη, γρήγορη και προσωποιημένη εμπειρία.
                     </Typography>
-                    <MyButton>
+                    <MyButton
+                        component={Link}
+                        to={`/signup`}
+                    >
                         Εγγραφή
                     </MyButton>
                 </Box>
@@ -454,7 +458,10 @@ const HomePage = () => {
                         Ανέβασε την εκδήλωσή σου σε λίγα λεπτά και άσε την πλατφόρμα να αναλάβει τα εισιτήρια, τις κρατήσεις και τη διαχείριση θέσεων. Από τη μικρότερη συνάντηση μέχρι τη μεγαλύτερη συναυλία, όλα οργανώνονται από ένα σημείο, με πλήρη εικόνα του ποιος έχει κλείσει θέση. Εσύ επικεντρώσου στη δημιουργία, το υπόλοιπο το φροντίζουμε εμείς.
                     </Typography>
                 </Box>
-                <MyButton>
+                <MyButton
+                    component={Link}
+                    to={`/signup`}
+                >
                     Γίνε διοργανωτής
                 </MyButton>
             </Box>

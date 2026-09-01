@@ -6,3 +6,7 @@ export const loginUser = (username, password) => {
         password,
     });
 };
+
+export const signupUser = (userData) => {
+    return axiosInstance.post('users/signup', userData);
+};

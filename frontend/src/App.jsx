@@ -1,5 +1,6 @@
 import HomePage from "./pages/HomePage";
 import LoginPage from './pages/LoginPage';
+import SignupPage from "./pages/SignupPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}/>
           <Route path="/login" element={<LoginPage></LoginPage>}/>
+          <Route path="/signup" element={<SignupPage></SignupPage>}/>
         </Routes>
       </MainBox>
       <Footer/>

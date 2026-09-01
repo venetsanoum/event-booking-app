@@ -83,8 +83,8 @@ const NavBar = () => {
             Σύνδεση
           </MyButton>
           <MyButton
-            // component={Link}
-            // to={`/login?redirect=/`}
+            component={Link}
+            to={`/signup`}
           >
             Εγγραφή
           </MyButton>
