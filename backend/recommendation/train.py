@@ -31,8 +31,8 @@ def train():
     n_users=len(users)
     n_events=len(events)
     my_model=BiasedMatrixFactorization(n_users, n_events, 10)
-    epochs=30 # πόσες φορές θα περάσει όλο το train_S
-    hta=0.01 # το η του ψευδοκώδικα - learning rate
+    epochs=23 # πόσες φορές θα περάσει όλο το train_S
+    hta=0.005 # το η του ψευδοκώδικα - learning rate
     lamda=0.005 # το λ του ψευδοκώδικα
     # μέσος όρος
     m=sum(pref for _, _, pref in train_S)/len(train_S)
