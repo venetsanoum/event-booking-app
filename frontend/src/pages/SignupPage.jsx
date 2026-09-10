@@ -1,13 +1,17 @@
 import { useState } from 'react';
-import { loginUser } from '../api/authApi';
-import { useAuth } from '../context/AuthContext';
-import { Typography, Box, TextField, Button, IconButton, Tooltip, InputAdornment, FormControlLabel, Checkbox, FormGroup} from "@mui/material";
+import { Typography, Box, TextField, IconButton, Tooltip, InputAdornment, FormControlLabel, Checkbox, FormGroup, Snackbar, Alert} from "@mui/material";
 import MyButton from '../components/MyButton';
 import { Visibility, VisibilityOff, InfoOutlined } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { signupUser } from '../api/authApi';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const SignupPage = () => {
+
+    const navigate = useNavigate();
+    const [showSuccess, setShowSuccess] = useState(false);
+
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -71,6 +75,27 @@ const SignupPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
+
+    const geocodeAddress = async () => {
+        const fullAddress = `${formData.address}, ${formData.city}, ${formData.country}`;
+
+        const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+            params: {
+                format: 'json',
+                q: fullAddress,
+            },
+        });
+
+        if (response.data.length === 0) {
+            return null;
+        }
+
+        return {
+            latitude: response.data[0].lat,
+            longitude: response.data[0].lon,
+        };
+    };
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
@@ -95,8 +120,23 @@ const SignupPage = () => {
         try {
             const { password2, ...dataToSend } = formData;
 
-            const response = await signupUser(dataToSend);
-            console.log("Εγγραφή επιτυχής:", response.data);
+            const coords = await geocodeAddress();
+            if(coords == null) {
+                setError('Λάθος διεύθυνση, πόλη ή χώρα. Δοκίμασε ξανά');
+                return;
+            }
+            const dataToSendWithCoords = {
+                ...dataToSend,
+                latitude: coords.latitude,
+                longitude: coords.longitude,
+            };
+
+            const response = await signupUser(dataToSendWithCoords);
+            setShowSuccess(true);
+
+            setTimeout(() => {
+                navigate('/');
+            }, 3000);
         }
         catch (err) {
             console.log('Signup απέτυχε:', err);
@@ -105,7 +145,7 @@ const SignupPage = () => {
             setLoading(false);
         }
     }
-    
+
     return (
         <>
             <Typography
@@ -118,6 +158,8 @@ const SignupPage = () => {
                 Εγγραφή
             </Typography>
             <Box
+                component="form"
+                onSubmit={handleSubmit}
                 sx={{
                     display: "flex",
                     padding: "30px 60px",
@@ -130,11 +172,17 @@ const SignupPage = () => {
                     background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
                 }}
             >
+                {error && (
+                    <Typography sx={{ color: "#d32f2f", fontSize: "18px" }}>
+                        {error}
+                    </Typography>
+                )}
                 <Box
                     sx={{
                         display: "flex",
                         alignItems: "top",
                         gap: "50px",
+                        paddingBottom: "20px"
                     }}
                 >
                     <Box
@@ -196,6 +244,37 @@ const SignupPage = () => {
                                 },
                             }}
                         />
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: "5px",
+                            }}
+                        >
+                            <FormGroup
+                                sx={{
+                                    height: "56px",
+                                    color: "#6e6e6e",
+                                }}
+                            >
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={formData.role === "ORGANIZER"}
+                                            onChange={handleOrganizerChange}
+                                        />
+                                    }
+                                    label="Διοργανωτής"
+                                />
+                            </FormGroup>
+                            <Tooltip
+                                title="Πάτησέ το μόνο αν θέλεις να διοργανώνεις και εκδηλώσεις"
+                                arrow
+                                placement="top"
+                            >
+                                <InfoOutlined sx={{ fontSize: "18px", color: "#6e6e6e", cursor: "help", marginTop: "15px"}} />
+                            </Tooltip>
+                        </Box>                        
                     </Box>
                     <Box
                         sx={{
@@ -212,6 +291,22 @@ const SignupPage = () => {
                             fullWidth
                             required
                             value={formData.address}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            label="Πόλη"
+                            name="city"
+                            fullWidth
+                            required
+                            value={formData.city}
+                            onChange={handleChange}
+                        />
+                        <TextField
+                            label="Χώρα"
+                            name="country"
+                            fullWidth
+                            required
+                            value={formData.country}
                             onChange={handleChange}
                         />
                         <TextField
@@ -303,44 +398,37 @@ const SignupPage = () => {
                             required
                             value={formData.password2}
                             onChange={handleChange}
+                            type={showPassword ? "text" : "password"}
+                            slotProps={{
+                                input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                    </InputAdornment>
+                                ),
+                                },
+                            }}
                         />
-                        <Box
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                gap: "5px",
-                            }}
-                        >
-                        <FormGroup
-                            sx={{
-                                height: "56px",
-                                color: "#6e6e6e",
-                            }}
-                        >
-                            <FormControlLabel
-                                control={
-                                    <Checkbox
-                                        checked={formData.role === "ORGANIZER"}
-                                        onChange={handleOrganizerChange}
-                                    />
-                                }
-                                label="Διοργανωτής"
-                            />
-                        </FormGroup>
-                        <Tooltip
-                            title="Πάτησέ το μόνο αν θέλεις να διοργανώνεις και εκδηλώσεις"
-                            arrow
-                            placement="top"
-                        >
-                            <InfoOutlined sx={{ fontSize: "18px", color: "#6e6e6e", cursor: "help", marginTop: "15px"}} />
-                        </Tooltip>
-                        </Box>
                     </Box>
                 </Box>
-                <MyButton>
+                <MyButton
+                    type="submit"
+                    disabled={loading}
+                >
                     Εγγραφή
                 </MyButton>
             </Box>
+            <Snackbar
+                open={showSuccess}
+                autoHideDuration={3000}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert severity="success" sx={{ fontSize: "18px" }}>
+                    Η εγγραφή έγινε με επιτυχία! Ο λογαριασμός σου θα ενεργοποιηθεί όταν τον εγκρίνει ο διαχειριστής.
+                </Alert>
+            </Snackbar>
         </>
     );
 }

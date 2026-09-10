@@ -8,5 +8,5 @@ export const loginUser = (username, password) => {
 };
 
 export const signupUser = (userData) => {
-    return axiosInstance.post('users/signup', userData);
+    return axiosInstance.post('users/register', userData);
 };
