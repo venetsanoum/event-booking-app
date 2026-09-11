@@ -3,7 +3,6 @@ import { Typography, Box, TextField, IconButton, Tooltip, InputAdornment, FormCo
 import MyButton from '../components/MyButton';
 import { Visibility, VisibilityOff, InfoOutlined } from "@mui/icons-material";
 import { signupUser } from '../api/authApi';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 
@@ -24,7 +23,7 @@ const SignupPage = () => {
         country: '',
         username: '',
         password: '',
-        password2: '',
+        passwordbar: '',
     });
     
     const [afmError, setAfmError] = useState("");
@@ -45,6 +44,7 @@ const SignupPage = () => {
     };
 
     const [showPassword, setShowPassword] = useState(false);
+    const [showPasswordbar, setShowPasswordbar] = useState(false);
     const [showPasswordRules, setShowPasswordRules] = useState(false);
     const hasMinLength = formData.password.length >= 12;
     const hasUpperCase = /[A-Z]/.test(formData.password);
@@ -75,32 +75,12 @@ const SignupPage = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-
-    const geocodeAddress = async () => {
-        const fullAddress = `${formData.address}, ${formData.city}, ${formData.country}`;
-
-        const response = await axios.get('https://nominatim.openstreetmap.org/search', {
-            params: {
-                format: 'json',
-                q: fullAddress,
-            },
-        });
-
-        if (response.data.length === 0) {
-            return null;
-        }
-
-        return {
-            latitude: response.data[0].lat,
-            longitude: response.data[0].lon,
-        };
-    };
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        if(formData.password !== formData.password2) {
+        if(formData.password !== formData.passwordbar) {
             setError("Οι κωδικοί δεν ταιριάζουν.");
             return;
         }
@@ -118,20 +98,8 @@ const SignupPage = () => {
         setLoading(true);
 
         try {
-            const { password2, ...dataToSend } = formData;
 
-            const coords = await geocodeAddress();
-            if(coords == null) {
-                setError('Λάθος διεύθυνση, πόλη ή χώρα. Δοκίμασε ξανά');
-                return;
-            }
-            const dataToSendWithCoords = {
-                ...dataToSend,
-                latitude: coords.latitude,
-                longitude: coords.longitude,
-            };
-
-            const response = await signupUser(dataToSendWithCoords);
+            const response = await signupUser(formData);
             setShowSuccess(true);
 
             setTimeout(() => {
@@ -144,7 +112,7 @@ const SignupPage = () => {
         } finally {
             setLoading(false);
         }
-    }
+    } 
 
     return (
         <>
@@ -343,7 +311,7 @@ const SignupPage = () => {
                             <Box
                                 sx={{
                                     position: "absolute",
-                                    top: "520px",
+                                    top: "730px",
                                     left: "520px",
                                     width: "100",
                                     padding: "12px",
@@ -393,18 +361,18 @@ const SignupPage = () => {
                         )}
                         <TextField
                             label="Επαλήθευση κωδικού"
-                            name="password2"
+                            name="passwordbar"
                             fullWidth
                             required
-                            value={formData.password2}
+                            value={formData.passwordbar}
                             onChange={handleChange}
-                            type={showPassword ? "text" : "password"}
+                            type={showPasswordbar ? "text" : "password"}
                             slotProps={{
                                 input: {
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                    <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    <IconButton onClick={() => setShowPasswordbar(!showPasswordbar)} edge="end">
+                                        {showPasswordbar ? <VisibilityOff /> : <Visibility />}
                                     </IconButton>
                                     </InputAdornment>
                                 ),

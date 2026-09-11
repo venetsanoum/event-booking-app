@@ -5,7 +5,7 @@ import { Typography, Box, TextField, Button, IconButton, InputAdornment} from "@
 import MyButton from '../components/MyButton';
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Link } from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -14,6 +14,7 @@ const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false); // για να μην κάνει ο χρήστης double submit
     const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,6 +24,7 @@ const LoginPage = () => {
             const response = await loginUser(username.trim(), password.trim());
             login(response.data);
             console.log('Login επιτυχές:', response.data);
+            navigate('/');
         } catch (err) {
             console.log('Login απέτυχε:', err);
             setError('Λάθος στοιχεία ή δεν έχεις εγκριθεί ακόμα.');

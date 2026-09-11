@@ -12,8 +12,14 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import InboxIcon from "@mui/icons-material/Inbox";
 import { Link } from "react-router-dom";
 import { alignItems, borderRadius, justifyContent } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 const NavBar = () => {
+
+  const { user, logout } = useAuth();
+  const [profileAnchor, setProfileAnchor] = useState(false);
+  const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -68,29 +74,220 @@ const NavBar = () => {
         >
           Αναζήτηση
         </Button>
-        <Box
-          sx={{
-            display: "flex",
-            padding: "10px",
-            alignItems: "center",
-            gap: "15px",
-          }}
-        >
-          <MyButton
-            component={Link}
-            to={`/login`}
+        {user && user.role === "ATTENDEE" ? (
+          <>
+          <IconButton component={Link} to="/messages">
+            <InboxIcon sx={{ fontSize: "42px", color: "#555" }} />
+          </IconButton>
+          <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              {user.profileData?.photo ? (
+                <Box
+                  component="img"
+                  src={user.profileData.photo}
+                  alt="profile"
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    objectFit: "cover"
+                  }}
+                />
+              ) : (
+                <AccountCircleIcon 
+                  sx={{
+                    fontSize: "44px"
+                  }}
+                />
+              )}
+                <KeyboardArrowDownIcon
+                  sx={{
+                    transition: "0.2s",
+                  }}
+                />
+            </Box>
+          </IconButton>
+          <Menu
+            anchorEl={profileAnchor}
+            open = {Boolean(profileAnchor)}
+            onClose={() => setProfileAnchor(null)}
+            slotProps={{
+                paper: {
+                    sx: {
+                        display: "inline-flex",
+                        padding: "10px",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        gap: "5px",
+                        borderRadius: "15px",
+                        border: "2px solid #fff",
+                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        marginLeft: "-40px"
+                      },
+                },
+            }}
           >
-            Σύνδεση
-          </MyButton>
-          <MyButton
-            component={Link}
-            to={`/signup`}
+            <MenuItem
+              component={Link}
+              to="/account"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            >
+              Λογαριασμός
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/my-bookings"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            > 
+              Κρατήσεις
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/messages"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            > 
+              Μηνύματα
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    logout();
+                    setProfileAnchor(null);
+                    navigate('/');
+                }}
+            >
+                Αποσύνδεση
+            </MenuItem>
+          </Menu>
+          </>
+        ) : user && user.role === "ORGANIZER" ? (
+          <>
+          <IconButton component={Link} to="/messages">
+            <InboxIcon sx={{ fontSize: "42px", color: "#555" }} />
+          </IconButton>
+          <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              {user.profileData?.photo ? (
+                <Box
+                  component="img"
+                  src={user.profileData.photo}
+                  alt="profile"
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: "50%",
+                    objectFit: "cover"
+                  }}
+                />
+              ) : (
+                <AccountCircleIcon 
+                  sx={{
+                    fontSize: "44px"
+                  }}
+                />
+              )}
+                <KeyboardArrowDownIcon
+                  sx={{
+                    transition: "0.2s",
+                  }}
+                />
+            </Box>
+          </IconButton>
+          <Menu
+            anchorEl={profileAnchor}
+            open = {Boolean(profileAnchor)}
+            onClose={() => setProfileAnchor(null)}
+            slotProps={{
+                paper: {
+                    sx: {
+                        display: "inline-flex",
+                        padding: "10px",
+                        flexDirection: "column",
+                        alignItems: "flex-start",
+                        gap: "5px",
+                        borderRadius: "15px",
+                        border: "2px solid #fff",
+                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        marginLeft: "-40px"
+                      },
+                },
+            }}
           >
-            Εγγραφή
-          </MyButton>
-        </Box>
+            <MenuItem
+              component={Link}
+              to="/account"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            >
+              Λογαριασμός
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/my-bookings"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            > 
+              Κρατήσεις
+            </MenuItem>
+            <MenuItem
+              component={Link}
+              to="/messages"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            > 
+              Μηνύματα
+            </MenuItem>
+            <MenuItem
+                onClick={() => {
+                    logout();
+                    setProfileAnchor(null);
+                    navigate('/');
+                }}
+            >
+                Αποσύνδεση
+            </MenuItem>
+          </Menu>
+          </>
+        ) : user && user.role === "ADMIN" ? (
+          <></>
+        ) : ( // no login
+          <Box
+            sx={{
+              display: "flex",
+              padding: "10px",
+              alignItems: "center",
+              gap: "15px",
+            }}
+          >
+            <MyButton
+              component={Link}
+              to={`/login`}
+            >
+              Σύνδεση
+            </MyButton>
+            <MyButton
+              component={Link}
+              to={`/signup`}
+            >
+              Εγγραφή
+            </MyButton>
+          </Box>
+        )}
       </Box>
-
     </Box>
   );
 };
