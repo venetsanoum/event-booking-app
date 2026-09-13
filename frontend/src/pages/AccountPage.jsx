@@ -1,11 +1,10 @@
-import { Box, Typography, Avatar } from '@mui/material';
+import { Box, Typography, Avatar, CircularProgress } from '@mui/material';
 import '@fontsource/luckiest-guy'
 import MyButton from '../components/MyButton';
 import { Link } from 'react-router-dom';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState, useEffect } from 'react';
 import { getMe } from '../api/authApi';
-
 
 const AccountPage = () => {
 
