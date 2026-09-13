@@ -10,19 +10,39 @@ import { getMe } from '../api/authApi';
 const AccountPage = () => {
 
     const [userData, setUserData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchUser = async () => {
-            const response = await getMe();
-            setUserData(response.data);
+            try {
+                const response = await getMe();
+                setUserData(response.data);
+            } catch (err) {
+                console.log('Αποτυχία φόρτωσης λογαριασμού:', err);
+                setError('Δεν ήταν δυνατή η φόρτωση των στοιχείων σου.');
+            } finally {
+                setLoading(false);
+            }
         };
         fetchUser();
     }, []);
 
-    if (!userData) {
-        return null;
+    if (loading) {
+        return (
+            <Box sx={{ display: "flex", justifyContent: "center", padding: "60px" }}>
+                <CircularProgress />
+            </Box>
+        );
     }
 
+    if (error) {
+        return (
+            <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center", padding: "60px" }}>
+                {error}
+            </Typography>
+        );
+    }
     const fields = [
         { label: "Όνομα", value: userData.first_name },
         { label: "Επώνυμο", value: userData.last_name },

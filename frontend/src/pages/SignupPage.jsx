@@ -385,7 +385,7 @@ const SignupPage = () => {
                     type="submit"
                     disabled={loading}
                 >
-                    Εγγραφή
+                    {loading ? "Εγγραφή..." : "Εγγραφή"}
                 </MyButton>
             </Box>
             <Snackbar

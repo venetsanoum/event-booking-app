@@ -106,7 +106,7 @@ const LoginPage = () => {
                 <Typography sx={{fontSize: "18px"}}> Δεν έχεις λογαριασμό;</Typography>
                 <Button 
                     component={Link}
-                    to="/signup-choose-type"
+                    to="/signup"
                     sx={{textTransform:"none", fontSize: "16px"}}
                 >
                     Κάνε εγγραφή τώρα
