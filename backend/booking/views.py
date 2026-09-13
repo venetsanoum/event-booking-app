@@ -14,6 +14,7 @@ from rest_framework.views import APIView
 
 class CreateBookingView(generics.CreateAPIView):
     serializer_class=CreateBookingSerializer
+    permission_classes=[IsAuthenticated]
     def create(self, request, *args, **kwargs):
         event_id=self.kwargs["event_id"]
         event=get_object_or_404(Event, id=event_id, status="PUBLISHED")

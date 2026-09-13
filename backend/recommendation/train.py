@@ -8,7 +8,7 @@ def split_S(S):
     test=[]
     users_ptr = set(i for i, _, _ in S)
     for id in users_ptr:
-        user_interactions=[interaction for interaction in S if interaction[0] == id]
+        user_interactions=[interaction for interaction in S if interaction[0] == id] # πάρε όλες τις αλληλεπιδράσεις αυτού του user ptr
         if len(user_interactions) < 2:
             train.extend(user_interactions)
             continue
@@ -16,7 +16,7 @@ def split_S(S):
         train.extend(user_train)
         test.extend(user_test)
     return train, test
-# υπολογισμός RMSE
+# υπολογισμός RMSE. Πόσο απέχουν αριθμητικά οι προβλέψεις από τα πραγματικά ratings
 def rmse(model, S):
     if not S:
         return 0.0
@@ -32,8 +32,8 @@ def train():
     n_events=len(events)
     my_model=BiasedMatrixFactorization(n_users, n_events, 10)
     epochs=23 # πόσες φορές θα περάσει όλο το train_S
-    hta=0.005 # το η του ψευδοκώδικα - learning rate
-    lamda=0.005 # το λ του ψευδοκώδικα
+    hta=0.005 # το η του ψευδοκώδικα - learning rate, πόσο μεγάλο update κάνουμε
+    lamda=0.05 # το λ του ψευδοκώδικα. Πόσο περιορίζουμε τις παραμέτρους
     # μέσος όρος
     m=sum(pref for _, _, pref in train_S)/len(train_S)
     my_model.m=m
