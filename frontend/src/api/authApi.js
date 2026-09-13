@@ -10,3 +10,7 @@ export const loginUser = (username, password) => {
 export const signupUser = (userData) => {
     return axiosInstance.post('users/register/', userData);
 };
+
+export const getMe = () => {
+    return axiosInstance.get('users/me/');
+}

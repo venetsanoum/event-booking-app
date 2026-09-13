@@ -233,6 +233,16 @@ const NavBar = () => {
             </MenuItem>
             <MenuItem
               component={Link}
+              to="/my-events"
+              onClick={() => setProfileAnchor(null)}
+              sx={{
+                fontSize: "18px",
+              }}
+            >
+              Εκδηλώσεις
+            </MenuItem>
+            <MenuItem
+              component={Link}
               to="/my-bookings"
               onClick={() => setProfileAnchor(null)}
               sx={{
