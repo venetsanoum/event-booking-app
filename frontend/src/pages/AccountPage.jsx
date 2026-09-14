@@ -42,14 +42,6 @@ const AccountPage = () => {
             </Typography>
         );
     }
-    const fields = [
-        { label: "Όνομα", value: userData.first_name },
-        { label: "Επώνυμο", value: userData.last_name },
-        { label: "Username", value: userData.username },
-        { label: "Email", value: userData.email },
-        { label: "Τηλέφωνο", value: userData.phone },
-        { label: "ΑΦΜ", value: userData.afm },
-    ];
 
     return (
         <>
@@ -242,7 +234,124 @@ const AccountPage = () => {
                     >
                         {userData.phone}
                     </Typography>
-                </Box>                
+                </Box>       
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "55px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                                Διεύθυνση
+                    </Typography>
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        {userData.address}
+                    </Typography>
+                </Box>     
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "55px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                                Πόλη
+                    </Typography>
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        {userData.city}
+                    </Typography>
+                </Box>     
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "55px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                                Χώρα
+                    </Typography>
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        {userData.country}
+                    </Typography>
+                </Box>              
                 <Box 
                     sx={{
                         display: "flex",

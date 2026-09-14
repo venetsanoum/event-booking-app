@@ -21,6 +21,9 @@ const AccountEditPage = () => {
     const [afmError, setAfmError] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
     const navigate = useNavigate();
+
+    const [photoFile, setPhotoFile] = useState(null);
+    const [photoPreview, setPhotoPreview] = useState(null);
     
     const [formData, setFormData] = useState({
         first_name: '',
@@ -29,6 +32,8 @@ const AccountEditPage = () => {
         phone: '',
         address: '',
         afm: '',
+        city: '',
+        country: '',
         username: '',
         password: '',
         passwordbar: '',
@@ -47,9 +52,12 @@ const AccountEditPage = () => {
                     address: user.address || '',
                     afm: user.afm || '',
                     username: user.username || '',
+                    city: user.city || '',
+                    country: user.country || '',
                     password: '',
                     passwordbar: '',
                 });
+                setPhotoPreview(user.profile_photo);
             }
             catch (err) {
                 console.log('Αποτυχία φόρτωσης λογαριασμού:', err);
@@ -122,7 +130,28 @@ const AccountEditPage = () => {
 
         try {
 
-            const response = await editMe(formData);
+            const dataToSend = new FormData();
+            dataToSend.append('first_name', formData.first_name);
+            dataToSend.append('last_name', formData.last_name);
+            dataToSend.append('email', formData.email);
+            dataToSend.append('phone', formData.phone);
+            dataToSend.append('afm', formData.afm);
+            dataToSend.append('username', formData.username);
+            dataToSend.append('address', formData.address);
+            dataToSend.append('city', formData.city);
+            dataToSend.append('country', formData.country);
+
+            if (wantsPasswordChange) {
+                dataToSend.append('password', formData.password);
+                dataToSend.append('passwordbar', formData.passwordbar);
+            }
+
+            if (photoFile) {
+                dataToSend.append('profile_photo', photoFile);
+            }
+
+            const response = await editMe(dataToSend);
+
             setShowSuccess(true);
 
             setTimeout(() => {
@@ -143,6 +172,14 @@ const AccountEditPage = () => {
             [e.target.name]: e.target.value,
         });
     };
+
+    const handlePhotoChange = (e) => {
+        const file = e.target.files[0];
+        if(file) {
+            setPhotoFile(file);
+            setPhotoPreview(URL.createObjectURL(file));
+        }
+    };  
     
 
     return (
@@ -156,16 +193,25 @@ const AccountEditPage = () => {
             >
                 Επεξεργασία Προφίλ
             </Typography>
-            {formData.profile_photo ? (
+            {photoPreview ? (
                 <Avatar
-                    src={formData.profile_photo}
-                    sx={{ width: 100, height: 100, marginBottom: "10px" }}
+                    src={photoPreview}
+                    sx={{ width: 170, height: 170, marginBottom: "10px" }}
                 />
             ) : (
                 <Avatar sx={{ width: 170, height: 170, marginBottom: "10px", bgcolor: "#ccc" }}>
                     <AccountCircleIcon sx={{ fontSize: 170 }} />
                 </Avatar>
             )}
+            <MyButton component="label">
+                Αλλαγή φωτογραφίας
+                <input
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    onChange={handlePhotoChange}
+                />
+            </MyButton>
             <Box
                 component="form"
                 id="edit-account-form"
@@ -357,6 +403,129 @@ const AccountEditPage = () => {
                     sx={{
                         display: "flex",
                         alignItems: "center",
+                        gap: "58px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        Διεύθυνση
+                    </Typography>
+                    <TextField 
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        fullWidth
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    />
+                </Box>     
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "121px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        Πόλη
+                    </Typography>
+                    <TextField 
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        fullWidth
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    />
+                </Box>  
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "115px",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    }}
+                
+                >
+                    <Typography 
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    >
+                        Χώρα
+                    </Typography>
+                    <TextField 
+                        name="country"
+                        value={formData.country}
+                        onChange={handleChange}
+                        fullWidth
+                        sx={{ 
+                            display: "flex",
+                            padding: "5px 10px",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "10px",
+                            color: "black",
+                            fontSize: "26px",
+                            fontWeight: "400",
+                        }}
+                    />
+                </Box>  
+                <Box 
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
                         gap: "121px",
                         alignSelf: "stretch",
                         background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
@@ -396,7 +565,7 @@ const AccountEditPage = () => {
                             fontWeight: "400",
                         }}
                     />
-                </Box>                
+                </Box>             
                 <Box 
                     sx={{
                         display: "flex",
