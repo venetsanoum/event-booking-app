@@ -10,5 +10,6 @@ class canSendMessage(BasePermission):
         return (event.organizer==request.user or 
             Booking.objects.filter(
                 event=event,
-                attendee=request.user
+                attendee=request.user,
+                status="CONFIRMED"
             ).exists())
