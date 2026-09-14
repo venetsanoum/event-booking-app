@@ -14,3 +14,7 @@ export const signupUser = (userData) => {
 export const getMe = () => {
     return axiosInstance.get('users/me/');
 }
+
+export const editMe = (data) => {
+    return axiosInstance.patch('me/edit/', data);
+};

@@ -2,6 +2,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from './pages/LoginPage';
 import SignupPage from "./pages/SignupPage";
 import AccountPage from "./pages/AccountPage";
+import AccountEditPage from "./pages/AccountEditPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -31,6 +32,7 @@ function App() {
           <Route path="/login" element={<LoginPage></LoginPage>}/>
           <Route path="/signup" element={<SignupPage></SignupPage>}/>
           <Route path="/account" element={<AccountPage></AccountPage>}/>
+          <Route path="/account-edit" element={<AccountEditPage></AccountEditPage>}/>
         </Routes>
       </MainBox>
       <Footer/>

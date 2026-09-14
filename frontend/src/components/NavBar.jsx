@@ -135,7 +135,7 @@ const NavBar = () => {
                 fontSize: "18px",
               }}
             >
-              Λογαριασμός
+              Το πορφίλ μου
             </MenuItem>
             <MenuItem
               component={Link}
@@ -229,7 +229,7 @@ const NavBar = () => {
                 fontSize: "18px",
               }}
             >
-              Λογαριασμός
+              Το προφίλ μου
             </MenuItem>
             <MenuItem
               component={Link}

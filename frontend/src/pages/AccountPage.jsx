@@ -60,7 +60,7 @@ const AccountPage = () => {
                     fontWeight: "600",
                 }}
             >
-                Λογαριασμός
+                Το προφίλ μου
             </Typography>
             {userData.profile_photo ? (
                 <Avatar
@@ -74,6 +74,7 @@ const AccountPage = () => {
             )}
             <Box
                 sx={{
+                    width: "650px",
                     display: "flex",
                     padding: "20px",
                     flexDirection: "column",
