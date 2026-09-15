@@ -179,7 +179,7 @@ class SearchEventSerializer(serializers.ModelSerializer):
     category=CategoryInfoSerializer(read_only=True, many=True)
     class Meta:
         model=Event
-        fields=["title", "category", "eventType","venue",
+        fields=["id", "title", "category", "eventType","venue",
         "address", "city", "country","startDateTime","endDateTime",
         "description",]
         #ordering=["startDateTime"]
