@@ -1,6 +1,11 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+django.setup()
 import numpy as np
-from database_data import load_interactions
-from model import BiasedMatrixFactorization
+from recommendation.database_data import load_interactions
+from recommendation.model import BiasedMatrixFactorization
 import pickle
 
 def train():
@@ -34,7 +39,7 @@ def train():
         "events":events,
         "interactions":S
     }
-    model_filename="saved_model.pkl"
+    model_filename="recommendation/saved_models/saved_model.pkl"
     with open(model_filename, "wb") as file:
         pickle.dump(data, file)
     return my_model, users, events, S

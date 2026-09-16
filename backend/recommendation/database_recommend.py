@@ -3,7 +3,6 @@ from evaluate import predict
 from events.models import Event
 from booking.models import Booking
 from django.utils import timezone
-# TODO
 def show_bookings():
     bookings=Booking.objects.select_related("attendee", "event").all()
     for b in bookings:
