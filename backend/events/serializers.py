@@ -176,12 +176,27 @@ class EditEventSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 class SearchEventSerializer(serializers.ModelSerializer):
-    category=CategoryInfoSerializer(read_only=True, many=True)
+    category = CategoryInfoSerializer(read_only=True, many=True)
+    main_photo = serializers.SerializerMethodField()
+    lowest_price = serializers.SerializerMethodField()
     class Meta:
-        model=Event
-        fields=["id", "title", "category", "eventType","venue",
-        "address", "city", "country","startDateTime","endDateTime",
-        "description",]
+        model = Event
+        fields = ["id", "title", "category", "eventType", "venue",
+        "address", "city", "country", "startDateTime", "endDateTime",
+        "description", "main_photo", "lowest_price"]
+    def get_main_photo(self, obj):
+        first_image = obj.images.first()
+        if first_image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(first_image.photo.url)
+            return first_image.photo.url
+        return None
+    def get_lowest_price(self, obj):
+        tickets = obj.ticket_types.all()
+        if not tickets:
+            return None
+        return min(ticket.price for ticket in tickets)
         #ordering=["startDateTime"]
 class EventInfoSerializer(serializers.ModelSerializer):
     class Meta:

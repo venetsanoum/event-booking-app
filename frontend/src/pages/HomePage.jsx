@@ -436,17 +436,16 @@ const HomePage = () => {
                         alignSelf: "stretch",
                     }}
                 >
-                <Box
-                    sx={{
-                        backgroundImage: "url('/event_organizer.jpg')",
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
-                        backgroundRepeat: "no-repeat",
-                        width: "179px",
-                        height: "224px",
-                    }}
-                >
-
+                    <Box
+                        sx={{
+                            backgroundImage: "url('/event_organizer.jpg')",
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                            width: "179px",
+                            height: "224px",
+                        }}
+                    >
                     </Box>
                     <Typography
                         sx={{
