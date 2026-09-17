@@ -1,6 +1,12 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
+django.setup()
 import numpy as np
-from database_data import load_interactions
-from model import BiasedMatrixFactorization
+from recommendation.database_data import load_interactions
+from recommendation.model import BiasedMatrixFactorization
+import pickle
 
 def train():
     S, users, events = load_interactions()
@@ -27,11 +33,18 @@ def train():
             f_old=my_model.f[j].copy()
             my_model.v[i]=v_old + hta * ((error * f_old) - (lamda * v_old))
             my_model.f[j]=f_old + hta * ((error * v_old) - (lamda * f_old))
-        regularization = (np.sum(my_model.v ** 2) + np.sum(my_model.f ** 2) + np.sum(my_model.bi ** 2) + np.sum(my_model.cj ** 2))
-        total_obj = total_error + (lamda / 2) * regularization
+    data={
+        "model":my_model,
+        "users":users,
+        "events":events,
+        "interactions":S
+    }
+    model_filename="recommendation/saved_models/saved_model.pkl"
+    with open(model_filename, "wb") as file:
+        pickle.dump(data, file)
     return my_model, users, events, S
             
-def main():
-   model = train()
-if __name__ == "__main__":
-    main()
+# def main():
+#    model = train()
+# if __name__ == "__main__":
+#     main()
