@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
 
 export const searchEvents = () => {
-    return axiosInstance.get('search/');
+    return axiosInstance.get('events/search/');
 };

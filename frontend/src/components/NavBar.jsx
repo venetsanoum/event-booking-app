@@ -64,7 +64,7 @@ const NavBar = () => {
       >
         <Button 
           component={Link}
-          to="/"
+          to="/search"
           sx={{ 
             color: "#555", 
             textTransform: "none",

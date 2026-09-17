@@ -41,7 +41,6 @@ const SearchCard = ({ event_photo, title, date_start, date_end, address, lowest_
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "flex-start",
-                        gap: "30px",
                         alignSelf: "stretch",
                         flexDirection: "column",
                     }}
@@ -51,9 +50,10 @@ const SearchCard = ({ event_photo, title, date_start, date_end, address, lowest_
                             display: "flex",
                             background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)",
                             color: "black",
-                            textAlign: "center",
+                            justifyContent: "center",
                             fontSize: "28px",
                             fontWeight: "500",
+                            alignSelf: "stretch"
                         }}
                     >
                         {title}
@@ -68,25 +68,27 @@ const SearchCard = ({ event_photo, title, date_start, date_end, address, lowest_
                     >
                         {date_start} - {date_end}
                     </Typography>
-                    <Box
+                <Box
+                    sx={{
+                        display: "flex",
+                        padding: "20px 10px",
+                        justifyContent: "flex-start",   // ← άλλαξε από "center"
+                        alignSelf: "flex-start",
+                        width: "100%",
+                    }}
+                >
+                    <Typography
                         sx={{
-                            display: "flex",
-                            padding: "20px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
+                            color: "#000",
+                            fontSize: "28px",
+                            fontWeight: "500",
+                            textAlign: "left",
                         }}
                     >
-                        <Typography
-                            sx={{
-                                color: "#000",
-                                fontSize: "28px",
-                                fontWeight: "500",
-                            }}
-                        >
-                            Τοποθεσία: {address} <br />
-                            Τιμή: Από {lowest_price}
-                        </Typography>
-                    </Box>
+                        Τοποθεσία: {address} <br />
+                        Τιμή: Από {lowest_price}
+                    </Typography>
+                </Box>
                 </Box>
                 <MyButton>
                     Μάθε Περισσότερα

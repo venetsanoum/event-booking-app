@@ -3,6 +3,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from "./pages/SignupPage";
 import AccountPage from "./pages/AccountPage";
 import AccountEditPage from "./pages/AccountEditPage";
+import SearchPage from "./pages/SearchPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -33,6 +34,7 @@ function App() {
           <Route path="/signup" element={<SignupPage></SignupPage>}/>
           <Route path="/account" element={<AccountPage></AccountPage>}/>
           <Route path="/account-edit" element={<AccountEditPage></AccountEditPage>}/>
+          <Route path="/search" element={<SearchPage></SearchPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
