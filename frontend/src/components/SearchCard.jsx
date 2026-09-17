@@ -1,7 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import MyButton from "./MyButton.jsx";
+import { Link } from "react-router-dom";
 
-const SearchCard = ({ event_photo, title, date_start, date_end, address, lowest_price }) => {
+const SearchCard = ({ event_id, event_photo, title, date_start, date_end, address, lowest_price }) => {
     return (
         <Box
             sx={{
@@ -90,7 +91,10 @@ const SearchCard = ({ event_photo, title, date_start, date_end, address, lowest_
                     </Typography>
                 </Box>
                 </Box>
-                <MyButton>
+                <MyButton
+                    component={Link}
+                    to={`/events/${event_id}`}
+                >
                     Μάθε Περισσότερα
                 </MyButton>
             </Box>

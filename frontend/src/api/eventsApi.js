@@ -11,3 +11,7 @@ export const getCategories = () => {
 export const getCities = () => {
     return axiosInstance.get('events/cities/');
 };
+
+export const getEventDetails = (id) => {
+    return axiosInstance.get(`events/details/${id}/`);
+};

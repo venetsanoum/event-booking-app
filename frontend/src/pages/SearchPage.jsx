@@ -334,6 +334,7 @@ const SearchPage = () => {
                 {events.map((event) => (
                     <SearchCard
                         key={event.id}
+                        event_id={event.id}
                         event_photo={event.main_photo}
                         title={event.title}
                         date_start={new Date(event.startDateTime).toLocaleDateString('el-GR')}
