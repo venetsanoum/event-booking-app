@@ -1,13 +1,12 @@
-import os
-import django
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "backend.settings")
-django.setup()
 import numpy as np
 from recommendation.database_data import load_interactions
 from recommendation.model import BiasedMatrixFactorization
 import pickle
-
+def load_model():
+    model_filename="recommendation/saved_models/saved_model.pkl"
+    with open(model_filename, "rb") as file:
+        data=pickle.load(file)
+    return(data["model"], data["users"], data["events"], data["interactions"])
 def train():
     S, users, events = load_interactions()
     n_users=len(users)

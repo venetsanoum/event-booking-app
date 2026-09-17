@@ -248,7 +248,9 @@ class EditTicketTypesView(generics.UpdateAPIView):
 # GET events/{id}/event-ticket-types
 class EventTicketTypesView(generics.ListAPIView):
     serializer_class=TicketTypeInfoSerializer
-    queryset=TicketType.objects.all()
+    def get_queryset(self):
+        event_id=self.kwargs["pk"]
+        return TicketType.objects.filter(event_id=event_id)
 
 # DELETE events/{event_id}/ticket-types/{ticket_id:pk}
 class DeleteTicketTypeView(generics.DestroyAPIView):
