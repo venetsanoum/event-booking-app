@@ -189,7 +189,6 @@ class AddCategoryView(generics.CreateAPIView):
 # GET events/category-list
 class AllCategoriesView(generics.ListAPIView):
     serializer_class=CategoryInfoSerializer
-    permission_classes=[IsAuthenticated]
     queryset=Category.objects.all()
 # GET events/active
 class AllActiveEventsView(generics.ListAPIView):
