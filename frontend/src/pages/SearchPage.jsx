@@ -12,8 +12,9 @@ const SearchPage = () => {
     const [filters, setFilters] = useState({
         search_bar: '',
         category: [],
-        city: '',
+        city: [],
         from_date: '',
+        to_date: '',
         min_price: '',
         max_price: '',
     });
@@ -38,7 +39,7 @@ const SearchPage = () => {
         const fetchCategories = async () => {
             try {
                 const responseCategories = await getCategories();
-                setCategories(responseCategories.data);
+                setCategories(responseCategories.data.results);
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης κατηγοριών:', err);
             }
@@ -219,7 +220,12 @@ const SearchPage = () => {
                             autoFocus: false,
                         }}
                         onClose={() => setCitySearch('')}
-                        sx={{ width: "220px" }}
+                        sx={{ 
+                            width: "215px",
+                            borderRadius: "10px",
+                            border: "3px solid #FFF",
+                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        }}
                     >
                         <Box sx={{ padding: "8px" }} onKeyDown={(e) => e.stopPropagation()}>
                             <TextField
@@ -239,57 +245,80 @@ const SearchPage = () => {
                             </MenuItem>
                         ))}
                     </Select>
-                    <Box>
-                        <Button
-                            onClick={(e) => setDateAnchor(e.currentTarget)}
-                            startIcon={<CalendarMonthIcon />}
-                            sx={{ background: "#FFF", borderRadius: "5px", padding: "15px 20px", color: "black" }}
-                        >
-                            {filters.from_date || "Ημερομηνία"}
-                        </Button>
-                        <Popover
-                            open={Boolean(dateAnchor)}
-                            anchorEl={dateAnchor}
-                            onClose={() => setDateAnchor(null)}
-                        >
-                            <Box sx={{ padding: "16px" }}>
-                                <TextField
-                                    name="from_date"
-                                    type="date"
-                                    value={filters.from_date}
-                                    onChange={handleFilterChange}
-                                />
+                    <Select
+                        displayEmpty
+                        value={filters.from_date}
+                        open={Boolean(dateAnchor)}
+                        onOpen={(e) => setDateAnchor(e.currentTarget)}
+                        onClose={() => setDateAnchor(null)}
+                        input={<OutlinedInput sx={{ background: "#FFF", borderRadius: "5px" }} />}
+                        renderValue={() => {
+                            if (filters.from_date && filters.to_date) {
+                                return `${filters.from_date} - ${filters.to_date}`;
+                            }
+                            if (filters.from_date) {
+                                return `Από ${filters.from_date}`;
+                            }
+                            return "Ημερομηνία";
+                        }}
+                        sx={{ 
+                            width: "215px",
+                            borderRadius: "10px",
+                            border: "3px solid #FFF",
+                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        }}
+                    >
+                        <Box sx={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }} onKeyDown={(e) => e.stopPropagation()}>
+                            <TextField
+                                name="from_date"
+                                type="date"
+                                label="Από"
+                                value={filters.from_date}
+                                onChange={handleFilterChange}
+                                slotProps={{ inputLabel: { shrink: true } }}
+                                fullWidth
+                            />
+                            <TextField
+                                name="to_date"
+                                type="date"
+                                label="Έως"
+                                value={filters.to_date}
+                                onChange={handleFilterChange}
+                                slotProps={{ inputLabel: { shrink: true } }}
+                                fullWidth
+                            />
+                        </Box>
+                    </Select>
+                    <Select
+                        displayEmpty
+                        value={priceRange}
+                        open={Boolean(priceAnchor)}
+                        onOpen={(e) => setPriceAnchor(e.currentTarget)}
+                        onClose={() => setPriceAnchor(null)}
+                        input={<OutlinedInput sx={{ background: "#FFF", borderRadius: "5px" }} />}
+                        renderValue={() => `Τιμή: ${priceRange[0]}€ - ${priceRange[1]}€`}
+                        sx={{ 
+                            width: "215px",
+                            borderRadius: "10px",
+                            border: "3px solid #FFF",
+                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        }}
+                    >
+                        <Box sx={{ padding: "24px", width: "260px" }} onKeyDown={(e) => e.stopPropagation()}>
+                            <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
+                                <Typography sx={{ fontWeight: 600 }}>{priceRange[0]}€</Typography>
+                                <Typography sx={{ fontWeight: 600 }}>{priceRange[1]}€</Typography>
                             </Box>
-                        </Popover>
-                    </Box>
-                    <Box>
-                        <Button
-                            onClick={(e) => setPriceAnchor(e.currentTarget)}
-                            sx={{ background: "#FFF", borderRadius: "5px", padding: "15px 20px", color: "black" }}
-                        >
-                            Τιμή: {priceRange[0]}€ - {priceRange[1]}€
-                        </Button>
-                        <Popover
-                            open={Boolean(priceAnchor)}
-                            anchorEl={priceAnchor}
-                            onClose={() => setPriceAnchor(null)}
-                        >
-                            <Box sx={{ padding: "24px", width: "260px" }}>
-                                <Box sx={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
-                                    <Typography sx={{ fontWeight: 600 }}>{priceRange[0]}€</Typography>
-                                    <Typography sx={{ fontWeight: 600 }}>{priceRange[1]}€</Typography>
-                                </Box>
-                                <Slider
-                                    value={priceRange}
-                                    onChange={(e, newValue) => setPriceRange(newValue)}
-                                    onChangeCommitted={handlePriceCommit}
-                                    valueLabelDisplay="auto"
-                                    min={0}
-                                    max={500}
-                                />
-                            </Box>
-                        </Popover>
-                    </Box>
+                            <Slider
+                                value={priceRange}
+                                onChange={(e, newValue) => setPriceRange(newValue)}
+                                onChangeCommitted={handlePriceCommit}
+                                valueLabelDisplay="auto"
+                                min={0}
+                                max={500}
+                            />
+                        </Box>
+                    </Select>
                 </Box>
             </Box>
 
