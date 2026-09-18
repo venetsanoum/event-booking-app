@@ -115,8 +115,8 @@ class MyProfileSerializer(serializers.ModelSerializer):
             "profile_photo"
         ]
 class EditMyProfileSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    passwordbar = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, allow_blank=True)
+    passwordbar = serializers.CharField(write_only=True, allow_blank=True)
     class Meta:
         model=CustomUser
         fields=[
@@ -163,10 +163,10 @@ class EditMyProfileSerializer(serializers.ModelSerializer):
             instance.longitude=longitude
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
-        instance.save()
         if password:
             instance.set_password(password)
-        return super().update(instance, validated_data)
+        instance.save()
+        return instance
         
 class UsersListSerializer(serializers.ModelSerializer):
     class Meta:

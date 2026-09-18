@@ -13,5 +13,5 @@ def validate_phone_number_strength(phone):
     if not re.fullmatch(r"\d{10}", phone):
         raise serializers.ValidationError("Phone number must contain 10 digits")
 def validate_afm_strength(afm):
-    if not re.fullmatch(r"\d{9}", afm):
-        raise serializers.ValidationError("AFM must contain 9 digits")
+    if not re.fullmatch(r"\d{10}", afm):
+        raise serializers.ValidationError("AFM must contain 10 digits")

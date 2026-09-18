@@ -16,5 +16,5 @@ export const getMe = () => {
 }
 
 export const editMe = (data) => {
-    return axiosInstance.patch('me/edit/', data);
+    return axiosInstance.patch('users/me/edit/', data);
 };

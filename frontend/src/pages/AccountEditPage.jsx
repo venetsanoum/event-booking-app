@@ -97,8 +97,8 @@ const AccountEditPage = () => {
                 ...formData,
                 afm: value
             });
-            if (value.length !== 9 && value.length > 0) {
-                setAfmError("Το ΑΦΜ πρέπει να έχει ακριβώς 9 ψηφία");
+            if (value.length !== 10 && value.length > 0) {
+                setAfmError("Το ΑΦΜ πρέπει να έχει ακριβώς 10 ψηφία");
             } else {
                 setAfmError("");
             }
@@ -553,7 +553,7 @@ const AccountEditPage = () => {
                         error={!!afmError}
                         helperText={afmError}
                         fullWidth
-                        slotProps={{ htmlInput: { maxLength: 9 } }}
+                        slotProps={{ htmlInput: { maxLength: 10 } }}
                         sx={{ 
                             display: "flex",
                             padding: "5px 10px",
