@@ -5,6 +5,8 @@ import MyButton from "../components/MyButton";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 delete L.Icon.Default.prototype._get;
 L.Icon.Default.mergeOptions({
@@ -18,7 +20,8 @@ const EventPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [event, setEvent] = useState(null);
-
+    const navigate = useNavigate();
+    const { user } = useAuth();
     useEffect(() => {
         const fetchEvent = async () => {
             try {
@@ -70,9 +73,12 @@ const EventPage = () => {
     }, 0);
 
     const handleBookingSubmit = () => {
-        console.log('Επιλεγμένα εισιτήρια:', quantities);
         setTicketDialogOpen(false);
-        // TODO: εδώ θα καλέσουμε το create booking API, στο επόμενο session
+        if (!user) {
+            navigate('/login', { state: { from: '/booking', bookingData: { event, quantities } } });
+        } else {
+            navigate('/booking', { state: { event, quantities } });
+        }
     };
 
     return (
