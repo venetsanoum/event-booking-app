@@ -1,5 +1,6 @@
 asgiref==3.12.1
 Django==6.0.7
+django-extensions==4.1
 django-cors-headers==4.9.0
 djangorestframework==3.17.1
 djangorestframework_simplejwt==5.5.1
@@ -22,3 +23,10 @@ scipy==1.18.0
 threadpoolctl==3.6.0
 geographiclib==2.1
 geopy==2.5.0
+typing_extensions==4.16.0
+Werkzeug==3.1.8
+cffi==2.1.1
+cryptography==50.0.1
+MarkupSafe==3.0.3
+pyOpenSSL==26.4.0
+pycparser==3.0

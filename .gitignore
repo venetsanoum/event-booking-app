@@ -19,4 +19,5 @@ backend/recommendation/rel_event_csvs/
 media/
 logs/
 mock_data/
-database_full.py
+certs/
+backend/recommendation/saved_models/
