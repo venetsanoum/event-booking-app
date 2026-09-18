@@ -11,3 +11,4 @@ class Command(BaseCommand):
             endDateTime__lt=timenow,
             status="PUBLISHED")
         events.update(status="COMPLETED")
+        self.stdout.write(self.style.SUCCESS("Events updated"))
