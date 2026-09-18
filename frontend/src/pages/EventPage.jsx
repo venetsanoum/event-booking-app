@@ -2,6 +2,17 @@ import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";import { useParams } from 'react-router-dom';
 import { getEventDetails } from "../api/eventsApi";
 import MyButton from "../components/MyButton";
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
+
+delete L.Icon.Default.prototype._get;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+});
+
 const EventPage = () => {
     const { id } = useParams();
     const [loading, setLoading] = useState(true);
@@ -121,6 +132,29 @@ const EventPage = () => {
     >
         {event.description}
     </Typography>
+    {event.latitude && event.longitude ? (
+        <Box sx={{ width: "905px", height: "400px", borderRadius: "15px", overflow: "hidden" }}>
+            <MapContainer
+                center={[event.latitude, event.longitude]}
+                zoom={15}
+                style={{ width: "100%", height: "100%" }}
+            >
+                <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                />
+                <Marker position={[event.latitude, event.longitude]}>
+                    <Popup>
+                        {event.venue}
+                    </Popup>
+                </Marker>
+            </MapContainer>
+        </Box>
+    ) : (
+        <Typography sx={{ color: "#777", fontSize: "18px", textAlign: "center" }}>
+            Η τοποθεσία δεν είναι διαθέσιμη για αυτή την εκδήλωση.
+        </Typography>
+    )}
     <Box
         sx={{
             display: "flex",
