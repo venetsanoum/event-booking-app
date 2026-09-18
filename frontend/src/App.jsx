@@ -6,6 +6,7 @@ import AccountEditPage from "./pages/AccountEditPage";
 import SearchPage from "./pages/SearchPage";
 import EventPage from "./pages/EventPage";
 import BookingPage from "./pages/BookingPage";
+import BookingAcceptedPage from "./pages/BookingAcceptedPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -39,6 +40,7 @@ function App() {
           <Route path="/search" element={<SearchPage></SearchPage>}/>
           <Route path="/events/:id" element={<EventPage></EventPage>}/>
           <Route path="/booking" element={<BookingPage></BookingPage>}/>
+          <Route path="/booking-accepted" element={<BookingAcceptedPage></BookingAcceptedPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
