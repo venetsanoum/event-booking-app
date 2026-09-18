@@ -247,7 +247,7 @@ const SearchPage = () => {
                     </Select>
                     <Select
                         displayEmpty
-                        value={filters.from_date}
+                        value=""
                         open={Boolean(dateAnchor)}
                         onOpen={(e) => setDateAnchor(e.currentTarget)}
                         onClose={() => setDateAnchor(null)}
@@ -291,7 +291,7 @@ const SearchPage = () => {
                     </Select>
                     <Select
                         displayEmpty
-                        value={priceRange}
+                        value=""
                         open={Boolean(priceAnchor)}
                         onOpen={(e) => setPriceAnchor(e.currentTarget)}
                         onClose={() => setPriceAnchor(null)}

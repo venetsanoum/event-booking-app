@@ -4,7 +4,7 @@ import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, 
 import MyButton from "../components/MyButton";
 import { getMe } from "../api/authApi";
 import { formatEventDateRange } from "../utils/dateUtils";
-import { createBooking } from "../api/eventsApi";
+import { createBooking } from "../api/bookingsApi";
 
 const BookingPage = () => {
     const [userData, setUserData] = useState(null);

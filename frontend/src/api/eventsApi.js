@@ -1,7 +1,14 @@
 import axiosInstance from './axiosInstance';
 
 export const searchEvents = (filters = {}) => {
-    return axiosInstance.get('events/search/', { params: filters });
+    const cleanedFilters = {};
+    Object.keys(filters).forEach((key) => {
+        const value = filters[key];
+        if (value !== '' && value !== null && !(Array.isArray(value) && value.length === 0)) {
+            cleanedFilters[key] = value;
+        }
+    });
+    return axiosInstance.get('events/search/', { params: cleanedFilters });
 };
 
 export const getCategories = () => {
