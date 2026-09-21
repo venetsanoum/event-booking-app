@@ -46,6 +46,7 @@ class CreateBookingView(generics.CreateAPIView):
         confirmation_message.save()
         return Response(
             {
+                "id": booking.id,
                 "message": "First step of booking creation is complete"
             },
             status=status.HTTP_201_CREATED 
