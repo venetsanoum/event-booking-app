@@ -38,3 +38,27 @@ export const getMyCancelledEvents = () => {
 export const getMyDraftedEvents = () => {
     return axiosInstance.get('events/my-drafted-events/');
 };
+
+export const createDraftEvent = (data) => {
+    return axiosInstance.post('events/draft-event/', data);
+};
+
+export const editEvent = (id, data) => {
+    return axiosInstance.patch(`events/${id}/edit/`, data);
+};
+
+export const getEventForEdit = (id) => {
+    return axiosInstance.get(`events/${id}/edit/`);
+};
+
+export const createTicketType = (eventId, data) => {
+    return axiosInstance.post(`events/${eventId}/ticket-types/`, data);
+};
+
+export const uploadEventImage = (eventId, formData) => {
+    return axiosInstance.post(`events/${eventId}/images/`, formData);
+};
+
+export const publishEvent = (eventId) => {
+    return axiosInstance.post(`events/${eventId}/publish/`);
+};

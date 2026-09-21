@@ -8,6 +8,7 @@ import EventPage from "./pages/EventPage";
 import BookingPage from "./pages/BookingPage";
 import BookingAcceptedPage from "./pages/BookingAcceptedPage";
 import MyEventsPage from "./pages/MyEventsPage";
+import EditEventPage from "./pages/EditEventPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -43,6 +44,8 @@ function App() {
           <Route path="/booking" element={<BookingPage></BookingPage>}/>
           <Route path="/booking-accepted" element={<BookingAcceptedPage></BookingAcceptedPage>}/>
           <Route path="/my-events" element={<MyEventsPage></MyEventsPage>}/>
+          <Route path="/my-events/new" element={<EditEventPage></EditEventPage>}/>
+          <Route path="/my-events/:id/edit" element={<EditEventPage></EditEventPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
