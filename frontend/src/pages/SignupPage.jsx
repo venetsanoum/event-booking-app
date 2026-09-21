@@ -108,7 +108,14 @@ const SignupPage = () => {
         }
         catch (err) {
             console.log('Signup απέτυχε:', err);
-            setError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            if (err.response && err.response.data) {
+                const data = err.response.data;
+                const firstKey = Object.keys(data)[0];
+                const firstMessage = data[firstKey][0];
+                setError(firstMessage);
+            } else {
+                setError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            }
         } finally {
             setLoading(false);
         }

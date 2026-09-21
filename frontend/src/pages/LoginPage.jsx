@@ -33,7 +33,13 @@ const LoginPage = () => {
             }
         } catch (err) {
             console.log('Login απέτυχε:', err);
-            setError('Λάθος στοιχεία ή δεν έχεις εγκριθεί ακόμα.');
+            if (err.response && err.response.data) {
+                const data = err.response.data;
+                const message = data.detail || Object.values(data)[0];
+                setError(Array.isArray(message) ? message[0] : message);
+            } else {
+                setError('Λάθος στοιχεία ή δεν έχεις εγκριθεί ακόμα.');
+            }
         } finally {
             setLoading(false);
         }

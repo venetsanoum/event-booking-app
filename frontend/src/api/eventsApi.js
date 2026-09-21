@@ -22,3 +22,19 @@ export const getCities = () => {
 export const getEventDetails = (id) => {
     return axiosInstance.get(`events/details/${id}/`);
 };
+
+export const getMyEvents = () => {
+    return axiosInstance.get('events/my-events/');
+};
+
+export const getMyCompletedEvents = () => {
+    return axiosInstance.get('events/my-completed-events/');
+};
+
+export const getMyCancelledEvents = () => {
+    return axiosInstance.get('events/my-cancelled-events/');
+};
+
+export const getMyDraftedEvents = () => {
+    return axiosInstance.get('events/my-drafted-events/');
+};
