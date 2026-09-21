@@ -87,9 +87,18 @@ class TicketTypeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Quantity of all ticket types cannot exceed total capacity of the event")
         return args
 class TicketTypeInfoSerializer(serializers.ModelSerializer):
+    reserved=serializers.SerializerMethodField()
     class Meta:
         model=TicketType
-        fields="__all__"
+        fields=["id",
+                "name",
+                "price",
+                "quantity",
+                "available",
+                "reserved"]
+    def get_reserved(self, obj):
+        return obj.quantity-obj.available
+
 class TicketTypeEditSerializer(serializers.ModelSerializer):
     class Meta:
         model=TicketType
@@ -207,6 +216,7 @@ class EventDetailsSerializer(serializers.ModelSerializer):
     images=EventImageSerializer(many=True, read_only=True)
     category=CategoryInfoSerializer(many=True, read_only=True)
     reserved=serializers.SerializerMethodField()
+    available=serializers.SerializerMethodField()
     class Meta:
         model=Event
         fields=[
@@ -226,10 +236,13 @@ class EventDetailsSerializer(serializers.ModelSerializer):
             "latitude",
             "longitude",
             "ticket_types",
-            "images"
+            "images",
+            "available"
         ]
     def get_reserved(self, obj):
         return sum(tick.quantity-tick.available for tick in obj.ticket_types.all())
+    def get_available(self, obj):
+            return sum(tick.available for tick in obj.ticket_types.all())
 class EventViewSerializer(serializers.ModelSerializer):
     class Meta:
         model=EventView

@@ -1,7 +1,7 @@
 from rest_framework import generics, status
 from rest_framework.response import Response # το αντικειμενο του θα επιστρέφει το api
 from .serializers import RegisterSerializer, LoginSerializer, MyProfileSerializer, UsersListSerializer, UserInfoSerializer, UserApprovalSerializer
-from .serializers import PendingUsersSerializer, EditMyProfileSerializer
+from .serializers import EditMyProfileSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from .permissions import IsAppAdmin
@@ -60,7 +60,7 @@ class EditMyProfileView(generics.UpdateAPIView):
     serializer_class=EditMyProfileSerializer
     permission_classes=[IsAuthenticated]
     def get_object(self):
-        return self.request.user
+        return self.user
 # GET /users/admin/users/
 class UsersListView(generics.ListAPIView):
     serializer_class = UsersListSerializer
@@ -78,7 +78,7 @@ class UserApprovalView(generics.UpdateAPIView):
     queryset = CustomUser.objects.all()
 # GET /users/admin/users/pending
 class PendingUsersView(generics.ListAPIView):
-    serializer_class = PendingUsersSerializer
+    serializer_class = UsersListSerializer
     permission_classes =[IsAppAdmin]
     queryset = CustomUser.objects.filter(approval_status="PENDING")
     

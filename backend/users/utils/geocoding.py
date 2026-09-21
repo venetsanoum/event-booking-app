@@ -1,7 +1,7 @@
 from geopy.geocoders import Nominatim
 
 def get_coordinates(address, city, country):
-    geolocator=Nominatim(user_agent="event_booking_app")
+    geolocator=Nominatim(user_agent="event_booking_app", timeout=10)
     location=geolocator.geocode(f"{address}, {city}, {country}")
     if location is None:
         return None, None

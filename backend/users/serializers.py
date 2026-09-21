@@ -172,6 +172,7 @@ class UsersListSerializer(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
         fields = [
+            "id",
             "username",
             "email",
             "first_name",
@@ -210,14 +211,3 @@ class UserApprovalSerializer(serializers.ModelSerializer):
         if value not in ["APPROVED", "REJECTED"]:
             raise serializers.ValidationError("Status can only be changed to approved or rejected")
         return value
-class PendingUsersSerializer(serializers.ModelSerializer):
-    class Meta:
-        model=CustomUser
-        fields = [
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "role",
-            "approval_status",
-        ]

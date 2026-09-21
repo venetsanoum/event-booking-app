@@ -132,7 +132,7 @@ class MyDraftEventsView(generics.ListAPIView):
 # PUT/PATCH/DELETE events/{id}/edit
 class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=EditEventSerializer
-    permission_classes=[IsAuthenticated, isOrganizer, isEventOrganizer]
+    permission_classes=[IsAuthenticated, isOrganizer, isEventOrganizer, isDraftedEvent]
     queryset = Event.objects.all()        
     def perform_destroy(self, instance):
         # μόνο draft εκδηλώσεις μπορούν να διαγραφούν
@@ -215,6 +215,13 @@ class EventDetailsView(generics.RetrieveAPIView):
             )
         serializer=self.get_serializer(event)
         return Response(serializer.data)
+# GET events/preview/{id}
+class EventPreviewView(generics.RetrieveAPIView):
+    serializer_class=EventDetailsSerializer
+    permission_classes=[IsAuthenticated, isEventOrganizer]
+    queryset=Event.objects.all()
+    def get_queryset(self):
+        return Event.objects.filter(id=self.kwargs["pk"], status__in=["CANCELLED", "PUBLISHED", "COMPLETED"])
 # --------------------------Ticket Types Endpoints -------------------------- #
 # POST events/{id}/ticket-type 
 class TicketTypeView(generics.CreateAPIView):
