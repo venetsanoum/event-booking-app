@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
+import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 import { useParams } from 'react-router-dom';
-import { getEventPreview } from "../api/eventsApi";
+import { getEventPreview, cancelEvent } from "../api/eventsApi";
 import MyButton from "../components/MyButton";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -27,6 +27,9 @@ const MyEventPreviewPage = () => {
     const [error, setError] = useState('');
     const [event, setEvent] = useState(null);
     const [bookingsDialogOpen, setBookingsDialogOpen] = useState(false);
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+    const [cancelling, setCancelling] = useState(false);
+    const [cancelError, setCancelError] = useState('');
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -58,6 +61,22 @@ const MyEventPreviewPage = () => {
             </Typography>
         );
     }
+
+    const handleCancelEvent = async () => {
+        setCancelling(true);
+        setCancelError('');
+        try {
+            await cancelEvent(id);
+            const response = await getEventPreview(id);
+            setEvent(response.data);
+            setCancelDialogOpen(false);
+        } catch (err) {
+            console.log('Αποτυχία ακύρωσης:', err);
+            setCancelError('Δεν ήταν δυνατή η ακύρωση της εκδήλωσης.');
+        } finally {
+            setCancelling(false);
+        }
+    };
 
     return (
         <>
@@ -157,9 +176,24 @@ const MyEventPreviewPage = () => {
                         </Box>
                     </Box>
 
-                    <MyButton onClick={() => setBookingsDialogOpen(true)}>
-                        Πληροφορίες κρατήσεων
-                    </MyButton>
+                    <Box sx={{ display: "flex", gap: "16px" }}>
+                        {event.status === "PUBLISHED" && (
+                        <MyButton
+                            onClick={() => setCancelDialogOpen(true)}
+                            sx={{
+                                background: "#fff",
+                                color: "#d32f2f",
+                                border: "2px solid #d32f2f",
+                                "&:hover": { backgroundColor: "#d32f2f", color: "#fff" },
+                            }}
+                        >
+                            Ακύρωση εκδήλωσης
+                        </MyButton>
+                        )}
+                        <MyButton onClick={() => setBookingsDialogOpen(true)}>
+                            Πληροφορίες κρατήσεων
+                        </MyButton>
+                    </Box>
 
                     <Dialog
                         open={bookingsDialogOpen}
@@ -256,6 +290,70 @@ const MyEventPreviewPage = () => {
                                 Απομένουν: {event.capacity - event.reserved}
                             </Typography>
                         </DialogActions>
+                    </Dialog>
+                    <Dialog
+                        open={cancelDialogOpen}
+                        onClose={() => setCancelDialogOpen(false)}
+                        slotProps={{
+                            paper: {
+                                sx: {
+                                    borderRadius: "15px",
+                                    border: "5px solid #FFF",
+                                    overflow: "hidden",
+                                },
+                            },
+                        }}
+                    >
+                        <DialogContent
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                gap: "16px",
+                                padding: "24px",
+                                background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    width: "434px",
+                                    fontSize: "22px",
+                                    fontWeight: "600",
+                                    color: "black",
+                                    textAlign: "center",
+                                }}
+                            >
+                                Είσαι σίγουρος/η ότι θέλεις να ακυρώσεις την εκδήλωση; Όλοι όσοι έχουν κάνει κράτηση θα ενημερωθούν με μήνυμα. Η ενέργεια δεν αναιρείται.
+                            </Typography>
+                            {cancelError && (
+                                <Typography sx={{ color: "#d32f2f", fontSize: "16px", textAlign: "center" }}>
+                                    {cancelError}
+                                </Typography>
+                            )}
+                            <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                <Button
+                                    onClick={() => setCancelDialogOpen(false)}
+                                    sx={{
+                                        color: "black",
+                                        textDecoration: "underline",
+                                    }}
+                                >
+                                    Πίσω
+                                </Button>
+                                <MyButton 
+                                    onClick={handleCancelEvent} 
+                                    disabled={cancelling}
+                                    sx={{
+                                        background: "#fff",
+                                        color: "#d32f2f",
+                                        border: "2px solid #d32f2f",
+                                        "&:hover": { backgroundColor: "#d32f2f", color: "#fff" },
+                                    }}
+                                >
+                                    {cancelling ? "Ακύρωση..." : "Ακύρωση εκδήλωσης"}
+                                </MyButton>
+                            </Box>
+                        </DialogContent>
                     </Dialog>
                 </Box>
             </Box>

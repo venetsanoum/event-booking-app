@@ -11,6 +11,8 @@ from .models import Message
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import Http404
+from django.utils import timezone
+from django.db.models import Q
 # Create your views here.
 
 # POST /messages/{eventid}
@@ -20,7 +22,7 @@ class SendMessageView(generics.CreateAPIView):
     def perform_create(self, serializer):
         event_id=self.kwargs["pk"]
         event=Event.objects.get(id=event_id)
-        serializer.save(sender=self.request.user, event=event)
+        serializer.save(sender=self.request.user, event=event, sendDateTime=timezone.now())
 # GET /messages/inbox
 class InboxView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
@@ -55,10 +57,11 @@ class MessageDetailsView(generics.RetrieveAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Message.objects.filter(receiver=self.request.user)
+        user=self.request.user
+        return Message.objects.filter(Q(receiver=user) | Q(sender=user))
     def retrieve(self, request, *args, **kwargs):
         instance=self.get_object()
-        if instance.isRead == False:
+        if instance.receiver == request.user and instance.isRead == False:
             instance.isRead=True # read το μηνυμα αφου το ανοιξει
             instance.save()
         serializer=self.get_serializer(instance)

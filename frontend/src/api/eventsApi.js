@@ -66,3 +66,7 @@ export const publishEvent = (eventId) => {
 export const getEventPreview = (id) => {
     return axiosInstance.get(`events/${id}/preview/`);
 };
+
+export const cancelEvent = (id) => {
+    return axiosInstance.post(`events/${id}/cancel/`);
+};

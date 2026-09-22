@@ -61,13 +61,6 @@ const MyMessagesPage = () => {
             <Typography sx={{ color: "black", fontSize: "50px", fontWeight: "600" }}>
                 Μηνύματα
             </Typography>
-
-            <Box sx={{ display: "flex", width: "700px" }}>
-                <MyButton component={Link} to="/my-messages/new">
-                    Νέο μήνυμα
-                </MyButton>
-            </Box>
-
             <Box
                 sx={{
                     display: "flex",
@@ -129,9 +122,9 @@ const MyMessagesPage = () => {
                                 alignItems: "center",
                                 gap: "14px",
                                 padding: "8px 20px",
-                                background: msg.isRead
-                                    ? "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
-                                    : "linear-gradient(180deg, rgba(200, 220, 255, 0.90) 46.15%, rgba(180, 210, 255, 0.90) 100%)",
+                                background: activeTab === 0 && !msg.isRead
+                                    ? "linear-gradient(180deg, rgba(200, 220, 255, 0.90) 46.15%, rgba(180, 210, 255, 0.90) 100%)"
+                                    : "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)",
                             }}
                         >
                             <Checkbox
@@ -139,7 +132,7 @@ const MyMessagesPage = () => {
                                 onChange={() => toggleSelect(msg.id)}
                             />
                             <Link to={`/my-messages/${msg.id}`} style={{ textDecoration: "none", flex: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <Typography sx={{ fontSize: "18px", fontWeight: msg.isRead ? "400" : "700", color: "black", width: "150px" }}>
+                                <Typography sx={{ fontSize: "18px", fontWeight: activeTab === 0 && !msg.isRead ? "700" : "400", color: "black", width: "150px" }}>
                                     {activeTab === 0 ? msg.sender?.username : msg.receiver?.username}
                                 </Typography>
                                 <Typography sx={{ fontSize: "18px", color: "black", flex: 1 }}>
