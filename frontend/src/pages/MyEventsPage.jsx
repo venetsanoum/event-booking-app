@@ -228,9 +228,9 @@ const MyEventsPage = () => {
                                     </Box>
                                     <MyButton
                                         component={Link}
-                                        to={`/my-events/${event.id}`}
+                                        to={event.status === "DRAFT" ? `/my-events/${event.id}/edit` : `/my-events/${event.id}`}
                                     >
-                                        Περισσότερα
+                                        {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
                                     </MyButton>
                                 </Box>
                             </Box>

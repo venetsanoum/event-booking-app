@@ -62,3 +62,7 @@ export const uploadEventImage = (eventId, formData) => {
 export const publishEvent = (eventId) => {
     return axiosInstance.post(`events/${eventId}/publish/`);
 };
+
+export const getEventPreview = (id) => {
+    return axiosInstance.get(`events/${id}/preview/`);
+};
