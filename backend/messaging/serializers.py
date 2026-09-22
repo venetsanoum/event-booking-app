@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Message
 from events.models import Event
+from users.models import CustomUser
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model=Message
@@ -16,8 +17,14 @@ class EventInfoSerializer(serializers.ModelSerializer):
             "city",
             "startDateTime"
         ]
-class MessageInfoSerializer(serializers.ModelSerializer):
-    event=EventInfoSerializer(serializers.ModelSerializer)
+class UserInfoSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Message
-        fields="__all__"
+        model = CustomUser
+        fields = ["id", "username", "first_name", "last_name", "profile_photo"]
+class MessageInfoSerializer(serializers.ModelSerializer):
+    event = EventInfoSerializer(read_only=True)
+    sender = UserInfoSerializer(read_only=True)
+    receiver = UserInfoSerializer(read_only=True)
+    class Meta:
+        model = Message
+        fields = "__all__"

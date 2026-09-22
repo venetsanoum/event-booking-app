@@ -13,12 +13,29 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import { Link } from "react-router-dom";
 import { alignItems, borderRadius, justifyContent } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@mui/material";
+import { getUnreadCount } from "../api/messagingApi";
+import { useEffect } from "react";
 
 const NavBar = () => {
 
   const { user, logout } = useAuth();
   const [profileAnchor, setProfileAnchor] = useState(false);
   const navigate = useNavigate();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchUnread = async () => {
+        try {
+            const response = await getUnreadCount();
+            setUnreadCount(response.data.unread);
+        } catch (err) {
+            console.log('Αποτυχία φόρτωσης unread count:', err);
+        }
+    };
+    fetchUnread();
+  }, [user]);
 
   return (
     <Box
@@ -76,8 +93,10 @@ const NavBar = () => {
         </Button>
         {user && user.role === "ATTENDEE" ? (
           <>
-          <IconButton component={Link} to="/messages">
-            <InboxIcon sx={{ fontSize: "42px", color: "#555" }} />
+          <IconButton component={Link} to="/my-messages">
+              <Badge badgeContent={unreadCount} color="error">
+                  <InboxIcon sx={{ fontSize: "28px", color: "#555" }} />
+              </Badge>
           </IconButton>
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -149,7 +168,7 @@ const NavBar = () => {
             </MenuItem>
             <MenuItem
               component={Link}
-              to="/messages"
+              to="/my-messages"
               onClick={() => setProfileAnchor(null)}
               sx={{
                 fontSize: "18px",
@@ -170,8 +189,10 @@ const NavBar = () => {
           </>
         ) : user && user.role === "ORGANIZER" ? (
           <>
-          <IconButton component={Link} to="/messages">
-            <InboxIcon sx={{ fontSize: "42px", color: "#555" }} />
+          <IconButton component={Link} to="/my-messages">
+              <Badge badgeContent={unreadCount} color="error">
+                  <InboxIcon sx={{ fontSize: "28px", color: "#555" }} />
+              </Badge>
           </IconButton>
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -253,7 +274,7 @@ const NavBar = () => {
             </MenuItem>
             <MenuItem
               component={Link}
-              to="/messages"
+              to="/my-messages"
               onClick={() => setProfileAnchor(null)}
               sx={{
                 fontSize: "18px",
