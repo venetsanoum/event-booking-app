@@ -13,6 +13,7 @@ import EventPreviewPage from "./pages/EventPreviewPage";
 import MyMessagesPage from "./pages/MyMessagesPage";
 import ViewMessagePage from "./pages/ViewMessagePage";
 import SendMessagePage from "./pages/SendMessagePage";
+import MyBookingsPage from "./pages/MyBookingsPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -53,7 +54,8 @@ function App() {
           <Route path="/my-events/:id" element={<EventPreviewPage></EventPreviewPage>} />
           <Route path="/my-messages" element={<MyMessagesPage></MyMessagesPage>}/>
           <Route path="/my-messages/:id" element={<ViewMessagePage></ViewMessagePage>}/>
-          <Route path="my-messages/new" element={<SendMessagePage></SendMessagePage>}/>
+          <Route path="/my-messages/new" element={<SendMessagePage></SendMessagePage>}/>
+          <Route path="/my-bookings" element={<MyBookingsPage></MyBookingsPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
