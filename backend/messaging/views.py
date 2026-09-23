@@ -28,13 +28,13 @@ class InboxView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Message.objects.filter(receiver=self.request.user, isDeletedByReceiver=False)
+        return Message.objects.filter(receiver=self.request.user, isDeletedByReceiver=False).order_by("-sendDateTime")
 # GET /messages/sent
 class SentView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Message.objects.filter(sender=self.request.user, isDeletedBySender=False)
+        return Message.objects.filter(sender=self.request.user, isDeletedBySender=False).order_by("-sendDateTime")
 # GET /messages/unread
 class UnreadView(generics.ListAPIView):
     serializer_class=MessageInfoSerializer
@@ -43,7 +43,7 @@ class UnreadView(generics.ListAPIView):
         return Message.objects.filter(
             receiver=self.request.user,
             isRead=False
-        )
+        ).order_by("-sendDateTime")
 # GET /messages/unread-count
 class UnreadCountView(APIView):
     permission_classes=[IsAuthenticated]

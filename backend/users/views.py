@@ -31,7 +31,7 @@ class RegisterView(generics.CreateAPIView):
         # εδω ειναι το JSON response που θα παρει το frontend
         return Response(
             {
-                "message": "Wait for approval from admin"
+                "message": "Η αίτησή σας καταχωρήθηκε. Περιμένετε έγκριση από τον διαχειριστή."
             },
             status=status.HTTP_201_CREATED # δημιουργία νέου χρήστη
         )

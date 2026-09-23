@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 from .models import Event, Category
-from django.db.models import Q, Case, When, IntegerField, OuterRef, Exists
+from django.db.models import Q, Case, When, IntegerField
 class EventFilter(filters.FilterSet):
     search_bar=filters.CharFilter(method="search_filter")
     category=filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(), distinct=True)

@@ -36,8 +36,8 @@ class CreateBookingView(generics.CreateAPIView):
         for item in items:
             BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
         confirmation_message=Message(
-            subject="Confirmation Message",
-            content="lalalal",
+            subject="Επιβεβαίωση Κράτησης",
+            content="Η κράτησή σας με αριθμό {booking.id} επιβεβαιώθηκε! Ευχαριστούμε πολύ!",
             sender=event.organizer,
             receiver=self.request.user,
             event=event,
@@ -47,7 +47,7 @@ class CreateBookingView(generics.CreateAPIView):
         return Response(
             {
                 "id": booking.id,
-                "message": "First step of booking creation is complete"
+                "message": "Πρώτο βήμα"
             },
             status=status.HTTP_201_CREATED 
         )
@@ -56,22 +56,22 @@ class MyBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Booking.objects.filter(attendee=self.request.user)
+        return Booking.objects.filter(attendee=self.request.user).order_by("-time")
 class MyCompletedBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-            return Booking.objects.filter(attendee=self.request.user, event__status="COMPLETED")
+            return Booking.objects.filter(attendee=self.request.user, event__status="COMPLETED").order_by("time")
 class MyUpcomingBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-            return Booking.objects.filter(attendee=self.request.user, event__status="PUBLISHED")
+            return Booking.objects.filter(attendee=self.request.user, event__status="PUBLISHED").order_by("-time")
 class MyCancelledBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Booking.objects.filter(attendee=self.request.user, event__status="CANCELLED")
+        return Booking.objects.filter(attendee=self.request.user, event__status="CANCELLED").order_by("-time")
 class SingleBookingDetailsView(generics.RetrieveAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
@@ -91,14 +91,16 @@ class CancelBooking(APIView):
         booking=get_object_or_404(Booking, id=booking_id, event=event)
         if booking.status == "CANCELLED":
             return Response(
-                {"details":"Booking already cancelled"},
+                {"details":"Ήδη ακυρωμένη κράτηση"},
                  status=status.HTTP_400_BAD_REQUEST
             )
         booking.status="CANCELLED"
         booking.save()
         cancellation_message=Message(
-            subject="Cancellation Message",
-            content="lalalal",
+            subject="Ακύρωση Εκδήλωσης",
+            content="Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για" \
+            "{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
+            "επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
             sender=event.organizer,
             receiver=booking.attendee,
             event=event,

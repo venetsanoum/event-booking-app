@@ -110,25 +110,25 @@ class MyEventsView(generics.ListAPIView):
     serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
-        return Event.objects.filter(organizer=self.request.user, status="PUBLISHED")
+        return Event.objects.filter(organizer=self.request.user, status="PUBLISHED").order_by("startDateTime")
 # GET events/my-cancelled-events
 class MyCancelledEventsView(generics.ListAPIView):
     serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
-        return Event.objects.filter(organizer=self.request.user, status="CANCELLED")
+        return Event.objects.filter(organizer=self.request.user, status="CANCELLED").order_by("startDateTime")
 # GET events/my-completed-events
 class MyCompletedEventsView(generics.ListAPIView):
     serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
-        return Event.objects.filter(organizer=self.request.user, status="COMPLETED")
+        return Event.objects.filter(organizer=self.request.user, status="COMPLETED").order_by("startDateTime")
 # GET events/my-drafted-events
 class MyDraftEventsView(generics.ListAPIView):
     serializer_class=EventDetailsSerializer
     permission_classes=[IsAuthenticated, isOrganizer]
     def get_queryset(self):
-        return Event.objects.filter(organizer=self.request.user, status="DRAFT")
+        return Event.objects.filter(organizer=self.request.user, status="DRAFT").order_by("startDateTime")
 # PUT/PATCH/DELETE events/{id}/edit
 class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=EditEventSerializer
@@ -157,8 +157,10 @@ class CancelEventView(generics.UpdateAPIView):
             booking.status="CANCELLED"
             booking.save()
             cancellation_message=Message(
-                subject="Event Cancellation",
-                content="lalalal....",
+                subject="Ακύρωση Εκδήλωσης",
+                content="Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για" \
+                "{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
+                "επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
                 sender=event.organizer,
                 receiver=user,
                 event=event,
