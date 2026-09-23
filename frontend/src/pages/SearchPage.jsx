@@ -4,8 +4,10 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useState, useEffect } from "react";
 import SearchCard from "../components/SearchCard";
 import { getCategories, getCities } from "../api/eventsApi";
+import { useLocation } from "react-router-dom";
 
 const SearchPage = () => {
+    const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [events, setEvents] = useState([]);
@@ -38,8 +40,17 @@ const SearchPage = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const responseCategories = await getCategories();
-                setCategories(responseCategories.data.results);
+                const response = await getCategories();
+                const cats = response.data.results || response.data;
+                setCategories(cats);
+
+                const categoryName = location.state?.categoryName;
+                if (categoryName) {
+                    const match = cats.find((c) => c.name === categoryName);
+                    if (match) {
+                        setFilters((prev) => ({ ...prev, category: [match.id] }));
+                    }
+                }
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης κατηγοριών:', err);
             }

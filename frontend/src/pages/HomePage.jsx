@@ -215,6 +215,9 @@ const HomePage = () => {
                 }}
             >
                 <Box
+                    component={Link}
+                    to="/search"
+                    state={{ categoryName: "Σινεμά" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -231,7 +234,7 @@ const HomePage = () => {
                         background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 31, 31, 0.65) 33.65%, rgba(118, 18, 18, 0.65) 100%)",
                         boxShadow: "0 6px 5px 0 rgba(0, 0, 0, 0.20), 4px 4px 100px 1px rgba(238, 0, 0, 0.15) inset",
                         "&:hover": { background: "radial-gradient(50% 50% at 50% 50%, #FF1F1F 33.65%, #761212 100%)" },
-                        
+                        textDecoration: "none",
                     }}
                 >
                     <svg 
@@ -260,6 +263,9 @@ const HomePage = () => {
                     </Typography>
                 </Box>
                 <Box
+                    component={Link}
+                    to="/search"
+                    state={{ categoryName: "Μουσική" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -276,6 +282,7 @@ const HomePage = () => {
                         background: "radial-gradient(50% 50% at 50% 50%, rgba(220, 255, 23, 0.65) 33.65%, rgba(204, 140, 23, 0.65) 100%)",
                         boxShadow: "0 6px 5px 0 rgba(0, 0, 0, 0.20), 4px 4px 100px 1px rgba(238, 238, 0, 0.15) inset",
                         "&:hover": { background: "radial-gradient(50% 50% at 50% 50%, #DCFF14 33.65%, #CCBC17 100%)" },
+                        textDecoration: "none",
                     }}
                 >
                     <svg 
@@ -304,6 +311,9 @@ const HomePage = () => {
                     </Typography>
                 </Box>
                 <Box
+                    component={Link}
+                    to="/search"
+                    state={{ categoryName: "Θέατρο" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -320,6 +330,7 @@ const HomePage = () => {
                         background: "radial-gradient(50% 50% at 50% 50%, rgba(23, 255, 58, 0.65) 33.65%, rgba(18, 118, 106, 0.65) 100%)",
                         boxShadow: "0 6px 5px 0 rgba(0, 0, 0, 0.20), 4px 4px 100px 1px rgba(0, 238, 135, 0.15) inset",
                         "&:hover": { background: "radial-gradient(50% 50% at 50% 50%, #17FF3A 33.65%, #12766A 100%)" },
+                        textDecoration: "none",
                     }}
                 >
                     <svg 
@@ -350,6 +361,9 @@ const HomePage = () => {
                     </Typography>
                 </Box>
                 <Box
+                    component={Link}
+                    to="/search"
+                    state={{ categoryName: "Αθλητικά" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -366,6 +380,7 @@ const HomePage = () => {
                         background: "radial-gradient(50% 50% at 50% 50%, rgba(168, 54, 255, 0.65) 33.65%, rgba(39, 18, 118, 0.65) 100%)",
                         boxShadow: "0 6px 5px 0 rgba(0, 0, 0, 0.20), 4px 4px 100px 1px rgba(151, 0, 238, 0.15) inset",
                         "&:hover": { background: "radial-gradient(50% 50% at 50% 50%, #A836FF 33.65%, #271276 100%)" },
+                        textDecoration: "none",
                     }}
                 >
                     <svg 

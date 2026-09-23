@@ -8,7 +8,10 @@ export const searchEvents = (filters = {}) => {
             cleanedFilters[key] = value;
         }
     });
-    return axiosInstance.get('events/search/', { params: cleanedFilters });
+    return axiosInstance.get('events/search/', {
+        params: cleanedFilters,
+        paramsSerializer: { indexes: null },
+    });
 };
 
 export const getCategories = () => {

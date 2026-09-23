@@ -278,7 +278,7 @@ const AccountPage = () => {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "55px",
+                        gap: "116px",
                         alignSelf: "stretch",
                         background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
                     }}
@@ -317,7 +317,7 @@ const AccountPage = () => {
                     sx={{
                         display: "flex",
                         alignItems: "center",
-                        gap: "55px",
+                        gap: "110px",
                         alignSelf: "stretch",
                         background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
                     }}

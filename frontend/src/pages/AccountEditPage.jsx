@@ -97,8 +97,8 @@ const AccountEditPage = () => {
                 ...formData,
                 afm: value
             });
-            if (value.length !== 10 && value.length > 0) {
-                setAfmError("Το ΑΦΜ πρέπει να έχει ακριβώς 10 ψηφία");
+            if (value.length !== 9 && value.length > 0) {
+                setAfmError("Το ΑΦΜ πρέπει να έχει ακριβώς 9 ψηφία");
             } else {
                 setAfmError("");
             }

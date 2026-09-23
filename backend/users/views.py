@@ -60,7 +60,7 @@ class EditMyProfileView(generics.UpdateAPIView):
     serializer_class=EditMyProfileSerializer
     permission_classes=[IsAuthenticated]
     def get_object(self):
-        return self.user
+        return self.request.user
 # GET /users/admin/users/
 class UsersListView(generics.ListAPIView):
     serializer_class = UsersListSerializer
