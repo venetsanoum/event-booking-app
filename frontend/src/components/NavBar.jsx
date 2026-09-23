@@ -79,18 +79,20 @@ const NavBar = () => {
           gap: "10px",
         }}
       >
-        <Button 
-          component={Link}
-          to="/search"
-          sx={{ 
-            color: "#555", 
-            textTransform: "none",
-            fontSize: "22px",
-            "&:hover": { color: "black" },
-          }}
-        >
-          Αναζήτηση
-        </Button>
+        {(!user || user.role !== "ADMIN") && (
+            <Button
+                component={Link}
+                to="/search"
+                sx={{
+                    color: "#555",
+                    textTransform: "none",
+                    fontSize: "22px",
+                    "&:hover": { color: "black" },
+                }}
+            >
+                Αναζήτηση
+            </Button>
+        )}
         {user && user.role === "ATTENDEE" ? (
           <>
           <IconButton component={Link} to="/my-messages">
@@ -293,9 +295,74 @@ const NavBar = () => {
             </MenuItem>
           </Menu>
           </>
-        ) : user && user.role === "ADMIN" ? (
-          <></>
-        ) : ( // no login
+          ) : user && user.role === "ADMIN" ? (
+              <>
+                  <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                          {user.profileData?.photo ? (
+                              <Box
+                                  component="img"
+                                  src={user.profileData.photo}
+                                  alt="profile"
+                                  sx={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
+                              />
+                          ) : (
+                              <AccountCircleIcon sx={{ fontSize: "44px" }} />
+                          )}
+                          <KeyboardArrowDownIcon sx={{ transition: "0.2s" }} />
+                      </Box>
+                  </IconButton>
+
+                  <Menu
+                      anchorEl={profileAnchor}
+                      open={Boolean(profileAnchor)}
+                      onClose={() => setProfileAnchor(null)}
+                      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                      slotProps={{
+                          paper: {
+                              sx: {
+                                  display: "inline-flex",
+                                  padding: "10px",
+                                  flexDirection: "column",
+                                  alignItems: "flex-start",
+                                  gap: "5px",
+                                  borderRadius: "15px",
+                                  border: "2px solid #fff",
+                                  background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                              },
+                          },
+                      }}
+                  >
+                      <MenuItem
+                          component={Link}
+                          to="/admin/users"
+                          onClick={() => setProfileAnchor(null)}
+                          sx={{ fontSize: "18px" }}
+                      >
+                          Λίστα χρηστών
+                      </MenuItem>
+                      <MenuItem
+                          component={Link}
+                          to="/admin/requests"
+                          onClick={() => setProfileAnchor(null)}
+                          sx={{ fontSize: "18px" }}
+                      >
+                          Αιτήματα
+                      </MenuItem>
+                      <MenuItem
+                          onClick={() => {
+                              logout();
+                              setProfileAnchor(null);
+                              navigate('/');
+                          }}
+                          sx={{ fontSize: "18px" }}
+                      >
+                          Αποσύνδεση
+                      </MenuItem>
+                  </Menu>
+              </>
+          ) : ( // no login
           <Box
             sx={{
               display: "flex",
