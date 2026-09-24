@@ -70,10 +70,15 @@ const MyBookingsPage = () => {
                     value={activeTab}
                     onChange={(e, newValue) => setActiveTab(newValue)}
                     sx={{
-                        alignSelf: "flex-start",
-                        background: "#FFF",
-                        borderRadius: "10px",
-                        "& .MuiTab-root": { fontSize: "18px", textTransform: "none" },
+                        display: "flex",
+                        width: "520px",
+                        padding: "10px",
+                        alignItems: "center",
+                        gap: "5px",
+                        borderRadius: "15px",
+                        border: "2px solid  #FFF",
+                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                        "& .MuiTab-root": { fontSize: "24px", textTransform: "none" },
                     }}
                 >
                     {tabConfig.map((tab) => (

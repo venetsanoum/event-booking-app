@@ -88,105 +88,89 @@ const AccountPage = () => {
                 }}
             >
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "101px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
-                                Όνομα
+                        Όνομα
                     </Typography>
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                         {userData.first_name}
                     </Typography>
                 </Box>
-
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "71px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Επώνυμο
                     </Typography>
                     <Typography 
-                        sx={{ 
-                            display: "flex",
-                            padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
-                            color: "black",
-                            fontSize: "26px",
-                            fontWeight: "400",
-                        }}
+                    sx={{
+                        padding: "5px 10px",
+                        color: "black",
+                        fontSize: "26px",
+                        fontWeight: "400",
+                        textAlign: "left",
+                    }}
                     >
                         {userData.last_name}
                     </Typography>
                 </Box>
 
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "108px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 E-mail
@@ -207,25 +191,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "55px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Τηλέφωνο
@@ -246,25 +227,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>       
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "55px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Διεύθυνση
@@ -285,25 +263,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>     
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "116px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Πόλη
@@ -324,25 +299,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>     
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "110px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Χώρα
@@ -363,25 +335,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>              
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "125px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 ΑΦΜ
@@ -402,25 +371,22 @@ const AccountPage = () => {
                     </Typography>
                 </Box>                
                 <Box 
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "60px",
-                        alignSelf: "stretch",
-                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)"
+                    sx={{ 
+                        display: "flex", 
+                        alignItems: "center", 
+                        alignSelf: "stretch", 
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)" 
                     }}
-                
                 >
-                    <Typography 
-                        sx={{ 
-                            display: "flex",
+                    <Typography
+                        sx={{
+                            width: "220px",
+                            flexShrink: 0,
                             padding: "5px 10px",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "10px",
                             color: "black",
                             fontSize: "26px",
                             fontWeight: "400",
+                            textAlign: "left",
                         }}
                     >
                                 Username

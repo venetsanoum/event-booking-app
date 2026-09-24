@@ -129,15 +129,15 @@ const SendMessagePage = () => {
                     >
                         Από:
                     </Typography>
-                    <TextField
-                        value={user?.username || ''}
-                        size="small"
-                        slotProps={{ htmlInput: { readOnly: true } }}
+                    <Typography
                         sx={{
-                            flex: 1,
-                            background: "#fff",
+                            fontSize: "22px",
+                            color: "black",
+                            textAlign: "left",
                         }}
-                    />
+                    >
+                        {user?.username}
+                    </Typography>
                 </Box>
 
                 <Box
@@ -162,15 +162,15 @@ const SendMessagePage = () => {
                     >
                         Προς:
                     </Typography>
-                    <TextField
-                        value={receiverName || ''}
-                        size="small"
-                        slotProps={{ htmlInput: { readOnly: true } }}
+                    <Typography
                         sx={{
-                            flex: 1,
-                            background: "#fff",
+                            fontSize: "22px",
+                            color: "black",
+                            textAlign: "left",
                         }}
-                    />
+                    >
+                        {receiverName}
+                    </Typography>
                 </Box>
 
                 <Box
