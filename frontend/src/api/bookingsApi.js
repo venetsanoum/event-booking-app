@@ -15,3 +15,7 @@ export const getMyCompletedBookings = () => {
 export const getMyCancelledBookings = () => {
     return axiosInstance.get('booking/my-cancelled-bookings/');
 }
+
+export const getEventBookings = (eventId) => {
+    return axiosInstance.get(`booking/event/${eventId}/`);
+};

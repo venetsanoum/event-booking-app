@@ -236,12 +236,19 @@ const MyEventsPage = () => {
                                             </Typography>
                                         </Box>
                                     </Box>
-                                    <MyButton
-                                        component={Link}
-                                        to={event.status === "DRAFT" ? `/my-events/${event.id}/edit` : `/my-events/${event.id}`}
-                                    >
-                                        {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
-                                    </MyButton>
+                                    <Box sx={{ display: "flex", gap: "16px" }}>
+                                        <MyButton
+                                            component={Link}
+                                            to={event.status === "DRAFT" ? `/my-events/${event.id}/edit` : `/my-events/${event.id}`}
+                                        >
+                                            {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
+                                        </MyButton>
+                                        {event.status !== "DRAFT" && (
+                                            <MyButton component={Link} to={`/my-events/${event.id}/bookings`}>
+                                                Κρατήσεις
+                                            </MyButton>
+                                        )}
+                                    </Box>
                                 </Box>
                             </Box>
                         ))

@@ -17,6 +17,7 @@ import MyBookingsPage from "./pages/MyBookingsPage";
 import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminRequestsPage from "./pages/AdminRequestPage";
 import AdminUserDetailsPage from "./pages/AdminUserDetailsPage";
+import EventBookingsPage from "./pages/EventBookingsPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -62,6 +63,7 @@ function App() {
           <Route path="/admin/users" element={<AdminUsersPage></AdminUsersPage>}/>
           <Route path="/admin/requests" element={<AdminRequestsPage></AdminRequestsPage>}/>
           <Route path="/admin/users/:id" element={<AdminUserDetailsPage></AdminUserDetailsPage>}/>
+          <Route path="/my-events/:id/bookings" element={<EventBookingsPage></EventBookingsPage>}/>
         </Routes>
       </MainBox>
       <Footer/>
