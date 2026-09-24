@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MyButton from "../components/MyButton";
 import { getUserInfo, setUserApproval } from "../api/adminApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const AdminUserDetailsPage = () => {
     const { id } = useParams();
@@ -68,6 +69,16 @@ const AdminUserDetailsPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Λίστα χρηστών", to: "/admin/users" },
+                    { label: `${user.first_name} ${user.last_name}` },
+                ]}
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography
                 sx={{
                     color: "black",

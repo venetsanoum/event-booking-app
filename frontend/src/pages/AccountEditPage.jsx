@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const AccountEditPage = () => {
 
@@ -184,6 +185,16 @@ const AccountEditPage = () => {
 
     return (
         <>
+        <Breadcrumbs 
+            items={[
+                { label: "Ο λογαριασμός μου", to: "/account" },
+                { label: "Επεξεργασία"}
+            ]} 
+            sx={{
+                marginLeft: "-30px",
+                marginTop: "-110px",
+            }}
+        />
             <Typography
                 sx={{
                     color: "black",

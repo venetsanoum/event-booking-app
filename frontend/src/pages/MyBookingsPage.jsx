@@ -6,6 +6,7 @@ import {
     getMyCompletedBookings,
     getMyCancelledBookings,
 } from "../api/bookingsApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyUpcomingBookings },
@@ -38,6 +39,15 @@ const MyBookingsPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Οι κρατήσεις μου" }
+                ]} 
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography
                 sx={{
                     color: "black",

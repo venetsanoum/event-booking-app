@@ -4,6 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { getInbox, getSent, deleteFromInbox, deleteFromSent } from "../api/messagingApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const tabConfig = [
     { label: "Εισερχόμενα", fetchFn: getInbox, deleteFn: deleteFromInbox, personLabel: "Αποστολέας" },
@@ -58,6 +59,15 @@ const MyMessagesPage = () => {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", padding: "40px" }}>
+            <Breadcrumbs 
+                items={[
+                    { label: "Τα μηνύματα μου" }
+                ]} 
+                sx={{
+                    marginLeft: "-190px",
+                    marginTop: "-150px",
+                }}
+            />
             <Typography sx={{ color: "black", fontSize: "50px", fontWeight: "600" }}>
                 Μηνύματα
             </Typography>

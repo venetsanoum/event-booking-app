@@ -4,6 +4,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 import { getPendingUsers, setUserApproval } from "../api/adminApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const roleLabels = {
     ORGANIZER: "Διοργανωτής",
@@ -42,6 +43,15 @@ const AdminRequestsPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Αιτήματα" }
+                ]} 
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography
                 sx={{
                     color: "black",

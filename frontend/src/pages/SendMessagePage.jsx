@@ -4,6 +4,7 @@ import { Box, Typography, TextField } from "@mui/material";
 import MyButton from "../components/MyButton";
 import { sendMessage } from "../api/messagingApi";
 import { useAuth } from "../context/AuthContext";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const SendMessagePage = () => {
     const location = useLocation();
@@ -60,6 +61,16 @@ const SendMessagePage = () => {
 
     return (
         <>
+        <Breadcrumbs
+            items={[
+                { label: "Μηνύματα", to: "/my-messages" },
+                { label: "Σύνθεση μηνύματος" },
+            ]}
+            sx={{
+                marginLeft: "-30px",
+                marginTop: "-110px",
+            }}
+        />
             <Typography
                 sx={{
                     color: "black",

@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import SearchCard from "../components/SearchCard";
 import { getCategories, getCities } from "../api/eventsApi";
 import { useLocation } from "react-router-dom";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const SearchPage = () => {
     const location = useLocation();
@@ -139,6 +140,13 @@ const SearchPage = () => {
                 padding: "40px",
             }}
         >
+            <Breadcrumbs 
+                items={[{ label: "Αναζήτηση" }]} 
+                sx={{
+                    marginLeft: "-90px",
+                    marginTop: "-150px",
+                }}
+            />
             <Typography sx={{ color: "black", fontSize: "50px", fontWeight: "600" }}>
                 Αναζήτηση Εκδηλώσεων
             </Typography>

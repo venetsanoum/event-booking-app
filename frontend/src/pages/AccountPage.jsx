@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { useState, useEffect } from 'react';
 import { getMe } from '../api/authApi';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const AccountPage = () => {
 
@@ -45,6 +46,15 @@ const AccountPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Ο λογαριασμός μου" }
+                ]} 
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography
                 sx={{
                     color: "black",

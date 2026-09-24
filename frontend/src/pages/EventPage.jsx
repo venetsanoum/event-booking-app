@@ -7,6 +7,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 delete L.Icon.Default.prototype._get;
 L.Icon.Default.mergeOptions({
@@ -83,6 +84,16 @@ const EventPage = () => {
 
     return (
     <>
+    <Breadcrumbs
+        items={[
+            { label: "Αναζήτηση", to: "/search" },
+            { label: event.title },
+        ]}
+        sx={{
+            marginLeft: "-30px",
+            marginTop: "-120px",
+        }}
+    />
     <Typography
         sx={{
             color: "black",

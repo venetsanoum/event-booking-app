@@ -5,6 +5,7 @@ import MyButton from "../components/MyButton";
 import { getMe } from "../api/authApi";
 import { formatEventDateRange } from "../utils/dateUtils";
 import { createBooking } from "../api/bookingsApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const BookingPage = () => {
     const [userData, setUserData] = useState(null);
@@ -88,6 +89,18 @@ const BookingPage = () => {
 
     return (
         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "30px", padding: "40px" }}>
+        
+            <Breadcrumbs 
+                items={[
+                    { label: "Αναζήτηση", to: "/search" },
+                    { label: event.title, to: `/events/${event.id}` },
+                    { label: "Κράτηση" },
+                ]}
+                sx={{
+                    marginLeft: "-120px",
+                    marginTop: "-150px",
+                }}
+            />
             <Typography sx={{ color: "black", fontSize: "65px", fontWeight: "600" }}>
                 Επιβεβαίωση Κράτησης
             </Typography>

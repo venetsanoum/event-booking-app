@@ -7,6 +7,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { formatEventDateRange } from "../utils/dateUtils";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 delete L.Icon.Default.prototype._get;
 L.Icon.Default.mergeOptions({
@@ -80,6 +81,16 @@ const MyEventPreviewPage = () => {
 
     return (
         <>
+            <Breadcrumbs
+                items={[
+                    { label: "Οι εκδηλώσεις μου", to: "/my-events" },
+                    { label: event.title },
+                ]}
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-120px",
+                }}
+            />
             <Typography sx={{ color: "black", fontSize: "65px", fontWeight: "600" }}>
                 {event.title}
             </Typography>

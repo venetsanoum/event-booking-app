@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import MyButton from "../components/MyButton";
 import { createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadEventImage, getCategories, publishEvent } from "../api/eventsApi";
 import { Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from "@mui/material";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const EditEventPage = () => {
     const { id } = useParams();
@@ -189,6 +190,16 @@ const EditEventPage = () => {
 
 return (
     <>
+        <Breadcrumbs 
+            items={[
+                { label: "Οι εκδηλώσεις μου", to: "/my-events" },
+                { label: isEditMode ? event?.title || "Επεξεργασία" : "Νέα εκδήλωση" },
+            ]}
+            sx={{
+                marginLeft: "-30px",
+                marginTop: "-110px",
+            }}
+        />   
         <Typography sx={{ color: "black", fontSize: "65px", fontWeight: "600" }}>
             Επεξεργασία εκδήλωσης
         </Typography>

@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import MyButton from "../components/MyButton";
 import { getMessageDetails } from "../api/messagingApi";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import Breadcrumbs from "../components/Breadcrumbs";
+import { MarginOutlined } from "@mui/icons-material";
 
 const ViewMessagePage = () => {
     const { id } = useParams();
@@ -56,108 +58,120 @@ const ViewMessagePage = () => {
     };
 
     return (
-        <Box
-            sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: "10px",
-                width: "905px",
-                padding: "20px",
-                borderRadius: "15px",
-                // border: "5px solid #FFF",
-                background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
-            }}
-        >
+        <>
+            <Breadcrumbs
+                items={[
+                    { label: "Μηνύματα", to: "/my-messages" },
+                    { label: message.subject },
+                ]}
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Box
                 sx={{
                     display: "flex",
-                    justifyContent:"left",
-                    alignItems: "center",
-                    alignSelf: "stretch",
-                    background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)",
+                    flexDirection: "column",
+                    gap: "10px",
+                    width: "905px",
+                    padding: "20px",
+                    borderRadius: "15px",
+                    // border: "5px solid #FFF",
+                    background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
                 }}
             >
-                <Typography 
-                    sx={{ 
-                        fontSize: "36px", 
-                        fontWeight: "500", 
-                        color: "black" 
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent:"left",
+                        alignItems: "center",
+                        alignSelf: "stretch",
+                        background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)",
                     }}
                 >
-                    {message.subject}
-                </Typography>
-            </Box>
-            <Box 
-                sx={{ 
-                    display: "flex", 
-                    justifyContent: "space-between", 
-                    alignItems: "center", 
-                    alignSelf: "stretch",
-                }}
-            >
+                    <Typography 
+                        sx={{ 
+                            fontSize: "36px", 
+                            fontWeight: "500", 
+                            color: "black" 
+                        }}
+                    >
+                        {message.subject}
+                    </Typography>
+                </Box>
                 <Box 
                     sx={{ 
                         display: "flex", 
+                        justifyContent: "space-between", 
                         alignItems: "center", 
-                        gap: "23px" 
+                        alignSelf: "stretch",
                     }}
                 >
-                    {message.sender.profile_photo ? (
-                        <Avatar 
-                            src={message.sender.profile_photo}
-                            sx={{
-                                width: "60px",
-                                height: "60px",
-                            }} 
-                        />
-                    ) : (
-                        <Avatar 
-                            sx={{ 
-                                bgcolor: "#ccc",
-                                width: "60px",
-                                height: "60px",
-                            }}
-                        >
-                            <AccountCircleIcon sx={{ width: "60px", height: "60px" }}/>
-                        </Avatar>
-                    )}
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "flex-start",
-                            gap: "3px",
+                    <Box 
+                        sx={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: "23px" 
                         }}
                     >
-                        <Typography 
-                            sx={{ 
-                                fontSize: "20px", 
-                                fontStyle: "italic", 
-                                color: "black"
+                        {message.sender.profile_photo ? (
+                            <Avatar 
+                                src={message.sender.profile_photo}
+                                sx={{
+                                    width: "60px",
+                                    height: "60px",
+                                }} 
+                            />
+                        ) : (
+                            <Avatar 
+                                sx={{ 
+                                    bgcolor: "#ccc",
+                                    width: "60px",
+                                    height: "60px",
+                                }}
+                            >
+                                <AccountCircleIcon sx={{ width: "60px", height: "60px" }}/>
+                            </Avatar>
+                        )}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "flex-start",
+                                gap: "3px",
                             }}
                         >
-                            {message.sender.username}
+                            <Typography 
+                                sx={{ 
+                                    fontSize: "20px", 
+                                    fontStyle: "italic", 
+                                    color: "black"
+                                }}
+                            >
+                                {message.sender.username}
+                            </Typography>
+                            <Typography sx={{ fontSize: "16px", color: "#777" }}>
+                                προς {message.receiver.username}
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                        <Typography sx={{ fontSize: "14px", fontStyle: "italic", color: "#555" }}>
+                            {new Date(message.sendDateTime).toLocaleString('el-GR')}
                         </Typography>
-                        <Typography sx={{ fontSize: "16px", color: "#777" }}>
-                            προς {message.receiver.username}
-                        </Typography>
+                        <MyButton onClick={handleReply}>
+                            Απάντηση
+                        </MyButton>
                     </Box>
                 </Box>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                    <Typography sx={{ fontSize: "14px", fontStyle: "italic", color: "#555" }}>
-                        {new Date(message.sendDateTime).toLocaleString('el-GR')}
-                    </Typography>
-                    <MyButton onClick={handleReply}>
-                        Απάντηση
-                    </MyButton>
-                </Box>
+                <Typography sx={{ fontSize: "18px", color: "black", whiteSpace: "pre-wrap" }}>
+                    {message.content}
+                </Typography>
             </Box>
-
-            <Typography sx={{ fontSize: "18px", color: "black", whiteSpace: "pre-wrap" }}>
-                {message.content}
-            </Typography>
-        </Box>
+        </>
     );
 };
 

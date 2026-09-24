@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { formatEventDateRange } from "../utils/dateUtils";
 import { getMyEvents, getMyCompletedEvents, getMyCancelledEvents, getMyDraftedEvents } from "../api/eventsApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyEvents },
@@ -39,6 +40,15 @@ const MyEventsPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Οι εκδηλώσεις μου" }
+                ]} 
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography 
                 sx={{ 
                     color: "black", 

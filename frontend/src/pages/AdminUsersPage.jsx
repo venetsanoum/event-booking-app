@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Box, Typography, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getAllUsers } from "../api/adminApi";
+import Breadcrumbs from "../components/Breadcrumbs";
 
 const roleLabels = {
     ADMIN: "Διαχειριστής",
@@ -31,6 +32,15 @@ const AdminUsersPage = () => {
 
     return (
         <>
+            <Breadcrumbs 
+                items={[
+                    { label: "Λίστα χρηστών" }
+                ]} 
+                sx={{
+                    marginLeft: "-30px",
+                    marginTop: "-110px",
+                }}
+            />
             <Typography
                 sx={{
                     color: "black",
