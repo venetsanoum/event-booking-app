@@ -61,9 +61,9 @@ class CreateBookingSerializer(serializers.ModelSerializer):
         event=self.context["event"]
         for item in args["items"]:
             if(item["number"] > item["ticket_type"].available):
-                raise serializers.ValidationError("Too many tickets of this type")
+                raise serializers.ValidationError("Ξεπεράσατε τον αριθμό των διαθέσιμων εισιτηρίων.")
             if(item["number"] <= 0):
-                raise serializers.ValidationError("Number of tickets must be positive")
+                raise serializers.ValidationError("Ο αριθμός πρέπει να είναι θετικός.")
             if item["ticket_type"].event != event:
                 raise serializers.ValidationError("This type of ticket does not belong to this event")
         return args
