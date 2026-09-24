@@ -160,8 +160,14 @@ const AccountEditPage = () => {
             }, 3000);
         }
         catch (err) {
-            console.log('Signup απέτυχε:', err);
-            setError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            console.log('Αποτυχία ενημέρωσης:', err);
+            if (err.response && err.response.data) {
+                const data = err.response.data;
+                const message = data.detail || Object.values(data)[0];
+                setError(Array.isArray(message) ? message[0] : message);
+            } else {
+                setError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            }
         } finally {
             setLoading(false);
         }
@@ -187,7 +193,7 @@ const AccountEditPage = () => {
         <>
         <Breadcrumbs 
             items={[
-                { label: "Ο λογαριασμός μου", to: "/account" },
+                { label: "Το προφίλ μου", to: "/account" },
                 { label: "Επεξεργασία"}
             ]} 
             sx={{

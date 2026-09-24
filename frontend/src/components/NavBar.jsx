@@ -16,6 +16,7 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@mui/material";
 import { getUnreadCount } from "../api/messagingApi";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const NavBar = () => {
 
@@ -23,19 +24,23 @@ const NavBar = () => {
   const [profileAnchor, setProfileAnchor] = useState(false);
   const navigate = useNavigate();
   const [unreadCount, setUnreadCount] = useState(0);
+  const location = useLocation();
 
   useEffect(() => {
-    if (!user) return;
-    const fetchUnread = async () => {
-        try {
-            const response = await getUnreadCount();
-            setUnreadCount(response.data.unread);
-        } catch (err) {
-            console.log('Αποτυχία φόρτωσης unread count:', err);
-        }
-    };
-    fetchUnread();
-  }, [user]);
+      if (!user) {
+          setUnreadCount(0);
+          return;
+      }
+      const fetchUnread = async () => {
+          try {
+              const response = await getUnreadCount();
+              setUnreadCount(response.data.unread);
+          } catch (err) {
+              console.log('Αποτυχία φόρτωσης unread count:', err);
+          }
+      };
+      fetchUnread();
+  }, [user, location.pathname]);
 
   return (
     <Box

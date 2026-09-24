@@ -48,7 +48,7 @@ const AccountPage = () => {
         <>
             <Breadcrumbs 
                 items={[
-                    { label: "Ο λογαριασμός μου" }
+                    { label: "Το προφίλ μου" }
                 ]} 
                 sx={{
                     marginLeft: "-30px",

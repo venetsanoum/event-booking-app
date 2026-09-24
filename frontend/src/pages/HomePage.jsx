@@ -476,7 +476,8 @@ const HomePage = () => {
                 </Box>
                 <MyButton
                     component={Link}
-                    to={`/signup`}
+                    to="signup"
+                    state={{ isOrganizer: true }}
                 >
                     Γίνε διοργανωτής
                 </MyButton>

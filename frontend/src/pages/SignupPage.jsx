@@ -4,12 +4,13 @@ import MyButton from '../components/MyButton';
 import { Visibility, VisibilityOff, InfoOutlined } from "@mui/icons-material";
 import { signupUser } from '../api/authApi';
 import { useNavigate } from 'react-router-dom';
-
+import { useLocation } from 'react-router-dom';
 
 const SignupPage = () => {
 
     const navigate = useNavigate();
     const [showSuccess, setShowSuccess] = useState(false);
+    const location = useLocation();
 
     const [formData, setFormData] = useState({
         first_name: '',
@@ -18,7 +19,7 @@ const SignupPage = () => {
         phone: '',
         address: '',
         afm: '',
-        role: 'ATTENDEE',
+        role: location.state?.isOrganizer ? 'ORGANIZER' : 'ATTENDEE',
         city: '',
         country: '',
         username: '',
