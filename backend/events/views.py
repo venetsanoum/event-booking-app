@@ -29,7 +29,7 @@ class CreateEventView(generics.CreateAPIView):
         event=serializer.save(organizer=request.user, status="DRAFT") # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
         return Response(
             {
-                "message": "First step of event creation is complete",
+                "message": "Πρώτο βήμα ολοκληρώθηκε.",
                 "event_id":event.id,
             },
             status=status.HTTP_201_CREATED 
@@ -45,7 +45,7 @@ class CreateDraftEventView(generics.CreateAPIView):
         event=serializer.save(organizer=request.user, status="DRAFT") # θέλουμε ο συνδεδεμένος χρήστης να μπει στο πεδίο organizer του νέου event
         return Response(
             {
-                "message": "Event is saved as draft",
+                "message": "Το προσχέδιο της εκδήλωσης αποθηκεύτηκε.",
                 "event_id":event.id
             },
             status=status.HTTP_201_CREATED 
@@ -61,7 +61,7 @@ class EventImageView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(event=event)
         return Response({
-            "message": "Image uploaded"
+            "message": "Η εικόνα ανέβηκε επιτυχώς."
         },
         status=status.HTTP_201_CREATED
         )
@@ -76,32 +76,32 @@ class PublishEventView(generics.CreateAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         if not event.title:
-            raise serializers.ValidationError("Title is required")
+            raise serializers.ValidationError("Ο τίτλος είναι υποχρεωτικός.")
         if not event.venue:
-            raise serializers.ValidationError("Venue is required")
+            raise serializers.ValidationError("Η τοποθεσία είναι υποχρεωτική.")
         if not event.address:
-            raise serializers.ValidationError("Address is required")
+            raise serializers.ValidationError("Η διεύθυνση είναι υποχρεωτική.")
         if not event.city:
-            raise serializers.ValidationError("City is required")
+            raise serializers.ValidationError("Η πόλη είναι υποχρεωτική.")
         if not event.country:
-            raise serializers.ValidationError("Country is required")
+            raise serializers.ValidationError("Η χώρα είναι υποχρεωτική.")
         if not event.description:
-            raise serializers.ValidationError("Description is required")
+            raise serializers.ValidationError("Η περιγραφή είναι υποχρεωτική.")
         if event.startDateTime >= event.endDateTime:
-            raise serializers.ValidationError("Start DateTime must be before end DateTime")
+            raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         if(event.capacity <= 0):
-            raise serializers.ValidationError("Capacity must be a positive integer")
+            raise serializers.ValidationError("Η χωρητικότητα πρέπει να είναι θετικός αριθμός.")
         if(event.startDateTime < timezone.now()): # !!
-            raise serializers.ValidationError("Start date cannot be in the past")
+            raise serializers.ValidationError("Η ημερομηνία έναρξης δεν μπορεί να είναι στο παρελθόν.")
         if not event.ticket_types.exists():
             return Response(
-                {"error":"There has to be at least one ticket type"},
+                {"error":"Πρέπει να υπάρχει τουλάχιστον ένας τύπος εισιτηρίου."},
                 status=status.HTTP_400_BAD_REQUEST
             )
         event.status="PUBLISHED"
         event.save()
         return Response(
-            {"message":"Event published succesfully"},
+            {"message":"Η εκδήλωση δημοσιεύτηκε επιτυχώς."},
             status=status.HTTP_200_OK
         )
 
@@ -168,7 +168,7 @@ class CancelEventView(generics.UpdateAPIView):
             )
             cancellation_message.save()
         return Response({
-            "message":"Event cancelled succesfully"
+            "message":"Η εκδήλωση ακυρώθηκε επιτυχώς."
         },
         status=status.HTTP_200_OK)
 # search events page
@@ -239,7 +239,7 @@ class TicketTypeView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(event=event, available=serializer.validated_data["quantity"]) # περνάμε και το event ωστε να αποθηκευτει
         return Response({
-            "message": "Ticket Type created"
+            "message": "Ο τύπος εισιτηρίου δημιουργήθηκε."
         },
         status=status.HTTP_201_CREATED
         )
@@ -266,7 +266,7 @@ class DeleteTicketTypeView(generics.DestroyAPIView):
     permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
     def perform_destroy(self, instance):
         if BookingItems.objects.filter(ticket_type=instance).exists():
-            raise serializers.ValidationError("Cannot delete ticket type that has bookings")
+            raise serializers.ValidationError("Δεν μπορείτε να διαγράψετε τον συγκεκριμένο τύπο εισιτηρίου, επειδή έχει ήδη ενεργές κρατήσεις.")
         return super().perform_destroy(instance)
     def get_queryset(self):
         event_id=self.kwargs["event_id"]

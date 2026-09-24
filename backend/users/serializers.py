@@ -46,7 +46,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         validate_afm_strength(args["afm"])
         validate_phone_number_strength(args["phone"])
         if args["password"] != args["passwordbar"]:
-            raise serializers.ValidationError("Password dont match!")
+            raise serializers.ValidationError("Οι δύο κωδικοί δεν ταιριάζουν")
         if args.get("role") == "ADMIN":
             raise serializers.ValidationError("Registration as admin is not allowed!")
         return args
@@ -80,7 +80,7 @@ class RegisterSerializer(serializers.ModelSerializer):
      ένα καινούργιο όνομα χρήστη."""
     def validate_username(self, usrnm):
         if CustomUser.objects.filter(username=usrnm).exists():
-            raise serializers.ValidationError("username already exists!")
+            raise serializers.ValidationError("Το όνομα χρήστη υπάρχει ήδη. Διαλέξτε κάποιο άλλο.")
         return usrnm
 # TokenObtainPairSerializer: ετοιμος serializer του JWT που παίρνει username/password
 # ελέγχει αν είναι σωστά, δημιουργεί tokens
@@ -147,10 +147,10 @@ class EditMyProfileSerializer(serializers.ModelSerializer):
         if password is not None or passwordbar is not None:
             validate_pass_strength(password)
             if password != passwordbar:
-                raise serializers.ValidationError("Password dont match")
+                raise serializers.ValidationError("Οι δύο κωδικοί δεν ταιριάζουν.")
         if "username" in attrs:
             if CustomUser.objects.filter(username=attrs["username"]).exclude(id=self.instance.id).exists():
-                raise serializers.ValidationError("Username already exists")
+                raise serializers.ValidationError("Το όνομα χρήστη υπάρχει ήδη. Διαλέξτε κάποιο άλλο.")
         return attrs
     def update(self, instance, validated_data):
         password=validated_data.pop("password", None)
@@ -207,7 +207,7 @@ class UserApprovalSerializer(serializers.ModelSerializer):
         # self instance -> παλιο object απο τη βάση
         # value -> νέα τιμή
         if self.instance.approval_status != "PENDING":
-            raise serializers.ValidationError("Only pending requests can be changed!")
+            raise serializers.ValidationError("Μόνο τα εκκρεμή αιτήματα μπορούν να αλλάξουν κατάσταση.")
         if value not in ["APPROVED", "REJECTED"]:
-            raise serializers.ValidationError("Status can only be changed to approved or rejected")
+            raise serializers.ValidationError("Το status μπορεί να αλλάξει μόνο σε approved ή rejected.")
         return value

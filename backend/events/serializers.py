@@ -12,11 +12,11 @@ class CreateEventSerializer(serializers.ModelSerializer):
         read_only_fields=["organizer", "latitude", "longitude", "status"]
     def validate(self, args):
         if(args["startDateTime"] > args["endDateTime"]):
-            raise serializers.ValidationError("Start DateTime must be before end DateTime")
+            raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         if(args["capacity"] <= 0):
-            raise serializers.ValidationError("Capacity must be a positive integer")
+            raise serializers.ValidationError("Η χωρητικότητα πρέπει να είναι θετικός αριθμός.")
         if(args["startDateTime"] < timezone.now()): # !!
-            raise serializers.ValidationError("Start date cannot be in the past")
+            raise serializers.ValidationError("Η ημερομηνία έναρξης δεν μπορεί να είναι στο παρελθόν.")
         return args
     def create(self, validated_data):
         categories=validated_data.pop("category",[])
@@ -77,14 +77,14 @@ class TicketTypeSerializer(serializers.ModelSerializer):
         event=self.context["event"]        
         total=0
         if args["quantity"] <= 0:
-            raise serializers.ValidationError("Quantity must be a positive integer")
+            raise serializers.ValidationError("Η ποσότητα πρέπει να είναι θετικός αριθμός.")
         if args["price"] <= 0:
-            raise serializers.ValidationError("Price must be positive")
+            raise serializers.ValidationError("Η τιμή πρέπει να είναι θετικός αριθμός.")
         # για ό,τι είναι ήδη στη βάση αποθηκευμένο
         for ticket in event.ticket_types.all():
             total += ticket.quantity
         if(total + args["quantity"]> event.capacity):
-            raise serializers.ValidationError("Quantity of all ticket types cannot exceed total capacity of the event")
+            raise serializers.ValidationError("Το άθροισμα όλων των εισιτηρίων δεν μπορεί να ξεπερνάει τη συνολική χωρητικότητα.")
         return args
 class TicketTypeInfoSerializer(serializers.ModelSerializer):
     reserved=serializers.SerializerMethodField()
@@ -117,14 +117,14 @@ class TicketTypeEditSerializer(serializers.ModelSerializer):
         other_tickets=event.ticket_types.exclude(id=id)
         sold=ticket_type.quantity-ticket_type.available
         if new_quantity < sold:
-            raise serializers.ValidationError("New quantity is less than already sold tickets")
+            raise serializers.ValidationError("Η νεά ποσότητα εισιτηίου είναι μικρότερη από τα ειστήρια που έχουν ήδη πωληθεί.")
         total_quant=sum(tick.quantity for tick in other_tickets)
         if total_quant + new_quantity > capacity:
-            raise serializers.ValidationError("With new quantity, the total quantity of ticket types has exceeded total capacity of the event")
+            raise serializers.ValidationError("Με τη νέα ποσότητα, ο συνολικός αριθμών εισιτηρίων ξεπερνάει τη συνολική χωρητικότητα.")
         if new_quantity <= 0:
-            raise serializers.ValidationError("Quantity must be positive")
+            raise serializers.ValidationError("Η ποσότητα πρέπει να είναι θετική.")
         if new_price <= 0:
-            raise serializers.ValidationError("Price must be positive")
+            raise serializers.ValidationError("Η τιμή πρέπει να είναι θετικός αριθμός.")
         return args
     def update(self, instance, validated_data):
         if "quantity" in validated_data:
@@ -164,13 +164,13 @@ class EditEventSerializer(serializers.ModelSerializer):
         total_quant = sum(tick.quantity for tick in event.ticket_types.all())
         sold=sum(tick.quantity-tick.available for tick in event.ticket_types.all())
         if new_capacity < total_quant:
-            raise serializers.ValidationError("New capacity is lower than current tickets quantity")
+            raise serializers.ValidationError("Η νέα χωρητικότητα είναι μικρότερη από τον συνολικό αριθμό των εισιτηρίων.")
         if new_capacity < sold:
-            raise serializers.ValidationError("New capacity cannot be lower than the number of already sold tickets")
+            raise serializers.ValidationError("Η νέα χωρητικότητα δεν μπορεί να είναι μικρότερη από τον συνολικό αριθμό των εισιτηρίων που έχουν ήδη πωληθεί.")
         new_start=args.get("startDateTime", event.startDateTime)
         new_end=args.get("endDateTime", event.endDateTime)
         if new_start > new_end:
-            raise serializers.ValidationError("Start date time must be before end date time")
+            raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         return args
     def update(self, instance, validated_data):
         address=validated_data.get("address", instance.address)
