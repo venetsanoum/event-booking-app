@@ -32,15 +32,6 @@ class RegisterSerializer(serializers.ModelSerializer):
             "invalid":"Παρακαλώ εισάγετε ένα έγκυρο email."
         }
     )
-    # phone=serializers.CharField(
-    #     max_length=10,
-    #     min_length=10,
-    #     error_messages={
-    #         "max_length":"Το κινητό πρέπει να έχει ακριβώς 10 ψηφία.",
-    #         "min_length":"Το κινητό πρέπει να έχει ακριβώς 10 ψηφία.",
-    #         "blank":"Το κινητό δεν μπορεί να είναι κενό."
-    #     }
-    # )
     # που δουλευει ο serializer (στον CustomUser)
     class Meta:
         model=CustomUser
@@ -138,6 +129,19 @@ class MyProfileSerializer(serializers.ModelSerializer):
 class EditMyProfileSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, allow_blank=True)
     passwordbar = serializers.CharField(write_only=True, allow_blank=True)
+    username=serializers.CharField(
+        error_messages={
+            "required":"Το username είναι υποχρεωτικό.",
+            "blank":"Το username δεν μπορεί να είναι κενό."
+        }
+    )
+    email=serializers.EmailField(
+        error_messages={
+            "required":"Το email είναι υποχρεωτικό.",
+            "blank":"Το email δεν μπορεί να είναι κενό.",
+            "invalid":"Παρακαλώ εισάγετε ένα έγκυρο email."
+        }
+    )
     class Meta:
         model=CustomUser
         fields=[

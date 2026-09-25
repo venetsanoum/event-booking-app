@@ -2,7 +2,7 @@ import re
 from rest_framework import serializers
 
 def validate_pass_strength(password):
-    if len(password)<=12:
+    if len(password)<12:
         raise serializers.ValidationError("Ο κωδικός πρέπει να περιλαμβάνει τουλάχιστον 12 χαρακτήρες.")
     if not re.search(r"[A-Z]", password):
         raise serializers.ValidationError("Ο κωδικός πρέπει να έχει τουλάχιστον ένα κεφαλαίο γράμμα.")
