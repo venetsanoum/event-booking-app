@@ -80,7 +80,7 @@ const AccountEditPage = () => {
 
     if (initError) {
         return (
-            <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center", padding: "60px" }}>
+            <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center", padding: "60px" }}>
                 {initError}
             </Typography>
         );

@@ -79,7 +79,7 @@ const AdminUsersPage = () => {
                     )}
 
                     {error && (
-                        <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center" }}>
+                        <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center" }}>
                             {error}
                         </Typography>
                     )}

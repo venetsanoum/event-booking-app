@@ -106,13 +106,13 @@ const MyMessagesPage = () => {
                 )}
 
                 {error && (
-                    <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center", padding: "20px" }}>
+                    <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center", padding: "20px" }}>
                         {error}
                     </Typography>
                 )}
 
                 {!loading && !error && messages.length === 0 && (
-                    <Typography sx={{ textAlign: "center", color: "#777", fontSize: "18px", padding: "20px" }}>
+                    <Typography sx={{ textAlign: "center", color: "#000", fontSize: "24px", padding: "20px" }}>
                         Δεν υπάρχουν μηνύματα.
                     </Typography>
                 )}

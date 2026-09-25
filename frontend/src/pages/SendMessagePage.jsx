@@ -97,12 +97,12 @@ const SendMessagePage = () => {
                 }}
             >
                 {error && (
-                    <Typography sx={{ color: "#d32f2f", fontSize: "16px" }}>
+                    <Typography sx={{ color: "#d32f2f", fontSize: "24px" }}>
                         {error}
                     </Typography>
                 )}
                 {success && (
-                    <Typography sx={{ color: "green", fontSize: "16px" }}>
+                    <Typography sx={{ color: "green", fontSize: "20px" }}>
                         Το μήνυμα στάλθηκε επιτυχώς!
                     </Typography>
                 )}

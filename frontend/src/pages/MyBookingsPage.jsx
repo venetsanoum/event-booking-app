@@ -93,13 +93,13 @@ const MyBookingsPage = () => {
                 )}
 
                 {error && (
-                    <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center" }}>
+                    <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center" }}>
                         {error}
                     </Typography>
                 )}
 
                 {!loading && !error && bookings.length === 0 && (
-                    <Typography sx={{ textAlign: "center", color: "#777", fontSize: "18px" }}>
+                    <Typography sx={{ textAlign: "center", color: "#000", fontSize: "24px" }}>
                         Δεν υπάρχουν κρατήσεις σε αυτή την κατηγορία.
                     </Typography>
                 )}

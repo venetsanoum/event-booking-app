@@ -63,7 +63,7 @@ const EventPage = () => {
 
     if (error) {
         return (
-            <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center", padding: "60px" }}>
+            <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center", padding: "60px" }}>
                 {error}
             </Typography>
         );
@@ -106,35 +106,35 @@ const EventPage = () => {
     >
         {event.title}
     </Typography>
-{event.images.length > 0 && (
-    <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
-        <IconButton
-            onClick={() => setPhotoIndex((prev) => (prev - 1 + event.images.length) % event.images.length)}
-            disabled={event.images.length <= 1}
-        >
-            <NavigateBefore sx={{ fontSize: "40px" }} />
-        </IconButton>
+    {event.images.length > 0 && (
+        <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+            <IconButton
+                onClick={() => setPhotoIndex((prev) => (prev - 1 + event.images.length) % event.images.length)}
+                disabled={event.images.length <= 1}
+            >
+                <NavigateBefore sx={{ fontSize: "40px" }} />
+            </IconButton>
 
-        <Box
-            sx={{
-                width: "900px",
-                height: "500px",
-                backgroundImage: `url(${event.images[photoIndex].photo})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                borderRadius: "15px",
-                border: "5px solid #FFF",
-            }}
-        />
+            <Box
+                sx={{
+                    width: "900px",
+                    height: "500px",
+                    backgroundImage: `url(${event.images[photoIndex].photo})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    borderRadius: "15px",
+                    border: "5px solid #FFF",
+                }}
+            />
 
-        <IconButton
-            onClick={() => setPhotoIndex((prev) => (prev + 1) % event.images.length)}
-            disabled={event.images.length <= 1}
-        >
-            <NavigateNext sx={{ fontSize: "40px" }} />
-        </IconButton>
-    </Box>
-)}
+            <IconButton
+                onClick={() => setPhotoIndex((prev) => (prev + 1) % event.images.length)}
+                disabled={event.images.length <= 1}
+            >
+                <NavigateNext sx={{ fontSize: "40px" }} />
+            </IconButton>
+        </Box>
+    )}
     <Box
         sx={{
             display: "flex",
@@ -261,7 +261,7 @@ const EventPage = () => {
                         textAlign: "left",
                     }}
                 >
-                    Τοποθεσία: {event.city} <br />
+                    Τοποθεσία: {event.address}, {event.city} <br />
                     Venue: {event.venue}
                 </Typography>
             </Box>

@@ -65,7 +65,9 @@ const EditEventPage = () => {
                 setFormData({
                     title: event.title || '',
                     description: event.description || '',
-                    category: event.category ? event.category.map((c) => c.id) : [],
+                    category: event.category
+                        ? event.category.map((c) => (typeof c === 'object' ? c.id : c))
+                        : [],
                     eventType: event.eventType || '',
                     venue: event.venue || '',
                     address: event.address || '',
@@ -125,18 +127,63 @@ const EditEventPage = () => {
         setPhotoFiles(photoFiles.filter((_, i) => i !== index));
     };
 
+    const getMissingFields = () => {
+        const missing = [];
+
+        if (!formData.title.trim()) missing.push("Τίτλος");
+        if (!formData.description.trim()) missing.push("Περιγραφή");
+        if (formData.category.length === 0) missing.push("Κατηγορία");
+        if (!formData.venue.trim()) missing.push("Venue");
+        if (!formData.address.trim()) missing.push("Διεύθυνση");
+        if (!formData.city.trim()) missing.push("Πόλη");
+        if (!formData.country.trim()) missing.push("Χώρα");
+        if (!formData.startDateTime) missing.push("Ημερομηνία έναρξης");
+        if (!formData.endDateTime) missing.push("Ημερομηνία λήξης");
+        if (!formData.capacity) missing.push("Χωρητικότητα");
+
+        const validTickets = ticketTypes.filter(
+            (tt) => tt.name.trim() && tt.price && tt.quantity
+        );
+        if (validTickets.length === 0) {
+            missing.push("τουλάχιστον έναν τύπο εισιτηρίου");
+        }
+
+        return missing;
+    };
+
     const handleSubmit = async (e, shouldPublish = false) => {
-        e.preventDefault();
-        setError('');
-        setSubmitting(true);
+    e.preventDefault();
+    setError('');
+
+    if (shouldPublish) {
+        const missing = getMissingFields();
+        if (missing.length > 0) {
+            setError(`Για δημοσίευση πρέπει να συμπληρώσεις: ${missing.join(", ")}.`);
+            return;
+        }
+    }
+
+    setSubmitting(true);
 
         try {
             let eventId = id;
+            const cleanedData = {};
+            Object.keys(formData).forEach((key) => {
+                let value = formData[key];
 
+                if (Array.isArray(value)) {
+                    value = value.filter((v) => v !== null && v !== undefined);
+                    if (value.length === 0) return;
+                }
+
+                if (value !== '' && value !== null && value !== undefined) {
+                    cleanedData[key] = value;
+                }
+            });
             if (isEditMode) {
-                await editEvent(id, formData);
+                await editEvent(id, cleanedData);
             } else {
-                const response = await createDraftEvent(formData);
+                const response = await createDraftEvent(cleanedData);
                 eventId = response.data.event_id;
             }
 
@@ -182,7 +229,7 @@ const EditEventPage = () => {
 
     if (initError) {
         return (
-            <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center", padding: "60px" }}>
+            <Typography sx={{ color: "#d32f2f", fontSize: "24px", textAlign: "center", padding: "60px" }}>
                 {initError}
             </Typography>
         );

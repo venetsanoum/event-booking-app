@@ -118,7 +118,7 @@ const MyEventsPage = () => {
                 )}
 
                 {error && (
-                    <Typography sx={{ color: "#d32f2f", fontSize: "18px" }}>
+                    <Typography sx={{ color: "#d32f2f", fontSize: "24px" }}>
                         {error}
                     </Typography>
                 )}
@@ -136,8 +136,8 @@ const MyEventsPage = () => {
                             <Typography 
                                 sx={{ 
                                     textAlign: "center", 
-                                    color: "#777", 
-                                    fontSize: "18px" 
+                                    color: "#000", 
+                                    fontSize: "24px" 
                                 }}
                             >
                                 Δεν υπάρχουν εκδηλώσεις σε αυτή την κατηγορία.

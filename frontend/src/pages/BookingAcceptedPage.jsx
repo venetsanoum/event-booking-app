@@ -8,7 +8,7 @@ const BookingAcceptedPage = () => {
     if (!location.state || !location.state.booking) {
         return (
             <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", padding: "60px" }}>
-                <Typography sx={{ color: "#d32f2f", fontSize: "18px", textAlign: "center" }}>
+                <Typography sx={{ color: "#d32f2f", fontSize: "20px", textAlign: "center" }}>
                     Δεν υπάρχουν στοιχεία κράτησης.
                 </Typography>
                 <MyButton component={Link} to="/">
