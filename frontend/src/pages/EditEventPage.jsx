@@ -78,7 +78,14 @@ const EditEventPage = () => {
                     capacity: event.capacity || '',
                 });
                 if (event.ticket_types && event.ticket_types.length > 0) {
-                    setTicketTypes(event.ticket_types);
+                    if (event.ticket_types && event.ticket_types.length > 0) {
+                        setTicketTypes(event.ticket_types.map((tt) => ({
+                            id: tt.id,
+                            name: tt.name,
+                            price: tt.price,
+                            quantity: tt.quantity,
+                        })));
+                    }
                 }
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης εκδήλωσης:', err);
@@ -214,9 +221,10 @@ const EditEventPage = () => {
 
             if (shouldPublish) {
                 await publishEvent(eventId);
+                navigate(`/my-events/${eventId}`);
+            } else {
+                navigate('/my-events');
             }
-
-            navigate(`/my-events/${eventId}`);
 
         } catch (err) {
             console.log('Αποτυχία αποθήκευσης:', err);
@@ -253,7 +261,7 @@ return (
         <Breadcrumbs 
             items={[
                 { label: "Οι εκδηλώσεις μου", to: "/my-events" },
-                { label: isEditMode ? event?.title || "Επεξεργασία" : "Νέα εκδήλωση" },
+                { label: isEditMode ? (formData.title || "Επεξεργασία") : "Νέα εκδήλωση" },
             ]}
             sx={{
                 marginLeft: "-30px",

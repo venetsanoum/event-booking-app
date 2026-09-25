@@ -169,7 +169,7 @@ class EditEventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Η νέα χωρητικότητα δεν μπορεί να είναι μικρότερη από τον συνολικό αριθμό των εισιτηρίων που έχουν ήδη πωληθεί.")
         new_start=args.get("startDateTime", event.startDateTime)
         new_end=args.get("endDateTime", event.endDateTime)
-        if new_start > new_end:
+        if new_start and new_end and new_start > new_end:
             raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         return args
     def update(self, instance, validated_data):

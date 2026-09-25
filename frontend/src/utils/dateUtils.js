@@ -7,8 +7,11 @@ export const formatEventDate = (dateString) => {
 };
 
 export const formatEventDateRange = (start, end) => {
+    if (!start && !end) return "Δεν έχει οριστεί ημερομηνία";
+    if (!start || !end) return formatEventDate(start || end);
+
     if (new Date(start).toDateString() === new Date(end).toDateString()) {
         return formatEventDate(start);
     }
-    else return `${formatEventDate(start)} - ${formatEventDate(end)}`;
-}
+    return `${formatEventDate(start)} - ${formatEventDate(end)}`;
+};
