@@ -10,14 +10,14 @@ class CreateEventSerializer(serializers.ModelSerializer):
         model=Event
         fields="__all__"
         read_only_fields=["organizer", "latitude", "longitude", "status"]
-    def validate(self, args):
-        if(args["startDateTime"] > args["endDateTime"]):
-            raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
-        if(args["capacity"] <= 0):
-            raise serializers.ValidationError("Η χωρητικότητα πρέπει να είναι θετικός αριθμός.")
-        if(args["startDateTime"] < timezone.now()): # !!
-            raise serializers.ValidationError("Η ημερομηνία έναρξης δεν μπορεί να είναι στο παρελθόν.")
-        return args
+    # def validate(self, args):
+    #     if(args["startDateTime"] > args["endDateTime"]):
+    #         raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
+    #     if(args["capacity"] <= 0):
+    #         raise serializers.ValidationError("Η χωρητικότητα πρέπει να είναι θετικός αριθμός.")
+    #     if(args["startDateTime"] < timezone.now()): # !!
+    #         raise serializers.ValidationError("Η ημερομηνία έναρξης δεν μπορεί να είναι στο παρελθόν.")
+    #     return args
     def create(self, validated_data):
         categories=validated_data.pop("category",[])
         latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
@@ -135,7 +135,7 @@ class TicketTypeEditSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 # ------------------------------------------------------------------------- #
 class EditEventSerializer(serializers.ModelSerializer):
-    ticket_types=TicketTypeInfoSerializer(many=True)
+    ticket_types=TicketTypeInfoSerializer(many=True, read_only=True)
     category=serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), many=True, required=False)
     class Meta:
         model=Event
@@ -173,6 +173,7 @@ class EditEventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         return args
     def update(self, instance, validated_data):
+        categories=validated_data.pop("category", None)
         address=validated_data.get("address", instance.address)
         city=validated_data.get("city", instance.city)
         country=validated_data.get("country", instance.country)
@@ -183,6 +184,8 @@ class EditEventSerializer(serializers.ModelSerializer):
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
+        if categories is not None:
+            instance.category.set(categories)
         return instance
 class SearchEventSerializer(serializers.ModelSerializer):
     category = CategoryInfoSerializer(read_only=True, many=True)

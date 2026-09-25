@@ -91,6 +91,8 @@ class PublishEventView(generics.CreateAPIView):
             raise serializers.ValidationError("Η ημερομηνία έναρξης είναι υποχρεωτική.")
         if event.endDateTime is None:
                 raise serializers.ValidationError("Η ημερομηνία λήξης είναι υποχρεωτική.")
+        if event.capacity is None:
+            raise serializers.ValidationError("Η χωρητικότητα είναι υποχρεωτική.")
         if event.startDateTime >= event.endDateTime:
             raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         if(event.capacity <= 0):
