@@ -138,7 +138,7 @@ class MyDraftEventsView(generics.ListAPIView):
 # PUT/PATCH/DELETE events/{id}/edit
 class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class=EditEventSerializer
-    permission_classes=[IsAuthenticated, isOrganizer, isEventOrganizer, isDraftedEvent]
+    permission_classes=[IsAuthenticated, isOrganizer, isEventOrganizer]
     queryset = Event.objects.all()        
     def perform_destroy(self, instance):
         # μόνο draft εκδηλώσεις μπορούν να διαγραφούν

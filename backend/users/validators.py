@@ -2,16 +2,16 @@ import re
 from rest_framework import serializers
 
 def validate_pass_strength(password):
-    if len(password)<8:
-        raise serializers.ValidationError("Password must contain at least 8 characters")
+    if len(password)<=12:
+        raise serializers.ValidationError("Ο κωδικός πρέπει να περιλαμβάνει τουλάχιστον 12 χαρακτήρες.")
     if not re.search(r"[A-Z]", password):
-        raise serializers.ValidationError("Password must contain at least one uppercase letter")
+        raise serializers.ValidationError("Ο κωδικός πρέπει να έχει τουλάχιστον ένα κεφαλαίο γράμμα.")
     if not re.search(r"[^A-Za-z0-9]", password):
-        raise serializers.ValidationError("Password must contain at least one symbol.")
+        raise serializers.ValidationError("Ο κωδικός πρέπει να έχει τουλάχιστον ένα σύμβολο.")
     return password
 def validate_phone_number_strength(phone):
     if not re.fullmatch(r"\d{10}", phone):
-        raise serializers.ValidationError("Phone number must contain 10 digits")
+        raise serializers.ValidationError("Το τηλέφωνο πρέπει να έχει ακριβώς 10 ψηφία.")
 def validate_afm_strength(afm):
     if not re.fullmatch(r"\d{9}", afm):
-        raise serializers.ValidationError("AFM must contain 9 digits")
+        raise serializers.ValidationError("Το ΑΦΜ πρέπει να έχει ακριβώς 9 ψηφία.")
