@@ -7,7 +7,7 @@ from .models import Event, Category, TicketType, EventView
 from booking.models import BookingItems
 from .filters import EventFilter
 from rest_framework.response import Response
-from .permissions import isOrganizer,isEventOrganizer, isEventOrganizerTicketEdition, isDraftedEvent
+from .permissions import isOrganizer,isEventOrganizer, isEventOrganizerTicketEdition, isDraftedEvent, isDraftedEventTicketTypeEdition
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import views, filters
 from django_filters.rest_framework import DjangoFilterBackend
@@ -87,6 +87,10 @@ class PublishEventView(generics.CreateAPIView):
             raise serializers.ValidationError("Η χώρα είναι υποχρεωτική.")
         if not event.description:
             raise serializers.ValidationError("Η περιγραφή είναι υποχρεωτική.")
+        if event.startDateTime is None:
+            raise serializers.ValidationError("Η ημερομηνία έναρξης είναι υποχρεωτική.")
+        if event.endDateTime is None:
+                raise serializers.ValidationError("Η ημερομηνία λήξης είναι υποχρεωτική.")
         if event.startDateTime >= event.endDateTime:
             raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
         if(event.capacity <= 0):
@@ -251,7 +255,7 @@ class AllTicketTypesView(generics.ListAPIView):
 # PATCH events/{event_id}/ticket-types/{ticket_id:pk}
 class EditTicketTypesView(generics.UpdateAPIView):
     serializer_class=TicketTypeEditSerializer
-    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEventTicketTypeEdition]
     def get_queryset(self):
         return TicketType.objects.filter(event_id=self.kwargs["event_id"])
 # GET events/{id}/event-ticket-types
@@ -263,7 +267,7 @@ class EventTicketTypesView(generics.ListAPIView):
 
 # DELETE events/{event_id}/ticket-types/{ticket_id:pk}
 class DeleteTicketTypeView(generics.DestroyAPIView):
-    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEvent]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEventTicketTypeEdition]
     def perform_destroy(self, instance):
         if BookingItems.objects.filter(ticket_type=instance).exists():
             raise serializers.ValidationError("Δεν μπορείτε να διαγράψετε τον συγκεκριμένο τύπο εισιτηρίου, επειδή έχει ήδη ενεργές κρατήσεις.")

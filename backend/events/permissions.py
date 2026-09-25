@@ -18,7 +18,13 @@ class isEventOrganizerTicketEdition(BasePermission):
         return event.organizer==request.user
 class isDraftedEvent(BasePermission):
     def has_permission(self, request, view):
-        ticket_id=view.kwargs["pk"]
-        ticket=get_object_or_404(TicketType, id=ticket_id)
-        event=ticket.event
+        event_id=view.kwargs["pk"]
+        event=get_object_or_404(Event, id=event_id)
+        #event=ticket.event
+        return event.status == "DRAFT"
+class isDraftedEventTicketTypeEdition(BasePermission):
+    def has_permission(self, request, view):
+        event_id=view.kwargs["event_id"]
+        event=get_object_or_404(Event, id=event_id)
+        #event=ticket.event
         return event.status == "DRAFT"
