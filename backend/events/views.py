@@ -143,7 +143,7 @@ class EditEventView(generics.RetrieveUpdateDestroyAPIView):
     def perform_destroy(self, instance):
         # μόνο draft εκδηλώσεις μπορούν να διαγραφούν
         if instance.status != "DRAFT" and instance.bookings.exists():
-            raise serializers.ValidationError("A published event with bookings cannot be deleted")
+            raise serializers.ValidationError("Δεν μπορείτε να διαγράψετε τη συγκεκριμένη εκδήλωση, επειδή υπάρχουν ενεργές κρατήσεις.")
         instance.delete() 
 # POST events/{id}/cancel/
 class CancelEventView(generics.UpdateAPIView):
