@@ -5,6 +5,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import MyButton from "../components/MyButton";
 import { getUserInfo, setUserApproval } from "../api/adminApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { useLocation } from "react-router-dom";
 
 const AdminUserDetailsPage = () => {
     const { id } = useParams();
@@ -13,7 +14,8 @@ const AdminUserDetailsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [submitting, setSubmitting] = useState(false);
-
+    const location = useLocation();
+    
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -71,7 +73,9 @@ const AdminUserDetailsPage = () => {
         <>
             <Breadcrumbs 
                 items={[
-                    { label: "Λίστα χρηστών", to: "/admin/users" },
+                    location.state?.isPending
+                        ? { label: "Αιτήματα", to: "/admin/requests" }
+                        : { label: "Λίστα χρηστών", to: "/admin/users" },
                     { label: `${user.first_name} ${user.last_name}` },
                 ]}
                 sx={{

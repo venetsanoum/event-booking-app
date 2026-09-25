@@ -116,6 +116,7 @@ const AdminRequestsPage = () => {
                             <Box
                                 component={Link}
                                 to={`/admin/users/${u.id}`}
+                                state={{ isPending: true }}
                                 sx={{
                                     display: "flex",
                                     alignItems: "center",

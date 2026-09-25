@@ -358,7 +358,7 @@ const SearchPage = () => {
                         title={event.title}
                         date_start={new Date(event.startDateTime).toLocaleDateString('el-GR')}
                         date_end={new Date(event.endDateTime).toLocaleDateString('el-GR')}
-                        address={`${event.venue}, ${event.city}`}
+                        address={`${event.venue}, ${event.address}, ${event.city}`}
                         lowest_price={event.lowest_price}
                     />
                 ))}

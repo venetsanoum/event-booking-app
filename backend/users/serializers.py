@@ -196,7 +196,9 @@ class UserInfoSerializer(serializers.ModelSerializer):
             "afm",
             "latitude",
             "longitude",
-            "role"
+            "role",
+            "approval_status",
+            "profile_photo",
         ]
 class UserApprovalSerializer(serializers.ModelSerializer):
     class Meta:

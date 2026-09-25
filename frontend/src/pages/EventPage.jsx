@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";import { useParams } from 'react-router-dom';
+import { Box, Typography, CircularProgress, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from "@mui/material";import { useParams } from 'react-router-dom';
 import { getEventDetails } from "../api/eventsApi";
 import MyButton from "../components/MyButton";
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -8,6 +8,7 @@ import L from 'leaflet';
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { NavigateBefore, NavigateNext } from "@mui/icons-material";
 
 delete L.Icon.Default.prototype._get;
 L.Icon.Default.mergeOptions({
@@ -23,6 +24,8 @@ const EventPage = () => {
     const [event, setEvent] = useState(null);
     const navigate = useNavigate();
     const { user } = useAuth();
+    const [photoIndex, setPhotoIndex] = useState(0);
+
     useEffect(() => {
         const fetchEvent = async () => {
             try {
@@ -103,22 +106,35 @@ const EventPage = () => {
     >
         {event.title}
     </Typography>
-    <Box sx={{ display: "flex", gap: "10px", overflowX: "auto", width: "100%" }}>
-        {event.images.map((img) => (
-            <Box
-                key={img.id}
-                sx={{
-                    width: "300px",
-                    height: "200px",
-                    backgroundImage: `url(${img.photo})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    borderRadius: "10px",
-                    flexShrink: 0,
-                }}
-            />
-        ))}
+{event.images.length > 0 && (
+    <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <IconButton
+            onClick={() => setPhotoIndex((prev) => (prev - 1 + event.images.length) % event.images.length)}
+            disabled={event.images.length <= 1}
+        >
+            <NavigateBefore sx={{ fontSize: "40px" }} />
+        </IconButton>
+
+        <Box
+            sx={{
+                width: "900px",
+                height: "500px",
+                backgroundImage: `url(${event.images[photoIndex].photo})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                borderRadius: "15px",
+                border: "5px solid #FFF",
+            }}
+        />
+
+        <IconButton
+            onClick={() => setPhotoIndex((prev) => (prev + 1) % event.images.length)}
+            disabled={event.images.length <= 1}
+        >
+            <NavigateNext sx={{ fontSize: "40px" }} />
+        </IconButton>
     </Box>
+)}
     <Box
         sx={{
             display: "flex",
