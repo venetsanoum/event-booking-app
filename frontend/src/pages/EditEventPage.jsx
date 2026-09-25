@@ -4,7 +4,7 @@ import { Box, Typography, TextField, CircularProgress, IconButton } from "@mui/m
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MyButton from "../components/MyButton";
-import { createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadEventImage, getCategories, publishEvent } from "../api/eventsApi";
+import { createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadEventImage, getCategories, publishEvent, editTicketType } from "../api/eventsApi";
 import { Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from "@mui/material";
 import Breadcrumbs from "../components/Breadcrumbs";
 
@@ -188,11 +188,24 @@ const EditEventPage = () => {
             }
 
             for (const tt of ticketTypes) {
-                if (tt.name && tt.price && tt.quantity) {
-                    await createTicketType(eventId, tt);
+                if (tt.id) {
+                    await editTicketType(eventId, tt.id, {
+                        name: tt.name,
+                        price: tt.price,
+                        quantity: tt.quantity
+                    });
+                } else if (
+                    tt.name &&
+                    tt.price !== '' &&
+                    tt.quantity !== ''
+                ) {
+                await createTicketType(eventId, {
+                    name: tt.name,
+                    price: tt.price,
+                    quantity: tt.quantity
+                    });
                 }
             }
-
             for (const file of photoFiles) {
                 const imgFormData = new FormData();
                 imgFormData.append('photo', file);

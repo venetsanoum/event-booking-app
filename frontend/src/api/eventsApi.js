@@ -73,3 +73,6 @@ export const getEventPreview = (id) => {
 export const cancelEvent = (id) => {
     return axiosInstance.post(`events/${id}/cancel/`);
 };
+export const editTicketType = (eventId, ticketId, data) => {
+    return axiosInstance.patch(`events/${eventId}/ticket-types/${ticketId}/`,data);
+};
