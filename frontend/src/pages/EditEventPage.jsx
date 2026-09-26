@@ -194,7 +194,9 @@ const EditEventPage = () => {
                 eventId = response.data.event_id;
             }
 
-            for (const tt of ticketTypes) {
+            for (let i = 0; i < ticketTypes.length; i++) {
+                const tt = ticketTypes[i];
+
                 if (tt.id) {
                     await editTicketType(eventId, tt.id, {
                         name: tt.name,
@@ -206,11 +208,21 @@ const EditEventPage = () => {
                     tt.price !== '' &&
                     tt.quantity !== ''
                 ) {
-                await createTicketType(eventId, {
-                    name: tt.name,
-                    price: tt.price,
-                    quantity: tt.quantity
+                    const response = await createTicketType(eventId, {
+                        name: tt.name,
+                        price: tt.price,
+                        quantity: tt.quantity
                     });
+
+                    const newTicketType = response.data;
+
+                    setTicketTypes(prev =>
+                        prev.map((ticket, index) =>
+                            index === i
+                                ? { ...ticket, id: newTicketType.id }
+                                : ticket
+                        )
+                    );
                 }
             }
             for (const file of photoFiles) {
