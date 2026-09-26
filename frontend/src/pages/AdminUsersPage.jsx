@@ -3,6 +3,9 @@ import { Box, Typography, CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getAllUsers } from "../api/adminApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+import Pagination from "@mui/material";
+
+const PAGE_SIZE = 20;
 
 const roleLabels = {
     ADMIN: "Διαχειριστής",
@@ -14,12 +17,19 @@ const AdminUsersPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         const fetchUsers = async () => {
+            setLoading(true);
             try {
-                const response = await getAllUsers();
+                const response = await getAllUsers({
+                    limit: PAGE_SIZE,
+                    offset: (page - 1) * PAGE_SIZE,
+                });
                 setUsers(response.data.results || response.data);
+                setCount(response.data.count || 0);
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης χρηστών:', err);
                 setError('Δεν ήταν δυνατή η φόρτωση των χρηστών.');
@@ -28,7 +38,7 @@ const AdminUsersPage = () => {
             }
         };
         fetchUsers();
-    }, []);
+    }, [page]);
 
     const handleExport = async (format) => {
         try {
@@ -126,7 +136,22 @@ const AdminUsersPage = () => {
                                 {roleLabels[u.role] || u.role}
                             </Typography>
                         </Box>
+
                     ))}
+                    {count > PAGE_SIZE && (
+                        <Pagination
+                            count={Math.ceil(count / PAGE_SIZE)}
+                            page={page}
+                            onChange={(e, value) => setPage(value)}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: "18px",
+                                    color: "black",
+                                    background: "rgba(255, 255, 255, 0.75)",
+                                },
+                            }}
+                        />
+                    )}
                 </Box>
 
                 <Box sx={{ height: "40px", background: "#fff" }} />

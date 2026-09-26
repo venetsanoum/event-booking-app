@@ -1,11 +1,11 @@
 import axiosInstance from './axiosInstance';
 
-export const getAllUsers = () => {
-    return axiosInstance.get('users/admin/users/');
+export const getAllUsers = (params) => {
+    return axiosInstance.get('users/admin/users/', { params });
 };
 
-export const getPendingUsers = () => {
-    return axiosInstance.get('users/admin/users/pending/');
+export const getPendingUsers = (params) => {
+    return axiosInstance.get('users/admin/users/pending/', { params });
 };
 
 export const getUserInfo = (id) => {
