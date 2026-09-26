@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, Dialog, DialogContent, Button, CircularProgress, Tabs, Tab, IconButton } from "@mui/material";
+import { Box, Pagination, Typography, Dialog, DialogContent, Button, CircularProgress, Tabs, Tab, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { formatEventDateRange } from "../utils/dateUtils";
 import { deleteEvent, getMyEvents, getMyCompletedEvents, getMyCancelledEvents, getMyDraftedEvents } from "../api/eventsApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+
+const PAGE_SIZE = 20;
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyEvents },
@@ -19,24 +21,36 @@ const MyEventsPage = () => {
     const [events, setEvents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+
+
+    const fetchEvents = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const response = await tabConfig[activeTab].fetchFn({
+                limit: PAGE_SIZE,
+                offset: (page - 1) * PAGE_SIZE,
+            });
+            const results = response.data.results || response.data;
+            setEvents(results);
+            setCount(response.data.count || 0);
+        } catch (err) {
+            console.log('Αποτυχία φόρτωσης εκδηλώσεων:', err);
+            setError('Δεν ήταν δυνατή η φόρτωση εκδηλώσεων.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchEvents = async () => {
-            setLoading(true);
-            setError('');
-            try {
-                const response = await tabConfig[activeTab].fetchFn();
-                const results = response.data.results || response.data;
-                setEvents(results);
-            } catch (err) {
-                console.log('Αποτυχία φόρτωσης εκδηλώσεων:', err);
-                setError('Δεν ήταν δυνατή η φόρτωση εκδηλώσεων.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchEvents();
+        setPage(1);
     }, [activeTab]);
+
+    useEffect(() => {
+        fetchEvents();
+    }, [activeTab, page]);
 
     const [deleteId, setDeleteId] = useState(null);
     const [deleting, setDeleting] = useState(false);
@@ -45,7 +59,7 @@ const MyEventsPage = () => {
         setDeleting(true);
         try {
             await deleteEvent(deleteId);
-            setEvents(events.filter((e) => e.id !== deleteId));
+            await fetchEvents();
             setDeleteId(null);
         } catch (err) {
             console.log('Αποτυχία διαγραφής:', err);
@@ -281,43 +295,54 @@ const MyEventsPage = () => {
                                     </Box>
                                 </Box>
                             </Box>
-                        )
-                    
-                )
-
-                        )}<Dialog
-    open={deleteId !== null}
-    onClose={() => setDeleteId(null)}
-    slotProps={{ paper: { sx: { borderRadius: "15px", border: "5px solid #FFF", overflow: "hidden" } } }}
->
-    <DialogContent
-        sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "16px",
-            padding: "24px",
-            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
-        }}
-    >
-        <Typography sx={{ width: "400px", fontSize: "22px", fontWeight: "600", color: "black", textAlign: "center" }}>
-            Σίγουρα θέλεις να διαγράψεις αυτή την εκδήλωση; Η ενέργεια δεν αναιρείται.
-        </Typography>
-        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <Button onClick={() => setDeleteId(null)} sx={{ color: "black", textDecoration: "underline" }}>
-                Πίσω
-            </Button>
-            <MyButton
-                onClick={handleDelete}
-                disabled={deleting}
-                sx={{ background: "#d32f2f", "&:hover": { backgroundColor: "#b71c1c" } }}
-            >
-                {deleting ? "Διαγραφή..." : "Διαγραφή"}
-            </MyButton>
-        </Box>
-    </DialogContent>
-</Dialog>
+                        )))}
+                        <Dialog
+                            open={deleteId !== null}
+                            onClose={() => setDeleteId(null)}
+                            slotProps={{ paper: { sx: { borderRadius: "15px", border: "5px solid #FFF", overflow: "hidden" } } }}
+                        >
+                            <DialogContent
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    alignItems: "center",
+                                    gap: "16px",
+                                    padding: "24px",
+                                    background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                                }}
+                            >
+                                <Typography sx={{ width: "400px", fontSize: "22px", fontWeight: "600", color: "black", textAlign: "center" }}>
+                                    Σίγουρα θέλεις να διαγράψεις αυτή την εκδήλωση; Η ενέργεια δεν αναιρείται.
+                                </Typography>
+                                <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                    <Button onClick={() => setDeleteId(null)} sx={{ color: "black", textDecoration: "underline" }}>
+                                        Πίσω
+                                    </Button>
+                                    <MyButton
+                                        onClick={handleDelete}
+                                        disabled={deleting}
+                                        sx={{ background: "#d32f2f", "&:hover": { backgroundColor: "#b71c1c" } }}
+                                    >
+                                        {deleting ? "Διαγραφή..." : "Διαγραφή"}
+                                    </MyButton>
+                                </Box>
+                            </DialogContent>
+                        </Dialog>
                     </Box>
+                )}
+                {count > PAGE_SIZE && (
+                    <Pagination
+                        count={Math.ceil(count / PAGE_SIZE)}
+                        page={page}
+                        onChange={(e, value) => setPage(value)}
+                        sx={{
+                            "& .MuiPaginationItem-root": {
+                                fontSize: "18px",
+                                color: "black",
+                                background: "rgba(255, 255, 255, 0.75)",
+                            },
+                        }}
+                    />
                 )}
             </Box>
         </>

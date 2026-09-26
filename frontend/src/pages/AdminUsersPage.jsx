@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Typography, CircularProgress, Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
 import { getAllUsers } from "../api/adminApi";
 import Breadcrumbs from "../components/Breadcrumbs";
-import Pagination from "@mui/material";
 
 const PAGE_SIZE = 20;
 

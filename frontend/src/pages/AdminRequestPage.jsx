@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, IconButton } from "@mui/material";
+import { Box, Typography, CircularProgress, IconButton, Pagination } from "@mui/material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
 import { getPendingUsers, setUserApproval } from "../api/adminApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+
+const PAGE_SIZE = 20;
 
 const roleLabels = {
     ORGANIZER: "Διοργανωτής",
@@ -15,12 +17,18 @@ const AdminRequestsPage = () => {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
 
     useEffect(() => {
         const fetchPending = async () => {
             try {
-                const response = await getPendingUsers();
+                const response = await getPendingUsers({
+                    limit: PAGE_SIZE,
+                    offset: (page - 1) * PAGE_SIZE,
+                });
                 setUsers(response.data.results || response.data);
+                setCount(response.data.count || 0);
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης αιτημάτων:', err);
                 setError('Δεν ήταν δυνατή η φόρτωση των αιτημάτων.');
@@ -29,7 +37,7 @@ const AdminRequestsPage = () => {
             }
         };
         fetchPending();
-    }, []);
+    }, [page]);
 
     const handleDecision = async (id, status) => {
         try {
@@ -166,6 +174,20 @@ const AdminRequestsPage = () => {
                             </Box>
                         </Box>
                     ))}
+                    {count > PAGE_SIZE && (
+                        <Pagination
+                            count={Math.ceil(count / PAGE_SIZE)}
+                            page={page}
+                            onChange={(e, value) => setPage(value)}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: "18px",
+                                    color: "black",
+                                    background: "rgba(255, 255, 255, 0.75)",
+                                },
+                            }}
+                        />
+                    )}
                 </Box>
 
                 <Box sx={{ height: "40px", background: "#fff" }} />

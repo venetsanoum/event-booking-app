@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, Tabs, Tab } from "@mui/material";
+import { Pagination, Box, Typography, CircularProgress, Tabs, Tab } from "@mui/material";
 import { formatEventDateRange } from "../utils/dateUtils";
-import {
-    getMyUpcomingBookings,
-    getMyCompletedBookings,
-    getMyCancelledBookings,
-} from "../api/bookingsApi";
+import { getMyUpcomingBookings, getMyCompletedBookings, getMyCancelledBookings } from "../api/bookingsApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+
+const PAGE_SIZE = 20;
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyUpcomingBookings },
@@ -19,23 +17,34 @@ const MyBookingsPage = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+
+    const fetchBookings = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const response = await tabConfig[activeTab].fetchFn({
+                limit: PAGE_SIZE,
+                offset: (page - 1) * PAGE_SIZE,
+            });
+            setBookings(response.data.results || response.data);
+            setCount(response.data.count || 0);
+        } catch (err) {
+            console.log('Αποτυχία φόρτωσης κρατήσεων:', err);
+            setError('Δεν ήταν δυνατή η φόρτωση των κρατήσεων.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchBookings = async () => {
-            setLoading(true);
-            setError('');
-            try {
-                const response = await tabConfig[activeTab].fetchFn();
-                setBookings(response.data.results || response.data);
-            } catch (err) {
-                console.log('Αποτυχία φόρτωσης κρατήσεων:', err);
-                setError('Δεν ήταν δυνατή η φόρτωση των κρατήσεων.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBookings();
+        setPage(1);
     }, [activeTab]);
+
+    useEffect(() => {
+        fetchBookings();
+    }, [activeTab, page]);
 
     return (
         <>
@@ -207,6 +216,20 @@ const MyBookingsPage = () => {
                         </Box>
                     );
                 })}
+                {count > PAGE_SIZE && (
+                    <Pagination
+                        count={Math.ceil(count / PAGE_SIZE)}
+                        page={page}
+                        onChange={(e, value) => setPage(value)}
+                        sx={{
+                            "& .MuiPaginationItem-root": {
+                                fontSize: "18px",
+                                color: "black",
+                                background: "rgba(255, 255, 255, 0.75)",
+                            },
+                        }}
+                    />
+                )}
             </Box>
         </>
     );

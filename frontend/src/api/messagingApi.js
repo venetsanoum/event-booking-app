@@ -1,11 +1,11 @@
 import axiosInstance from './axiosInstance';
 
-export const getInbox = () => {
-    return axiosInstance.get('messaging/inbox/');
+export const getInbox = (params) => {
+    return axiosInstance.get('messaging/inbox/', { params });
 };
 
-export const getSent = () => {
-    return axiosInstance.get('messaging/sent/');
+export const getSent = (params) => {
+    return axiosInstance.get('messaging/sent/', { params });
 };
 
 export const getUnreadCount = () => {
@@ -27,3 +27,4 @@ export const deleteFromInbox = (id) => {
 export const deleteFromSent = (id) => {
     return axiosInstance.patch(`messaging/delete/sent/${id}/`);
 };
+

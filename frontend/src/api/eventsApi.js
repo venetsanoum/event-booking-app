@@ -26,20 +26,20 @@ export const getEventDetails = (id) => {
     return axiosInstance.get(`events/details/${id}/`);
 };
 
-export const getMyEvents = () => {
-    return axiosInstance.get('events/my-events/');
+export const getMyEvents = (params) => {
+    return axiosInstance.get('events/my-events/', { params });
 };
 
-export const getMyCompletedEvents = () => {
-    return axiosInstance.get('events/my-completed-events/');
+export const getMyCompletedEvents = (params) => {
+    return axiosInstance.get('events/my-completed-events/', { params });
 };
 
-export const getMyCancelledEvents = () => {
-    return axiosInstance.get('events/my-cancelled-events/');
+export const getMyCancelledEvents = (params) => {
+    return axiosInstance.get('events/my-cancelled-events/', { params });
 };
 
-export const getMyDraftedEvents = () => {
-    return axiosInstance.get('events/my-drafted-events/');
+export const getMyDraftedEvents = (params) => {
+    return axiosInstance.get('events/my-drafted-events/', { params });
 };
 
 export const createDraftEvent = (data) => {

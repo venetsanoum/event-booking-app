@@ -4,16 +4,16 @@ export const createBooking = (eventId, items) => {
     return axiosInstance.post(`booking/create/${eventId}/`, { items });
 };
 
-export const getMyUpcomingBookings = () => {
-    return axiosInstance.get('booking/my-upcoming-bookings/');
+export const getMyUpcomingBookings = (params) => {
+    return axiosInstance.get('booking/my-upcoming-bookings/', { params });
 };
 
-export const getMyCompletedBookings = () => {
-    return axiosInstance.get('booking/my-completed-bookings/');
+export const getMyCompletedBookings = (params) => {
+    return axiosInstance.get('booking/my-completed-bookings/', { params });
 };
 
-export const getMyCancelledBookings = () => {
-    return axiosInstance.get('booking/my-cancelled-bookings/');
+export const getMyCancelledBookings = (params) => {
+    return axiosInstance.get('booking/my-cancelled-bookings/', { params });
 }
 
 export const getEventBookings = (eventId) => {

@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, Tabs, Tab, Checkbox, IconButton } from "@mui/material";
+import { Box, Pagination, Typography, CircularProgress, Tabs, Tab, Checkbox, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { getInbox, getSent, deleteFromInbox, deleteFromSent } from "../api/messagingApi";
 import Breadcrumbs from "../components/Breadcrumbs";
+
+const PAGE_SIZE = 20;
 
 const tabConfig = [
     { label: "Εισερχόμενα", fetchFn: getInbox, deleteFn: deleteFromInbox, personLabel: "Αποστολέας" },
@@ -17,14 +19,20 @@ const MyMessagesPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selected, setSelected] = useState([]);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
 
     const loadMessages = async () => {
         setLoading(true);
         setError('');
         setSelected([]);
         try {
-            const response = await tabConfig[activeTab].fetchFn();
+            const response = await tabConfig[activeTab].fetchFn({
+                limit: PAGE_SIZE,
+                offset: (page - 1) * PAGE_SIZE,
+            });
             setMessages(response.data.results || response.data);
+            setCount(response.data.count || 0);
         } catch (err) {
             console.log('Αποτυχία φόρτωσης μηνυμάτων:', err);
             setError('Δεν ήταν δυνατή η φόρτωση μηνυμάτων.');
@@ -34,8 +42,12 @@ const MyMessagesPage = () => {
     };
 
     useEffect(() => {
-        loadMessages();
+        setPage(1);
     }, [activeTab]);
+
+    useEffect(() => {
+        loadMessages();
+    }, [activeTab, page]);
 
     const toggleSelect = (id) => {
         setSelected(
@@ -50,8 +62,7 @@ const MyMessagesPage = () => {
             for (const id of selected) {
                 await tabConfig[activeTab].deleteFn(id);
             }
-            setMessages(messages.filter((m) => !selected.includes(m.id)));
-            setSelected([]);
+            await loadMessages();
         } catch (err) {
             console.log('Αποτυχία διαγραφής:', err);
         }
@@ -154,6 +165,20 @@ const MyMessagesPage = () => {
                             </Link>
                         </Box>
                     ))}
+                    {count > PAGE_SIZE && (
+                        <Pagination
+                            count={Math.ceil(count / PAGE_SIZE)}
+                            page={page}
+                            onChange={(e, value) => setPage(value)}
+                            sx={{
+                                "& .MuiPaginationItem-root": {
+                                    fontSize: "18px",
+                                    color: "black",
+                                    background: "rgba(255, 255, 255, 0.75)",
+                                },
+                            }}
+                        />
+                    )}
                 </Box>
             </Box>
         </Box>
