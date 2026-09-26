@@ -13,7 +13,7 @@ class ExportXMLView(APIView):
     permission_classes = [IsAppAdmin]
 
     def get(self, request):
-        events = Event.objects.all()
+        events = Event.objects.filter(status__in=["PUBLISHED", "COMPLETED", "CANCELLED"])
         root = elemnt.Element("Events")
         for event in events:
             event_xml = elemnt.SubElement(
@@ -138,7 +138,7 @@ class ExportXMLView(APIView):
 class ExportJSONView(generics.ListAPIView):
     permission_classes=[IsAppAdmin]
     def get(self, request):
-        events=Event.objects.all()
+        events = Event.objects.filter(status__in=["PUBLISHED", "COMPLETED", "CANCELLED"])
         serializer=EventDetailsSerializer(events, many=True)
         response = HttpResponse(json.dumps(
             serializer.data
