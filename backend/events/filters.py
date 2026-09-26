@@ -4,8 +4,8 @@ from django.db.models import Q, Case, When, IntegerField
 class EventFilter(filters.FilterSet):
     search_bar=filters.CharFilter(method="search_filter")
     category=filters.ModelMultipleChoiceFilter(queryset=Category.objects.all(), distinct=True)
-    min_price = filters.NumberFilter(field_name="ticket_types__price", lookup_expr="gte")
-    max_price = filters.NumberFilter(field_name="ticket_types__price", lookup_expr="lte")
+    min_price = filters.NumberFilter(field_name="ticket_types__price", lookup_expr="gte", distinct=True)
+    max_price = filters.NumberFilter(field_name="ticket_types__price", lookup_expr="lte", distinct=True)
     from_date = filters.DateFilter(field_name="startDateTime", lookup_expr="date__gte")
     to_date = filters.DateFilter(field_name="endDateTime", lookup_expr="date__lte")
     city = filters.BaseInFilter(field_name="city", lookup_expr="in")
