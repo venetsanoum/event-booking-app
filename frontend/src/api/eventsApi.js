@@ -76,3 +76,11 @@ export const cancelEvent = (id) => {
 export const editTicketType = (eventId, ticketId, data) => {
     return axiosInstance.patch(`events/${eventId}/ticket-types/${ticketId}/`,data);
 };
+
+export const getRecommendations = () => {
+    return axiosInstance.get('recommendation/');
+};
+
+export const deleteEvent = (id) => {
+    return axiosInstance.delete(`events/${id}/edit/`);
+};

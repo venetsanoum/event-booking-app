@@ -15,3 +15,11 @@ export const getUserInfo = (id) => {
 export const setUserApproval = (id, status) => {
     return axiosInstance.patch(`users/admin/users/${id}/approval/`, { approval_status: status });
 };
+
+export const exportXML = () => {
+    return axiosInstance.get('exports/xml/', { responseType: 'blob' });
+};
+
+export const exportJSON = () => {
+    return axiosInstance.get('exports/json/', { responseType: 'blob' });
+};

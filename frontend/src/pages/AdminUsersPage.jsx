@@ -30,6 +30,20 @@ const AdminUsersPage = () => {
         fetchUsers();
     }, []);
 
+    const handleExport = async (format) => {
+        try {
+            const response = format === 'xml' ? await exportXML() : await exportJSON();
+            const url = window.URL.createObjectURL(response.data);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `events.${format}`;
+            link.click();
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            console.log('Αποτυχία εξαγωγής:', err);
+        }
+    };
+
     return (
         <>
             <Breadcrumbs 

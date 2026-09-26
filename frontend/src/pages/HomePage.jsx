@@ -1,9 +1,56 @@
-import { Box, Typography } from '@mui/material';
+import { useState, useEffect } from "react";
+import { Box, Typography, IconButton } from '@mui/material';
 import '@fontsource/luckiest-guy'
 import MyButton from '../components/MyButton';
+import EventCard from '../components/EventCard';
 import { Link } from 'react-router-dom';
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import { useAuth } from "../context/AuthContext";
+import { getRecommendations, getMyEvents } from "../api/eventsApi";
+import AdminHomePage from "./AdminHomePage";
 
 const HomePage = () => {
+
+    const { user } = useAuth();
+
+    const [recommendations, setRecommendations] = useState([]);
+    const [recIndex, setRecIndex] = useState(0);
+    const [myEvents, setMyEvents] = useState([]);
+    const [myIndex, setMyIndex] = useState(0);
+
+    useEffect(() => {
+        if (!user) return;
+        const fetchRecommendations = async () => {
+            try {
+                const response = await getRecommendations();
+                setRecommendations(response.data.results || response.data);
+            } catch (err) {
+                console.log('Αποτυχία φόρτωσης προτάσεων:', err);
+                setRecommendations([]);
+            }
+        };
+        fetchRecommendations();
+    }, [user]);
+
+    useEffect(() => {
+        if (!user || user.role !== "ORGANIZER") return;
+        const fetchMyEvents = async () => {
+            try {
+                const response = await getMyEvents();
+                setMyEvents(response.data.results || response.data);
+            } catch (err) {
+                console.log('Αποτυχία φόρτωσης εκδηλώσεων:', err);
+                setMyEvents([]);
+            }
+        };
+        fetchMyEvents();
+    }, [user]);
+
+    if (user && user.role === "ADMIN") {
+        return <AdminHomePage />;
+    }
+
     return (
         <>
         <Box // first of 3 main elements
@@ -62,107 +109,166 @@ const HomePage = () => {
                     Η επόμενη έξοδος ξεκινά από εδώ. Ανακάλυψε εκδηλώσεις που σου ταιριάζουν, κλείσε τη θέση σου σε λίγα δευτερόλεπτα και ζήσε την στιγμή.
                 </Typography>
             </Box>
-            <Box
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "20px",
-                }}
-            >
+            {!user && (
                 <Box
                     sx={{
                         display: "flex",
-                        width: "443px",
-                        height: "340px",
-                        padding: "20px",
-                        flexDirection: "column",
-                        justifyContent: "center",
                         alignItems: "center",
-                        gap: "30px",
-                        borderRadius: "15px",
-                        border: "5px solid #FFF",
-                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)"
+                        gap: "20px",
                     }}
                 >
-                    <Typography
+                    <Box
                         sx={{
-                            alignSelf: "stretch",
-                            color: "black",
-                            textAlign: "center",
-                            fontSize: "30px",
-                            fontWeight: "500",
+                            display: "flex",
+                            width: "443px",
+                            height: "340px",
+                            padding: "20px",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "30px",
+                            borderRadius: "15px",
+                            border: "5px solid #FFF",
+                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)"
                         }}
                     >
-                        Κάνε εγγραφή
-                    </Typography>
-                    <Typography
+                        <Typography
+                            sx={{
+                                alignSelf: "stretch",
+                                color: "black",
+                                textAlign: "center",
+                                fontSize: "30px",
+                                fontWeight: "500",
+                            }}
+                        >
+                            Κάνε εγγραφή
+                        </Typography>
+                        <Typography
+                            sx={{
+                                color: "black",
+                                fontSize: "24px",
+                                fontWeight: "500",
+                                textAlign: "center",
+                                alignSelf: "stretch",
+                                fontStyle: "normal",
+                                lineHeight: "normal",
+                            }}
+                        >
+                            Κάνε δωρεάν εγγραφή σε λίγα μονο δευτερόλεπτα και απόλαυσε μια εύκολη, γρήγορη και προσωποιημένη εμπειρία.
+                        </Typography>
+                        <MyButton
+                            component={Link}
+                            to={`/signup`}
+                        >
+                            Εγγραφή
+                        </MyButton>
+                    </Box>
+                    <Box
                         sx={{
-                            color: "black",
-                            fontSize: "24px",
-                            fontWeight: "500",
-                            textAlign: "center",
-                            alignSelf: "stretch",
-                            fontStyle: "normal",
-                            lineHeight: "normal",
+                            display: "flex",
+                            width: "443px",
+                            height: "340px",
+                            padding: "20px",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "30px",
+                            borderRadius: "15px",
+                            border: "5px solid #FFF",
+                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)"
                         }}
                     >
-                        Κάνε δωρεάν εγγραφή σε λίγα μονο δευτερόλεπτα και απόλαυσε μια εύκολη, γρήγορη και προσωποιημένη εμπειρία.
-                    </Typography>
-                    <MyButton
-                        component={Link}
-                        to={`/signup`}
-                    >
-                        Εγγραφή
-                    </MyButton>
+                        <Typography
+                            sx={{
+                                alignSelf: "stretch",
+                                color: "black",
+                                textAlign: "center",
+                                fontSize: "30px",
+                                fontWeight: "500",
+                            }}
+                        >
+                            Ανακάλυψε εκδηλώσεις 
+                        </Typography>
+                        <Typography
+                            sx={{
+                                color: "black",
+                                fontSize: "24px",
+                                fontWeight: "500",
+                                textAlign: "center",
+                                alignSelf: "stretch",
+                                fontStyle: "normal",
+                                lineHeight: "normal",
+                            }}
+                        >
+                            Ανακάλυψε τις εκατοντάδες εκδηλώσεις που γίνονται στην πόλη σου και βρες την επόμενη σου έξοδο.
+                        </Typography>
+                        <MyButton
+                            component={Link}
+                            to={`/search`}
+                        >
+                            Αναζήτηση
+                        </MyButton>
                 </Box>
-                <Box
-                    sx={{
-                        display: "flex",
-                        width: "443px",
-                        height: "340px",
-                        padding: "20px",
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: "30px",
-                        borderRadius: "15px",
-                        border: "5px solid #FFF",
-                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)"
-                    }}
-                >
-                    <Typography
-                        sx={{
-                            alignSelf: "stretch",
-                            color: "black",
-                            textAlign: "center",
-                            fontSize: "30px",
-                            fontWeight: "500",
-                        }}
-                    >
-                        Ανακάλυψε εκδηλώσεις 
-                    </Typography>
-                    <Typography
-                        sx={{
-                            color: "black",
-                            fontSize: "24px",
-                            fontWeight: "500",
-                            textAlign: "center",
-                            alignSelf: "stretch",
-                            fontStyle: "normal",
-                            lineHeight: "normal",
-                        }}
-                    >
-                        Ανακάλυψε τις εκατοντάδες εκδηλώσεις που γίνονται στην πόλη σου και βρες την επόμενη σου έξοδο.
-                    </Typography>
-                    <MyButton
-                        component={Link}
-                        to={`/search`}
-                    >
-                        Αναζήτηση
-                    </MyButton>
-               </Box>
-            </Box>
+                </Box>
+            )}
         </Box>
+        {user && user.role === "ORGANIZER" && myEvents.length > 0 && (
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+                <Typography sx={{ color: "black", fontSize: "46px", fontWeight: "600" }}>
+                    Οι εκδηλώσεις σου
+                </Typography>
+                <Typography sx={{ color: "black", fontSize: "26px", fontStyle: "italic", textAlign: "center" }}>
+                    Δες όλες σου τις εκδηλώσεις με ένα μόνο κλικ.
+                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <IconButton
+                        onClick={() => setMyIndex((prev) => (prev - 1 + myEvents.length) % myEvents.length)}
+                        disabled={myEvents.length <= 1}
+                    >
+                        <NavigateBeforeIcon sx={{ fontSize: "40px", color: "black" }} />
+                    </IconButton>
+                    <EventCard
+                        event={myEvents[myIndex]}
+                        to={`/my-events/${myEvents[myIndex].id}`}
+                        buttonLabel="Περισσότερα"
+                        showSeats
+                    />
+                    <IconButton
+                        onClick={() => setMyIndex((prev) => (prev + 1) % myEvents.length)}
+                        disabled={myEvents.length <= 1}
+                    >
+                        <NavigateNextIcon sx={{ fontSize: "40px", color: "black" }} />
+                    </IconButton>
+                </Box>
+            </Box>
+        )}
+
+        {user && recommendations.length > 0 && (
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px" }}>
+                <Typography sx={{ color: "black", fontSize: "46px", fontWeight: "600" }}>
+                    Προτεινόμενα
+                </Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                    <IconButton
+                        onClick={() => setRecIndex((prev) => (prev - 1 + recommendations.length) % recommendations.length)}
+                        disabled={recommendations.length <= 1}
+                    >
+                        <NavigateBeforeIcon sx={{ fontSize: "40px", color: "black" }} />
+                    </IconButton>
+                    <EventCard
+                        event={recommendations[recIndex]}
+                        to={`/events/${recommendations[recIndex].id}`}
+                        buttonLabel="Μάθε περισσότερα"
+                    />
+                    <IconButton
+                        onClick={() => setRecIndex((prev) => (prev + 1) % recommendations.length)}
+                        disabled={recommendations.length <= 1}
+                    >
+                        <NavigateNextIcon sx={{ fontSize: "40px", color: "black" }} />
+                    </IconButton>
+                </Box>
+            </Box>
+        )}
         <Box
             sx={{
                 display: "flex",
@@ -410,79 +516,81 @@ const HomePage = () => {
                 </Box>
             </Box>
         </Box>
-        <Box
-            sx={{
-                display: "flex",
-                width: "905px",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: "30px",
-            }}
-        >
-            <Typography
-                sx={{
-                    alignSelf: "stretch",
-                    color: "black",
-                    fontSize: "46px",
-                    fontWeight: "600",
-                }}
-            >
-                Είσαι διοργανωτής;
-            </Typography>
+        {!user && (
             <Box
                 sx={{
                     display: "flex",
-                    padding: "40px 20px 20px 20px",
+                    width: "905px",
                     flexDirection: "column",
-                    justifyContent: "center",
                     alignItems: "center",
                     gap: "30px",
-                    alignSelf: "stretch",
-                    borderRadius: "15px",
-                    border: "5px solid #FFF",
-                    background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
                 }}
             >
+                <Typography
+                    sx={{
+                        alignSelf: "stretch",
+                        color: "black",
+                        fontSize: "46px",
+                        fontWeight: "600",
+                    }}
+                >
+                    Είσαι διοργανωτής;
+                </Typography>
                 <Box
                     sx={{
                         display: "flex",
+                        padding: "40px 20px 20px 20px",
+                        flexDirection: "column",
+                        justifyContent: "center",
                         alignItems: "center",
                         gap: "30px",
                         alignSelf: "stretch",
+                        borderRadius: "15px",
+                        border: "5px solid #FFF",
+                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
                     }}
                 >
                     <Box
                         sx={{
-                            backgroundImage: "url('/event_organizer.jpg')",
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                            width: "179px",
-                            height: "224px",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "30px",
+                            alignSelf: "stretch",
                         }}
                     >
-                    </Box>
-                    <Typography
-                        sx={{
-                            flex: "1 0 0",
-                            color: "black",
-                            textAlign: "center",
-                            fontSize: "24px",
+                        <Box
+                            sx={{
+                                backgroundImage: "url('/event_organizer.jpg')",
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                width: "179px",
+                                height: "224px",
+                            }}
+                        >
+                        </Box>
+                        <Typography
+                            sx={{
+                                flex: "1 0 0",
+                                color: "black",
+                                textAlign: "center",
+                                fontSize: "24px",
 
-                        }}
+                            }}
+                        >
+                            Ανέβασε την εκδήλωσή σου σε λίγα λεπτά και άσε την πλατφόρμα να αναλάβει τα εισιτήρια, τις κρατήσεις και τη διαχείριση θέσεων. Από τη μικρότερη συνάντηση μέχρι τη μεγαλύτερη συναυλία, όλα οργανώνονται από ένα σημείο, με πλήρη εικόνα του ποιος έχει κλείσει θέση. Εσύ επικεντρώσου στη δημιουργία, το υπόλοιπο το φροντίζουμε εμείς.
+                        </Typography>
+                    </Box>
+                    <MyButton
+                        component={Link}
+                        to="signup"
+                        state={{ isOrganizer: true }}
                     >
-                        Ανέβασε την εκδήλωσή σου σε λίγα λεπτά και άσε την πλατφόρμα να αναλάβει τα εισιτήρια, τις κρατήσεις και τη διαχείριση θέσεων. Από τη μικρότερη συνάντηση μέχρι τη μεγαλύτερη συναυλία, όλα οργανώνονται από ένα σημείο, με πλήρη εικόνα του ποιος έχει κλείσει θέση. Εσύ επικεντρώσου στη δημιουργία, το υπόλοιπο το φροντίζουμε εμείς.
-                    </Typography>
+                        Γίνε διοργανωτής
+                    </MyButton>
                 </Box>
-                <MyButton
-                    component={Link}
-                    to="signup"
-                    state={{ isOrganizer: true }}
-                >
-                    Γίνε διοργανωτής
-                </MyButton>
             </Box>
-        </Box>
+        )}
         </>
     );
 };

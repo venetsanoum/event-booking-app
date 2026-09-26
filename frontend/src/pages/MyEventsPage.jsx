@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress, Tabs, Tab, IconButton } from "@mui/material";
+import { Box, Typography, Dialog, DialogContent, Button, CircularProgress, Tabs, Tab, IconButton } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { formatEventDateRange } from "../utils/dateUtils";
-import { getMyEvents, getMyCompletedEvents, getMyCancelledEvents, getMyDraftedEvents } from "../api/eventsApi";
+import { deleteEvent, getMyEvents, getMyCompletedEvents, getMyCancelledEvents, getMyDraftedEvents } from "../api/eventsApi";
 import Breadcrumbs from "../components/Breadcrumbs";
 
 const tabConfig = [
@@ -37,6 +37,23 @@ const MyEventsPage = () => {
         };
         fetchEvents();
     }, [activeTab]);
+
+    const [deleteId, setDeleteId] = useState(null);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleDelete = async () => {
+        setDeleting(true);
+        try {
+            await deleteEvent(deleteId);
+            setEvents(events.filter((e) => e.id !== deleteId));
+            setDeleteId(null);
+        } catch (err) {
+            console.log('Αποτυχία διαγραφής:', err);
+            setError('Δεν ήταν δυνατή η διαγραφή της εκδήλωσης.');
+        } finally {
+            setDeleting(false);
+        }
+    };
 
     return (
         <>
@@ -248,11 +265,58 @@ const MyEventsPage = () => {
                                                 Κρατήσεις
                                             </MyButton>
                                         )}
+                                        {(event.status === "DRAFT" || event.reserved === 0) && (
+                                            <MyButton
+                                                onClick={() => setDeleteId(event.id)}
+                                                sx={{
+                                                    background: "#fff",
+                                                    color: "#d32f2f",
+                                                    border: "2px solid #d32f2f",
+                                                    "&:hover": { backgroundColor: "#d32f2f", color: "#fff" },
+                                                }}
+                                            >
+                                                Διαγραφή
+                                            </MyButton>
+                                        )}
                                     </Box>
                                 </Box>
                             </Box>
-                        ))
-                        )}
+                        )
+                    
+                )
+
+                        )}<Dialog
+    open={deleteId !== null}
+    onClose={() => setDeleteId(null)}
+    slotProps={{ paper: { sx: { borderRadius: "15px", border: "5px solid #FFF", overflow: "hidden" } } }}
+>
+    <DialogContent
+        sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "16px",
+            padding: "24px",
+            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+        }}
+    >
+        <Typography sx={{ width: "400px", fontSize: "22px", fontWeight: "600", color: "black", textAlign: "center" }}>
+            Σίγουρα θέλεις να διαγράψεις αυτή την εκδήλωση; Η ενέργεια δεν αναιρείται.
+        </Typography>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <Button onClick={() => setDeleteId(null)} sx={{ color: "black", textDecoration: "underline" }}>
+                Πίσω
+            </Button>
+            <MyButton
+                onClick={handleDelete}
+                disabled={deleting}
+                sx={{ background: "#d32f2f", "&:hover": { backgroundColor: "#b71c1c" } }}
+            >
+                {deleting ? "Διαγραφή..." : "Διαγραφή"}
+            </MyButton>
+        </Box>
+    </DialogContent>
+</Dialog>
                     </Box>
                 )}
             </Box>
