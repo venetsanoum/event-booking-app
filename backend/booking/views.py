@@ -37,7 +37,7 @@ class CreateBookingView(generics.CreateAPIView):
             BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
         confirmation_message=Message(
             subject="Επιβεβαίωση Κράτησης",
-            content="Η κράτησή σας με αριθμό {booking.id} επιβεβαιώθηκε! Ευχαριστούμε πολύ!",
+            content=f"Η κράτησή σας με αριθμό {booking.id} επιβεβαιώθηκε! Ευχαριστούμε πολύ!",
             sender=event.organizer,
             receiver=self.request.user,
             event=event,
@@ -98,9 +98,10 @@ class CancelBooking(APIView):
         booking.save()
         cancellation_message=Message(
             subject="Ακύρωση Εκδήλωσης",
-            content="Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για" \
-            "{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
-            "επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
+            content=(f"Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} " 
+            f"που ήταν προγραμματισμένη για " 
+            f"{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την "
+            f"επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση."),
             sender=event.organizer,
             receiver=booking.attendee,
             event=event,

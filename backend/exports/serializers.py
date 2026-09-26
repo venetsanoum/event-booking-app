@@ -24,7 +24,8 @@ class BookingSerializer(serializers.ModelSerializer): # DOES NOT PRINT BOOKINGS
             "attendee",
             "time",
             "items",
-            "cost"
+            "cost",
+            "status"
         ]
 class EventImageSerializer(serializers.ModelSerializer):
     class Meta:
