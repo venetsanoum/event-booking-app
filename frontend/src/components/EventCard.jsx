@@ -81,7 +81,7 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                     Τοποθεσία: {event.venue}, {event.city} <br />
                     {showSeats
                         ? `Απομένουν ${event.capacity - event.reserved} θέσεις`
-                        : `Τιμή: Από ${event.lowest_price ?? "-"}€`}
+                        : `Τιμή: Από ${event.min_price ?? "-"}€`}
                 </Typography>
 
                 <MyButton component={Link} to={to} sx={{ alignSelf: "center" }}>

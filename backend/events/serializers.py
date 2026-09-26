@@ -190,12 +190,12 @@ class EditEventSerializer(serializers.ModelSerializer):
 class SearchEventSerializer(serializers.ModelSerializer):
     category = CategoryInfoSerializer(read_only=True, many=True)
     main_photo = serializers.SerializerMethodField()
-    lowest_price = serializers.SerializerMethodField()
+    min_price = serializers.SerializerMethodField()
     class Meta:
         model = Event
         fields = ["id", "title", "category", "eventType", "venue",
         "address", "city", "country", "startDateTime", "endDateTime",
-        "description", "main_photo", "lowest_price"]
+        "description", "main_photo", "min_price"]
     def get_main_photo(self, obj):
         first_image = obj.images.first()
         if first_image:
@@ -204,7 +204,7 @@ class SearchEventSerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(first_image.photo.url)
             return first_image.photo.url
         return None
-    def get_lowest_price(self, obj):
+    def get_min_price(self, obj):
         tickets = obj.ticket_types.all()
         if not tickets:
             return None
