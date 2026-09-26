@@ -249,7 +249,7 @@ const MyEventsPage = () => {
                                                 }}
                                             >
                                                 Τοποθεσία: {event.venue}, {event.city} <br/>
-                                                Απομένουν {event.capacity - event.reserved} θέσεις
+                                                Έχουν γίνει {event.reserved} κρατήσεις
                                             </Typography>
                                         </Box>
                                     </Box>
