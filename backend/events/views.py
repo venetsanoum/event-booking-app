@@ -164,13 +164,13 @@ class CancelEventView(generics.UpdateAPIView):
             booking.save()
             cancellation_message=Message(
                 subject="Ακύρωση Εκδήλωσης",
-                content="Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για" \
-                "{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
-                "επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
+                content=f"Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για" \
+                f"{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
+                f"επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
                 sender=event.organizer,
                 receiver=user,
                 event=event,
-                sendDateTime=datetime.datetime.now()
+                sendDateTime=timezone.now()
             )
             cancellation_message.save()
         return Response({
