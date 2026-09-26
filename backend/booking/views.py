@@ -37,7 +37,7 @@ class CreateBookingView(generics.CreateAPIView):
             BookingItems.objects.create(booking=booking, ticket_type=item["ticket_type"], number=item["number"])
         confirmation_message=Message(
             subject="Επιβεβαίωση Κράτησης",
-            content=f"Η κράτησή σας με αριθμό {booking.id} επιβεβαιώθηκε! Ευχαριστούμε πολύ!",
+            content=f"Η κράτησή σας με αριθμό {booking.id}, για την εκδήλωση {event.title} στις {event.startDateTime} επιβεβαιώθηκε! Ευχαριστούμε πολύ!",
             sender=event.organizer,
             receiver=self.request.user,
             event=event,
