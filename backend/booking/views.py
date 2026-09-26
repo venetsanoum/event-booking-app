@@ -56,22 +56,22 @@ class MyBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Booking.objects.filter(attendee=self.request.user).order_by("-time")
+        return Booking.objects.filter(attendee=self.request.user).order_by("event__startDateTime")
 class MyCompletedBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-            return Booking.objects.filter(attendee=self.request.user, event__status="COMPLETED").order_by("time")
+            return Booking.objects.filter(attendee=self.request.user, event__status="COMPLETED").order_by("event__startDateTime")
 class MyUpcomingBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-            return Booking.objects.filter(attendee=self.request.user, event__status="PUBLISHED").order_by("-time")
+            return Booking.objects.filter(attendee=self.request.user, event__status="PUBLISHED").order_by("event__startDateTime")
 class MyCancelledBookingsView(generics.ListAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
     def get_queryset(self):
-        return Booking.objects.filter(attendee=self.request.user, event__status="CANCELLED").order_by("-time")
+        return Booking.objects.filter(attendee=self.request.user, event__status="CANCELLED").order_by("event__startDateTime")
 class SingleBookingDetailsView(generics.RetrieveAPIView):
     serializer_class=BookingSerializer
     permission_classes=[IsAuthenticated]
