@@ -254,17 +254,6 @@ const MyEventsPage = () => {
                                         </Box>
                                     </Box>
                                     <Box sx={{ display: "flex", gap: "16px" }}>
-                                        <MyButton
-                                            component={Link}
-                                            to={event.status === "DRAFT" ? `/my-events/${event.id}/edit` : `/my-events/${event.id}`}
-                                        >
-                                            {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
-                                        </MyButton>
-                                        {event.status !== "DRAFT" && (
-                                            <MyButton component={Link} to={`/my-events/${event.id}/bookings`}>
-                                                Κρατήσεις
-                                            </MyButton>
-                                        )}
                                         {(event.status === "DRAFT" || event.reserved === 0) && (
                                             <MyButton
                                                 onClick={() => setDeleteId(event.id)}
@@ -276,6 +265,17 @@ const MyEventsPage = () => {
                                                 }}
                                             >
                                                 Διαγραφή
+                                            </MyButton>
+                                        )}
+                                        <MyButton
+                                            component={Link}
+                                            to={event.status === "DRAFT" ? `/my-events/${event.id}/edit` : `/my-events/${event.id}`}
+                                        >
+                                            {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
+                                        </MyButton>
+                                        {event.status !== "DRAFT" && (
+                                            <MyButton component={Link} to={`/my-events/${event.id}/bookings`}>
+                                                Κρατήσεις
                                             </MyButton>
                                         )}
                                     </Box>
