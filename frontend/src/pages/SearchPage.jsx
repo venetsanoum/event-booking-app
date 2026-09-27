@@ -72,7 +72,7 @@ const SearchPage = () => {
             }
         };
         fetchCategories();
-    }, []);
+    }, [location.state?.categoryName]);
 
     const handleFilterChange = (e) => {
         setFilters({

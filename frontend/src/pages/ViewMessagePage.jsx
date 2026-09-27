@@ -58,15 +58,22 @@ const ViewMessagePage = () => {
     };
 
     return (
-        <>
+        <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "10px",
+
+            }}
+        >
             <Breadcrumbs
                 items={[
                     { label: "Μηνύματα", to: "/my-messages" },
                     { label: message.subject },
                 ]}
                 sx={{
-                    marginLeft: "-30px",
-                    marginTop: "-200px",
+                    alignSelf: "flex-start"
                 }}
             />
             <Box
@@ -171,7 +178,7 @@ const ViewMessagePage = () => {
                     {message.content}
                 </Typography>
             </Box>
-        </>
+        </Box>
     );
 };
 
