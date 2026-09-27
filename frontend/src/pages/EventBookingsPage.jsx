@@ -1,21 +1,43 @@
 import { useState, useEffect } from "react";
-import { Box, Typography, CircularProgress } from "@mui/material";
+import { Box, Pagination, Typography, CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getEventBookings } from "../api/bookingsApi";
 import { getEventPreview } from "../api/eventsApi";
+
+const PAGE_SIZE = 10;
 
 const EventBookingsPage = () => {
     const { id } = useParams();
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                const response = await getEventPreview(id);
+                setEvent(response.data);
+            } catch (err) {
+                console.log('Αποτυχία φόρτωσης εκδήλωσης:', err);
+            }
+        };
+        fetchEvent();
+    }, [id]);
 
     useEffect(() => {
         const fetchBookings = async () => {
+            setLoading(true);
+            setError('');
             try {
-                const response = await getEventBookings(id);
+                const response = await getEventBookings(id, {
+                    limit: PAGE_SIZE,
+                    offset: (page - 1) * PAGE_SIZE,
+                });
                 setBookings(response.data.results || response.data);
+                setCount(response.data.count || 0);
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης κρατήσεων:', err);
                 setError('Δεν ήταν δυνατή η φόρτωση των κρατήσεων.');
@@ -24,7 +46,7 @@ const EventBookingsPage = () => {
             }
         };
         fetchBookings();
-    }, [id]);
+    }, [id, page]);
 
     const [event, setEvent] = useState(null);
 
@@ -141,7 +163,7 @@ const EventBookingsPage = () => {
             <Typography
                 sx={{
                     color: "black",
-                    fontSize: "65px",
+                    fontSize: "50px",
                     fontWeight: "600",
                 }}
             >
@@ -182,7 +204,7 @@ const EventBookingsPage = () => {
                                 textAlign: "left",
                             }}
                         >
-                            Σύνολο κρατήσεων: {bookings.length} &nbsp;&nbsp;
+                            Σύνολο κρατήσεων: {count} &nbsp;&nbsp;
                             Σύνολο εισιτηρίων: {totalTicketsSold}
                         </Typography>
 
@@ -262,6 +284,21 @@ const EventBookingsPage = () => {
                             );
                         })}
                     </>
+                )}
+                {count > PAGE_SIZE && (
+                    <Pagination
+                        count={Math.ceil(count / PAGE_SIZE)}
+                        page={page}
+                        onChange={(e, value) => setPage(value)}
+                        sx={{
+                            alignSelf: "center",
+                            "& .MuiPaginationItem-root": {
+                                fontSize: "18px",
+                                color: "black",
+                                background: "rgba(255, 255, 255, 0.75)",
+                            },
+                        }}
+                    />
                 )}
             </Box>
         </>
