@@ -92,6 +92,16 @@ const EventBookingsPage = () => {
         0
     );
 
+    // Το σύνολο των εισιτηρίων μπορεί να είναι μικρότερο από τη χωρητικότητα,
+    // αν ο διοργανωτής δεν έχει διαθέσει όλες τις θέσεις
+    const totalTickets = event
+        ? event.ticket_types.reduce((sum, tt) => sum + tt.quantity, 0)
+        : 0;
+
+    const totalAvailable = event
+        ? event.ticket_types.reduce((sum, tt) => sum + tt.available, 0)
+        : 0;
+
     return (
         <Box
             sx={{
@@ -164,7 +174,7 @@ const EventBookingsPage = () => {
 
                     <Typography sx={{ fontSize: "22px", fontWeight: "600", color: "black" }}>
                         Συνολικές Κρατήσεις: {event.reserved}&nbsp;&nbsp;&nbsp;
-                        Απομένουν: {event.capacity - event.reserved}
+                        Απομένουν: {totalAvailable}
                     </Typography>
                 </Box>
             )}

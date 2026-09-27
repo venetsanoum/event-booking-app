@@ -195,6 +195,7 @@ const EditEventPage = () => {
                 return;
             }
         }
+
         const invalidTicket = ticketTypes.find(
             (tt) => tt.sold && Number(tt.quantity) < tt.sold
         );
@@ -202,10 +203,12 @@ const EditEventPage = () => {
             setError(`Η ποσότητα για "${invalidTicket.name}" δεν μπορεί να είναι μικρότερη από ${invalidTicket.sold}.`);
             return;
         }
+
         setSubmitting(true);
 
         try {
             let eventId = id;
+
             // Αφαιρούμε τα κενά πεδία, ώστε ένα πρόχειρο να μπορεί να αποθηκευτεί
             // ημιτελές. Αν στέλναμε π.χ. startDateTime: "", το Django θα το
             // απέρριπτε ως μη έγκυρη ημερομηνία.
@@ -222,6 +225,17 @@ const EditEventPage = () => {
                     cleanedData[key] = value;
                 }
             });
+
+            // Οι διαγραφές γίνονται πρώτες, ώστε ο έλεγχος χωρητικότητας στο
+            // backend να μη λαμβάνει υπόψη ticket types που ο χρήστης έχει ήδη
+            // αφαιρέσει από τη φόρμα.
+            if (isEditMode) {
+                for (const ticketId of deletedTicketIds) {
+                    await deleteTicketType(id, ticketId);
+                }
+                setDeletedTicketIds([]);
+            }
+
             if (isEditMode) {
                 await editEvent(id, cleanedData);
             } else {
@@ -229,46 +243,46 @@ const EditEventPage = () => {
                 eventId = response.data.event_id;
             }
 
-            for (const ticketId of deletedTicketIds) {
-                await deleteTicketType(eventId, ticketId);
-            }
-            setDeletedTicketIds([]);
-
-            for (let i = 0; i < ticketTypes.length; i++) {
-                const tt = ticketTypes[i];
+            // Πρώτα οι ενημερώσεις των υπαρχόντων ticket types και μετά οι
+            // δημιουργίες νέων, ώστε μια μείωση ποσότητας να προηγείται μιας
+            // προσθήκης και να μην ξεπεραστεί προσωρινά η χωρητικότητα.
+            for (const tt of ticketTypes) {
                 if (tt.id) {
                     await editTicketType(eventId, tt.id, {
                         name: tt.name,
                         price: tt.price,
-                        quantity: tt.quantity
+                        quantity: tt.quantity,
                     });
-                } else if (
-                    tt.name &&
-                    tt.price !== '' &&
-                    tt.quantity !== ''
-                ) {
+                }
+            }
+
+            for (let i = 0; i < ticketTypes.length; i++) {
+                const tt = ticketTypes[i];
+                if (!tt.id && tt.name && tt.price !== '' && tt.quantity !== '') {
                     const response = await createTicketType(eventId, {
                         name: tt.name,
                         price: tt.price,
-                        quantity: tt.quantity
+                        quantity: tt.quantity,
                     });
 
+                    // Κρατάμε το id που επέστρεψε το backend, ώστε αν ο χρήστης
+                    // αποθηκεύσει ξανά, το ticket type να ενημερωθεί αντί να
+                    // δημιουργηθεί δεύτερη φορά.
                     const newTicketType = response.data;
-
-                    setTicketTypes(prev =>
+                    setTicketTypes((prev) =>
                         prev.map((ticket, index) =>
-                            index === i
-                                ? { ...ticket, id: newTicketType.id }
-                                : ticket
+                            index === i ? { ...ticket, id: newTicketType.id } : ticket
                         )
                     );
                 }
             }
+
             for (const file of photoFiles) {
                 const imgFormData = new FormData();
                 imgFormData.append('photo', file);
                 await uploadEventImage(eventId, imgFormData);
             }
+
             // Το publish καλείται μόνο για εκδηλώσεις που δεν έχουν ήδη δημοσιευτεί.
             // Σε ήδη δημοσιευμένη απλά αποθηκεύουμε τις αλλαγές.
             if (shouldPublish) {
