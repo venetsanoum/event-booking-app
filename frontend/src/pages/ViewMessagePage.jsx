@@ -66,7 +66,7 @@ const ViewMessagePage = () => {
                 ]}
                 sx={{
                     marginLeft: "-30px",
-                    marginTop: "-110px",
+                    marginTop: "-200px",
                 }}
             />
             <Box

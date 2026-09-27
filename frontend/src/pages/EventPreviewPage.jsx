@@ -156,7 +156,7 @@ const MyEventPreviewPage = () => {
                     </MapContainer>
                 </Box>
             ) : (
-                <Typography sx={{ color: "#777", fontSize: "18px", textAlign: "center" }}>
+                <Typography sx={{ color: "#000", fontSize: "22px", textAlign: "center" }}>
                     Η τοποθεσία δεν είναι διαθέσιμη για αυτή την εκδήλωση.
                 </Typography>
             )}
