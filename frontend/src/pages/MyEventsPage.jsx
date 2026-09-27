@@ -287,6 +287,13 @@ const MyEventsPage = () => {
                                         >
                                             {event.status === "DRAFT" ? "Επεξεργασία" : "Περισσότερα"}
                                         </MyButton>
+
+                                        {event.status === "PUBLISHED" && (
+                                            <MyButton component={Link} to={`/my-events/${event.id}/edit`}>
+                                                Επεξεργασία
+                                            </MyButton>
+                                        )}
+
                                         {event.status !== "DRAFT" && (
                                             <MyButton component={Link} to={`/my-events/${event.id}/bookings`}>
                                                 Κρατήσεις

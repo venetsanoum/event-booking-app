@@ -84,6 +84,7 @@ const EditEventPage = () => {
                             name: tt.name,
                             price: tt.price,
                             quantity: tt.quantity,
+                            sold: tt.quantity - tt.available,
                         })));
                     }
                 }
@@ -159,18 +160,24 @@ const EditEventPage = () => {
     };
 
     const handleSubmit = async (e, shouldPublish = false) => {
-    e.preventDefault();
-    setError('');
+        e.preventDefault();
+        setError('');
 
-    if (shouldPublish) {
-        const missing = getMissingFields();
-        if (missing.length > 0) {
-            setError(`Για δημοσίευση πρέπει να συμπληρώσεις: ${missing.join(", ")}.`);
+        if (shouldPublish) {
+            const missing = getMissingFields();
+            if (missing.length > 0) {
+                setError(`Για δημοσίευση πρέπει να συμπληρώσεις: ${missing.join(", ")}.`);
+                return;
+            }
+        }
+        const invalidTicket = ticketTypes.find(
+            (tt) => tt.sold && Number(tt.quantity) < tt.sold
+        );
+        if (invalidTicket) {
+            setError(`Η ποσότητα για "${invalidTicket.name}" δεν μπορεί να είναι μικρότερη από ${invalidTicket.sold}.`);
             return;
         }
-    }
-
-    setSubmitting(true);
+        setSubmitting(true);
 
         try {
             let eventId = id;
@@ -802,30 +809,18 @@ return (
                             size="small"
                         />
                     </Box>
-                    <Box 
-                        sx={{ 
-                            display: "flex", 
-                            alignItems: "center", 
-                            gap: "20px" 
-                        }}
-                    >
-                        <Typography 
-                            sx={{ 
-                                width: "160px", 
-                                flexShrink: 0,
-                                fontSize: "22px", 
-                                color: "black",
-                                textAlign: "left",
-                            }}
-                        >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
+                        <Typography sx={{ width: "160px", flexShrink: 0, fontSize: "22px", color: "black", textAlign: "left" }}>
                             Ποσότητα
                         </Typography>
-                        <TextField 
-                            type="number" 
-                            value={tt.quantity} 
-                            onChange={(e) => handleTicketTypeChange(index, 'quantity', e.target.value)} 
-                            fullWidth 
-                            size="small" 
+                        <TextField
+                            type="number"
+                            value={tt.quantity}
+                            onChange={(e) => handleTicketTypeChange(index, 'quantity', e.target.value)}
+                            fullWidth
+                            size="small"
+                            slotProps={{ htmlInput: { min: tt.sold || 0 } }}
+                            helperText={tt.sold > 0 ? `Έχουν ήδη πωληθεί ${tt.sold} εισιτήρια` : ''}
                         />
                         {ticketTypes.length > 1 && (
                             <IconButton onClick={() => handleRemoveTicketType(index)} size="small">
