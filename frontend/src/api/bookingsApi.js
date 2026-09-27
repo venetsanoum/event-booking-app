@@ -16,6 +16,6 @@ export const getMyCancelledBookings = (params) => {
     return axiosInstance.get('booking/my-cancelled-bookings/', { params });
 }
 
-export const getEventBookings = (eventId) => {
-    return axiosInstance.get(`booking/event/${eventId}/`);
+export const getEventBookings = (eventId, params) => {
+    return axiosInstance.get(`booking/event/${eventId}/`, { params });
 };
