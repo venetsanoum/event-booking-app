@@ -10,18 +10,9 @@ class CreateEventSerializer(serializers.ModelSerializer):
         model=Event
         fields="__all__"
         read_only_fields=["organizer", "latitude", "longitude", "status"]
-    # def validate(self, args):
-    #     if(args["startDateTime"] > args["endDateTime"]):
-    #         raise serializers.ValidationError("Η ημερομηνία έναρξης πρέπει να είναι πριν την ημερομηνία λήξης.")
-    #     if(args["capacity"] <= 0):
-    #         raise serializers.ValidationError("Η χωρητικότητα πρέπει να είναι θετικός αριθμός.")
-    #     if(args["startDateTime"] < timezone.now()): # !!
-    #         raise serializers.ValidationError("Η ημερομηνία έναρξης δεν μπορεί να είναι στο παρελθόν.")
-    #     return args
     def create(self, validated_data):
         categories=validated_data.pop("category",[])
         latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
-        print(latitude)
         event=Event(**validated_data, latitude=latitude, longitude=longitude)
         event.save()
         event.category.set(categories)

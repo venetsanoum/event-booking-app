@@ -28,7 +28,7 @@ def recommend(model, users_map, events_map, train_S, user_id, K):
 def main():
     model, users_map, events_map, train_S, test_S = train()
     id=1
-    recommendations = recommend(model, users_map, events_map, train_S, id, 5)
+    recommendations = recommend(model, users_map, events_map, train_S, id, 10)
     print(recommendations)
     metrics=evaluate(model, users_map, events_map, train_S, test_S)
     for name, value in metrics.items():

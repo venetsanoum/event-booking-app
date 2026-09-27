@@ -165,7 +165,7 @@ class CancelEventView(generics.UpdateAPIView):
             cancellation_message=Message(
                 subject="Ακύρωση Εκδήλωσης",
                 content=f"Θα θέλαμε να σας ενημερώσουμε πως εξαιτίας κάποιων απρόοπτων γεγονότων η εκδήλωση: {event.title} ακυρώνεται που ήταν προγραμματισμένη για " \
-                f"{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την" \
+                f"{event.startDateTime} δυστυχώς ακυρώνεται! Θα ενημερωθείτε για την " \
                 f"επιστροφή των χρημάτων σας. Λυπούμαστε για την αναστάτωση.",
                 sender=event.organizer,
                 receiver=user,
