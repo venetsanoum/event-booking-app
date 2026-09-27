@@ -106,6 +106,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         # στελνω επιπλέον το ονομα και τον ρολο στο frontend
         data["username"] = self.user.username
         data["role"] = self.user.role
+        data["photo"] = (self.user.profile_photo.url if self.user.profile_photo else None)
         return data
 # η προβολή των στοιχείων προφίλ ενός χρήστη
 class MyProfileSerializer(serializers.ModelSerializer):
