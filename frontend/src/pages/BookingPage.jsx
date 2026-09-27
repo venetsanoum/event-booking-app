@@ -81,7 +81,13 @@ const BookingPage = () => {
             navigate('/booking-accepted', { state: { booking: response.data } });
         } catch (err) {
             console.log('Αποτυχία κράτησης:', err);
-            setSubmitError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            if (err.response && err.response.data) {
+                const data = err.response.data;
+                const message = data.detail || data.error || Object.values(data)[0];
+                setSubmitError(Array.isArray(message) ? message[0] : message);
+            } else {
+                setSubmitError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+            }
         } finally {
             setSubmitting(false);
         }

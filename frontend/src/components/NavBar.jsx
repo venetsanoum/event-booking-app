@@ -81,7 +81,8 @@ const NavBar = () => {
           gap: "10px",
         }}
       >
-        {(!user || user.role !== "ADMIN") && (
+        {/* Aν ο χρήστης δεν έχει συνδεθεί ή δεν είναι admin  */}
+        {(!user || user.role !== "ADMIN") && ( 
           <Button
             component={Link}
             to="/search"
@@ -95,6 +96,7 @@ const NavBar = () => {
               Αναζήτηση
           </Button>
         )}
+        {/* Αν έχουμε attendee */}
         {user && user.role === "ATTENDEE" ? (
           <>
           <IconButton component={Link} to="/my-messages">
