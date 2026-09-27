@@ -107,10 +107,10 @@ const NavBar = () => {
           </IconButton>
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              {user.profileData?.photo ? (
+              {user.profile_photo ? (
                 <Box
                   component="img"
-                  src={user.profileData.photo}
+                  src={user.profile_photo}
                   alt="profile"
                   sx={{
                     width: 40,
@@ -203,10 +203,10 @@ const NavBar = () => {
           </IconButton>
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              {user.profileData?.photo ? (
+              {user.profile_photo ? (
                 <Box
                   component="img"
-                  src={user.profileData.photo}
+                  src={user.profile_photo}
                   alt="profile"
                   sx={{
                     width: 40,

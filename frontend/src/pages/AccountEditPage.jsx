@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import MyButton from "../components/MyButton";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { useAuth } from "../context/AuthContext";
 
 const AccountEditPage = () => {
 
@@ -22,7 +23,7 @@ const AccountEditPage = () => {
     const [afmError, setAfmError] = useState("");
     const [showSuccess, setShowSuccess] = useState(false);
     const navigate = useNavigate();
-
+    const { updateUser } = useAuth();
     const [photoFile, setPhotoFile] = useState(null);
     const [photoPreview, setPhotoPreview] = useState(null);
     
@@ -152,7 +153,10 @@ const AccountEditPage = () => {
             }
 
             const response = await editMe(dataToSend);
-
+            updateUser({
+                username: response.data.username,
+                profile_photo: response.data.profile_photo,
+            });
             setShowSuccess(true);
 
             setTimeout(() => {

@@ -67,7 +67,7 @@ const AccountPage = () => {
             {userData.profile_photo ? (
                 <Avatar
                     src={userData.profile_photo}
-                    sx={{ width: 100, height: 100, marginBottom: "10px" }}
+                    sx={{ width: 170, height: 170, marginBottom: "10px" }}
                 />
             ) : (
                 <Avatar sx={{ width: 170, height: 170, marginBottom: "10px", bgcolor: "#ccc" }}>
