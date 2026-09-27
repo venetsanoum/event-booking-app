@@ -269,7 +269,7 @@ class EventTicketTypesView(generics.ListAPIView):
 
 # DELETE events/{event_id}/ticket-types/{ticket_id:pk}
 class DeleteTicketTypeView(generics.DestroyAPIView):
-    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEventTicketTypeEdition]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition]
     def perform_destroy(self, instance):
         if BookingItems.objects.filter(ticket_type=instance).exists():
             raise serializers.ValidationError("Δεν μπορείτε να διαγράψετε τον συγκεκριμένο τύπο εισιτηρίου, επειδή έχει ήδη ενεργές κρατήσεις.")
