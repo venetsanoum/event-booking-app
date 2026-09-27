@@ -93,7 +93,14 @@ const EventBookingsPage = () => {
     );
 
     return (
-        <>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "50px",
+            }}
+        >
             <Breadcrumbs
                 items={[
                     { label: "Οι εκδηλώσεις μου", to: "/my-events" },
@@ -101,7 +108,7 @@ const EventBookingsPage = () => {
                     { label: "Κρατήσεις" },
                 ]}
                 sx={{
-                    marginLeft: "-30px",
+                    marginLeft: "-90px",
                     marginTop: "-110px",
                 }}
             />
@@ -164,7 +171,7 @@ const EventBookingsPage = () => {
             <Typography
                 sx={{
                     color: "black",
-                    fontSize: "50px",
+                    fontSize: "45px",
                     fontWeight: "600",
                 }}
             >
@@ -302,7 +309,7 @@ const EventBookingsPage = () => {
                     />
                 )}
             </Box>
-        </>
+        </Box>
     );
 };
 
