@@ -1,5 +1,6 @@
 import { Button } from "@mui/material";
 
+// Styling ενός βασικού κουμπιού για να επαναχρησιμοποιείται εύκολα
 const MyButton = ({ children, sx, ...props }) => {
     return (
         <Button
@@ -17,6 +18,9 @@ const MyButton = ({ children, sx, ...props }) => {
                 fontSize: "20px",
                 fontWeight: "600",
                 "&:hover": { backgroundColor: "#45464D" },
+                // Το sx το τραβάμε ξεχωριστά από τα υπόλοιπα props και το
+                // βάζουμε τελευταίο, ώστε να συγχωνεύεται με το βασικό στυλ.
+                // Αν ερχόταν μέσα από το {...props}, θα το αντικαθιστούσε ολόκληρο.
                 ...sx,
             }}
             {...props}

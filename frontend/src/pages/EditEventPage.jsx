@@ -249,13 +249,13 @@ const EditEventPage = () => {
             }
 
         } catch (err) {
-            console.log('Αποτυχία αποθήκευσης:', err);
+            console.log('Αποτυχία κράτησης:', err);
             if (err.response && err.response.data) {
                 const data = err.response.data;
-                const message = data.error || data.detail || Object.values(data)[0];
-                setError(Array.isArray(message) ? message[0] : message);
+                const message = data.detail || data.error || Object.values(data)[0];
+                setSubmitError(Array.isArray(message) ? message[0] : message);
             } else {
-                setError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
+                setSubmitError('Κάτι πήγε στραβά. Δοκίμασε ξανά.');
             }
         } finally {
             setSubmitting(false);

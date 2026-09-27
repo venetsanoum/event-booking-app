@@ -2,7 +2,12 @@ import { Link } from "react-router-dom";
 import { Box, Typography } from "@mui/material";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 
+// Κάθε σελίδα δηλώνει μόνη της τη διαδρομή της, περνώντας τα items.
+// Όσα crumbs έχουν "to" γίνονται σύνδεσμοι, ενώ το τελευταίο (η τρέχουσα
+// σελίδα) το αφήνουμε χωρίς, ώστε να εμφανίζεται ως απλό κείμενο.
 const Breadcrumbs = ({ items, sx }) => {
+
+    // Η "Αρχική" προστίθεται αυτόματα, ώστε να μη γράφεται σε κάθε σελίδα
     const crumbs = [{ label: "Αρχική", to: "/" }, ...items];
 
     return (
@@ -15,11 +20,21 @@ const Breadcrumbs = ({ items, sx }) => {
                 padding: "6px 16px",
                 borderRadius: "10px",
                 background: "rgba(255, 255, 255, 0.75)",
+                // το sx έρχεται τελευταίο ώστε η κάθε σελίδα να μπορεί
+                // να προσαρμόσει τη θέση χωρίς να χαθεί το υπόλοιπο στυλ
                 ...sx,
             }}
         >
             {crumbs.map((crumb, index) => (
-                <Box key={index} sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                <Box
+                    key={index}
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "4px"
+                    }}
+                >
+                    {/* το βελάκι μπαίνει ανάμεσα στα crumbs, όχι πριν το πρώτο */}
                     {index > 0 && <NavigateNextIcon sx={{ fontSize: "18px", color: "#555" }} />}
                     {crumb.to ? (
                         <Typography
@@ -35,7 +50,13 @@ const Breadcrumbs = ({ items, sx }) => {
                             {crumb.label}
                         </Typography>
                     ) : (
-                        <Typography sx={{ fontSize: "22px", color: "#333", fontWeight: "600" }}>
+                        <Typography
+                            sx={{
+                                fontSize: "22px",
+                                color: "#333",
+                                fontWeight: "600"
+                            }}
+                        >
                             {crumb.label}
                         </Typography>
                     )}

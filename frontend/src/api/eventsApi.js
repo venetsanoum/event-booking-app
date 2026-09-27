@@ -1,6 +1,11 @@
+// API calls για τις εκδηλώσεις 
 import axiosInstance from './axiosInstance';
 
+// Αναζήτηση εκδηλώσεων με φίλτρα
 export const searchEvents = (filters = {}) => {
+    // Κρατάμε μόνο τα φίλτρα που έχουν πραγματική τιμή. Αν στέλναμε
+    // κενά πεδία (π.χ. from_date=), το backend θα προσπαθούσε να
+    // φιλτράρει με άδεια τιμή και θα έβγαζε λάθος αποτελέσματα.
     const cleanedFilters = {};
     Object.keys(filters).forEach((key) => {
         const value = filters[key];
@@ -10,6 +15,10 @@ export const searchEvents = (filters = {}) => {
     });
     return axiosInstance.get('events/search/', {
         params: cleanedFilters,
+        // Τα φίλτρα κατηγορίας και πόλης είναι πίνακες. Χωρίς αυτή τη
+        // ρύθμιση το axios τα στέλνει ως category[]=1, μορφή που το
+        // django-filter δεν αναγνωρίζει. Με indexes: null στέλνονται
+        // ως category=1&category=2, όπως τα περιμένει το backend.
         paramsSerializer: { indexes: null },
     });
 };
@@ -46,12 +55,14 @@ export const createDraftEvent = (data) => {
     return axiosInstance.post('events/draft-event/', data);
 };
 
-export const editEvent = (id, data) => {
-    return axiosInstance.patch(`events/${id}/edit/`, data);
-};
-
+// Το ίδιο URL εξυπηρετεί και την ανάγνωση των στοιχείων (GET)
+// και την αποθήκευση των αλλαγών (PATCH)
 export const getEventForEdit = (id) => {
     return axiosInstance.get(`events/${id}/edit/`);
+};
+
+export const editEvent = (id, data) => {
+    return axiosInstance.patch(`events/${id}/edit/`, data);
 };
 
 export const createTicketType = (eventId, data) => {

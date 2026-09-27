@@ -1,5 +1,7 @@
 import { Box } from "@mui/material";
 
+// Ένα component που περιέχει όλα τα περιέχομενα της σελίδας
+// Χρησιμοποιείται κυρίως για styling
 const MainBox = ({ children, sx }) => {
     return (
         <Box

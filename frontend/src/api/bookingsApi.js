@@ -1,3 +1,4 @@
+// API calls για τις κρατήσεις
 import axiosInstance from './axiosInstance';
 
 export const createBooking = (eventId, items) => {
@@ -16,6 +17,7 @@ export const getMyCancelledBookings = (params) => {
     return axiosInstance.get('booking/my-cancelled-bookings/', { params });
 }
 
+// Οι κρατήσεις για κάποιο συγκεκριμένο event
 export const getEventBookings = (eventId, params) => {
     return axiosInstance.get(`booking/event/${eventId}/`, { params });
 };

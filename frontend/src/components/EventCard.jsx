@@ -3,9 +3,15 @@ import { Link } from "react-router-dom";
 import MyButton from "./MyButton";
 import { formatEventDateRange } from "../utils/dateUtils";
 
+// Απλή κάρτα που δείχνει τις πληροφορίες ενός event
+// Χρησιμοποιείται στα καρουζέλ της αρχικής, τόσο για τα προτεινόμενα
+// όσο και για τις εκδηλώσεις του διοργανωτή, γι' αυτό το κουμπί και ο
+// προορισμός του δίνονται από έξω.
 const EventCard = ({ event, to, buttonLabel, showSeats }) => {
-    const photo = event.main_photo
-        || (event.images && event.images.length > 0 ? event.images[0].photo : null);
+
+    // Τα δύο endpoints επιστρέφουν τη φωτογραφία με διαφορετικό τρόπο:
+    // άλλο ως main_photo και άλλο μέσα στη λίστα images. Δοκιμάζουμε και τα δύο.
+    const photo = event.main_photo || (event.images && event.images.length > 0 ? event.images[0].photo : null);
 
     return (
         <Box
@@ -33,7 +39,6 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                     borderRadius: "10px",
                 }}
             />
-
             <Box
                 sx={{
                     display: "flex",
@@ -56,7 +61,6 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                 >
                     {event.title}
                 </Typography>
-
                 <Typography
                     sx={{
                         color: "#201984",
@@ -68,7 +72,6 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                 >
                     {formatEventDateRange(event.startDateTime, event.endDateTime)}
                 </Typography>
-
                 <Typography
                     sx={{
                         color: "black",
@@ -79,12 +82,15 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                     }}
                 >
                     Τοποθεσία: {event.venue}, {event.city} <br />
-                    {showSeats
-                        ? `Έχουν κρατηθεί ${event.reserved} θέσεις`
-                        : `Τιμή: Από ${event.min_price ?? "-"}€`}
+                    {/* Ο διοργανωτής βλέπει πόσες θέσεις έχουν κρατηθεί,
+                        ενώ ο επισκέπτης τη χαμηλότερη τιμή εισιτηρίου */}
+                    {showSeats ? `Έχουν κρατηθεί ${event.reserved} θέσεις` : `Τιμή: Από ${event.min_price ?? "-"}€`}
                 </Typography>
-
-                <MyButton component={Link} to={to} sx={{ alignSelf: "center" }}>
+                <MyButton 
+                    component={Link} 
+                    to={to} 
+                    sx={{ alignSelf: "center"}}
+                >
                     {buttonLabel}
                 </MyButton>
             </Box>

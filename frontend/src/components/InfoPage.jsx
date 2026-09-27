@@ -1,6 +1,8 @@
 import { Box, Typography } from "@mui/material";
 import Breadcrumbs from "./Breadcrumbs";
 
+// Μια απλή δομή σελίδας πληροφοριών
+// Αφορά τις σελίδες που έχει το footer
 const InfoPage = ({ title, sections }) => {
     return (
         <Box
@@ -13,7 +15,10 @@ const InfoPage = ({ title, sections }) => {
         >
             <Breadcrumbs
                 items={[{ label: title }]}
-                sx={{ marginLeft: "-90px", marginTop: "-110px" }}
+                sx={{ 
+                    marginLeft: "-90px", 
+                    marginTop: "-110px"
+                }}
             />
 
             <Typography

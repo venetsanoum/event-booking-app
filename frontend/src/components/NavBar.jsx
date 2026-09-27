@@ -1,6 +1,4 @@
 import { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
 import { Box, Typography, Button } from "@mui/material";
 import MyButton from "./MyButton.jsx";
 import Menu from "@mui/material/Menu";
@@ -11,7 +9,6 @@ import { useAuth } from "../context/AuthContext.jsx";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import InboxIcon from "@mui/icons-material/Inbox";
 import { Link } from "react-router-dom";
-import { alignItems, borderRadius, justifyContent } from "@mui/system";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@mui/material";
 import { getUnreadCount } from "../api/messagingApi";
@@ -27,19 +24,19 @@ const NavBar = () => {
   const location = useLocation();
 
   useEffect(() => {
-      if (!user) {
-          setUnreadCount(0);
-          return;
+    if (!user) {
+        setUnreadCount(0);
+        return;
+    }
+    const fetchUnread = async () => {
+      try {
+          const response = await getUnreadCount();
+          setUnreadCount(response.data.unread);
+      } catch (err) {
+          console.log('Αποτυχία φόρτωσης unread count:', err);
       }
-      const fetchUnread = async () => {
-          try {
-              const response = await getUnreadCount();
-              setUnreadCount(response.data.unread);
-          } catch (err) {
-              console.log('Αποτυχία φόρτωσης unread count:', err);
-          }
-      };
-      fetchUnread();
+    };
+    fetchUnread();
   }, [user, location.pathname]);
 
   return (
@@ -85,18 +82,18 @@ const NavBar = () => {
         }}
       >
         {(!user || user.role !== "ADMIN") && (
-            <Button
-                component={Link}
-                to="/search"
-                sx={{
-                    color: "#555",
-                    textTransform: "none",
-                    fontSize: "22px",
-                    "&:hover": { color: "black" },
-                }}
-            >
-                Αναζήτηση
-            </Button>
+          <Button
+            component={Link}
+            to="/search"
+            sx={{
+                color: "#555",
+                textTransform: "none",
+                fontSize: "22px",
+                "&:hover": { color: "black" },
+            }}
+          >
+              Αναζήτηση
+          </Button>
         )}
         {user && user.role === "ATTENDEE" ? (
           <>

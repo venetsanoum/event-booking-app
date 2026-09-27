@@ -1,3 +1,4 @@
+// API calls για τα μηνύματα
 import axiosInstance from './axiosInstance';
 
 export const getInbox = (params) => {
