@@ -161,7 +161,7 @@ const AccountEditPage = () => {
 
             setTimeout(() => {
                 navigate('/account');
-            }, 3000);
+            }, 1000);
         }
         catch (err) {
             console.log('Αποτυχία ενημέρωσης:', err);

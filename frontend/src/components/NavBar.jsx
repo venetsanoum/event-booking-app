@@ -110,7 +110,9 @@ const NavBar = () => {
               {user.profile_photo ? (
                 <Box
                   component="img"
-                  src={user.profile_photo}
+                  src={user.profile_photo.startsWith('http')
+                      ? user.profile_photo
+                      : `https://127.0.0.1:8000${user.profile_photo}`}
                   alt="profile"
                   sx={{
                     width: 40,
@@ -206,7 +208,9 @@ const NavBar = () => {
               {user.profile_photo ? (
                 <Box
                   component="img"
-                  src={user.profile_photo}
+                  src={user.profile_photo.startsWith('http')
+                      ? user.profile_photo
+                      : `https://127.0.0.1:8000${user.profile_photo}`}
                   alt="profile"
                   sx={{
                     width: 40,
@@ -302,29 +306,19 @@ const NavBar = () => {
           </>
           ) : user && user.role === "ADMIN" ? (
               <>
-                  <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                          {user.profileData?.photo ? (
-                              <Box
-                                  component="img"
-                                  src={user.profileData.photo}
-                                  alt="profile"
-                                  sx={{ width: 40, height: 40, borderRadius: "50%", objectFit: "cover" }}
-                              />
-                          ) : (
-                              <AccountCircleIcon sx={{ fontSize: "44px" }} />
-                          )}
-                          <KeyboardArrowDownIcon sx={{ transition: "0.2s" }} />
-                      </Box>
-                  </IconButton>
-
+                <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        <AccountCircleIcon sx={{ fontSize: "44px" }} />
+                        <KeyboardArrowDownIcon sx={{ transition: "0.2s" }} />
+                    </Box>
+                </IconButton>
                   <Menu
                       anchorEl={profileAnchor}
                       open={Boolean(profileAnchor)}
                       onClose={() => setProfileAnchor(null)}
                       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                      slotProps={{
+                 slotProps={{
                           paper: {
                               sx: {
                                   display: "inline-flex",
@@ -332,7 +326,7 @@ const NavBar = () => {
                                   flexDirection: "column",
                                   alignItems: "flex-start",
                                   gap: "5px",
-                                  borderRadius: "15px",
+                                       borderRadius: "15px",
                                   border: "2px solid #fff",
                                   background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
                               },
