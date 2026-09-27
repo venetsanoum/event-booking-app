@@ -323,7 +323,7 @@ const HomePage = () => {
                 <Box
                     component={Link}
                     to="/search"
-                    state={{ categoryName: "Σινεμά" }}
+                    state={{ categoryName: "Κινηματογράφος" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -469,7 +469,7 @@ const HomePage = () => {
                 <Box
                     component={Link}
                     to="/search"
-                    state={{ categoryName: "Αθλητικά" }}
+                    state={{ categoryName: "Αθλητισμός" }}
                     sx={{
                         position: "relative",
                         display: "flex",
@@ -511,7 +511,7 @@ const HomePage = () => {
                             fontSize: "28px",
                         }}
                     >
-                        Αθλητικά
+                        Αθλητισμός
                     </Typography>
                 </Box>
             </Box>

@@ -80,7 +80,7 @@ const EventCard = ({ event, to, buttonLabel, showSeats }) => {
                 >
                     Τοποθεσία: {event.venue}, {event.city} <br />
                     {showSeats
-                        ? `Έχουν γίνει ${event.reserved} κρατήσεις`
+                        ? `Έχουν κρατηθεί ${event.reserved} θέσεις`
                         : `Τιμή: Από ${event.min_price ?? "-"}€`}
                 </Typography>
 
