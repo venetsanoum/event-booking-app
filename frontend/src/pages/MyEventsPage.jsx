@@ -293,12 +293,6 @@ const MyEventsPage = () => {
                                                 Επεξεργασία
                                             </MyButton>
                                         )}
-
-                                        {event.status !== "DRAFT" && (
-                                            <MyButton component={Link} to={`/my-events/${event.id}/bookings`}>
-                                                Κρατήσεις
-                                            </MyButton>
-                                        )}
                                     </Box>
                                 </Box>
                             </Box>

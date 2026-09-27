@@ -9,7 +9,7 @@ import L from 'leaflet';
 import { formatEventDateRange } from "../utils/dateUtils";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { NavigateBefore, NavigateNext } from "@mui/icons-material";
-
+import { Link } from "react-router-dom";
 
 delete L.Icon.Default.prototype._get;
 L.Icon.Default.mergeOptions({
@@ -29,7 +29,6 @@ const MyEventPreviewPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [event, setEvent] = useState(null);
-    const [bookingsDialogOpen, setBookingsDialogOpen] = useState(false);
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [cancelling, setCancelling] = useState(false);
     const [cancelError, setCancelError] = useState('');
@@ -217,107 +216,10 @@ const MyEventPreviewPage = () => {
                             Ακύρωση εκδήλωσης
                         </MyButton>
                         )}
-                        <MyButton onClick={() => setBookingsDialogOpen(true)}>
+                        <MyButton component={Link} to={`/my-events/${id}/bookings`}>
                             Πληροφορίες κρατήσεων
                         </MyButton>
                     </Box>
-
-                    <Dialog
-                        open={bookingsDialogOpen}
-                        onClose={() => setBookingsDialogOpen(false)}
-                        slotProps={{
-                            paper: {
-                                sx: {
-                                    display: "flex",
-                                    width: "764px",
-                                    gap: "10px",
-                                    borderRadius: "15px",
-                                    overflow: "hidden",
-                                    background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
-                                },
-                            },
-                        }}
-                    >
-                        <DialogTitle
-                            sx={{
-                                display: "flex",
-                                height: "80px",
-                                padding: "10px",
-                                textAlign: "center",
-                                fontSize: "28px",
-                                fontWeight: "600",
-                                color: "black",
-                                background: "#fff",
-                                justifyContent: "center",
-                            }}
-                        >
-                            Πληροφορίες κρατήσεων
-                        </DialogTitle>
-
-                        <DialogContent
-                            sx={{
-                                display: "flex",
-                                padding: "10px 20px",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                                gap: "10px",
-                                alignSelf: "stretch",
-                            }}
-                        >
-                            <Box sx={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
-                                {event.ticket_types.map((tt) => (
-                                    <Box
-                                        key={tt.id}
-                                        sx={{
-                                            display: "flex",
-                                            padding: "10px 15px",
-                                            justifyContent: "space-between",
-                                            alignItems: "center",
-                                            alignSelf: "stretch",
-                                            borderRadius: "5px",
-                                            border: "1px solid #FFF",
-                                            background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
-                                            boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25)",
-                                        }}
-                                    >
-                                        <Typography sx={{ fontSize: "20px", color: "black" }}>
-                                            {tt.name} <br />
-                                            {tt.price}€
-                                        </Typography>
-                                        <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
-                                            Συνολικά <br />
-                                            {tt.quantity}
-                                        </Typography>
-                                        <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
-                                            Κρατήσεις <br />
-                                            {tt.quantity - tt.available}
-                                        </Typography>
-                                        <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
-                                            Απομένουν <br />
-                                            {tt.available}
-                                        </Typography>
-                                    </Box>
-                                ))}
-                            </Box>
-                        </DialogContent>
-
-                        <DialogActions
-                            sx={{
-                                display: "flex",
-                                height: "80px",
-                                padding: "0 20px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                borderRadius: "0 0 15px 15px",
-                                background: "#fff",
-                            }}
-                        >
-                            <Typography sx={{ fontSize: "20px", color: "black" }}>
-                                Συνολικές Κρατήσεις: {event.reserved}&nbsp;&nbsp;&nbsp;
-                                Απομένουν: {event.capacity - event.reserved}
-                            </Typography>
-                        </DialogActions>
-                    </Dialog>
                     <Dialog
                         open={cancelDialogOpen}
                         onClose={() => setCancelDialogOpen(false)}

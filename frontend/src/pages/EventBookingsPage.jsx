@@ -97,11 +97,12 @@ const EventBookingsPage = () => {
             <Breadcrumbs
                 items={[
                     { label: "Οι εκδηλώσεις μου", to: "/my-events" },
+                    { label: event?.title || "Εκδήλωση", to: `/my-events/${id}` },
                     { label: "Κρατήσεις" },
                 ]}
                 sx={{
                     marginLeft: "-30px",
-                    marginTop: "-120px",
+                    marginTop: "-110px",
                 }}
             />
             {event && (
