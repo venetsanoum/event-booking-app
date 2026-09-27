@@ -69,7 +69,7 @@ class TicketTypeSerializer(serializers.ModelSerializer):
         event=self.context["event"]        
         total=0
         if args["quantity"] <= 0:
-            raise serializers.ValidationError("Η ποσότητα πρέπει να είναι θετικός αριθμός.")
+            raise serializers.ValidationError("Η ποσότητα εισιτηρίων πρέπει να είναι θετικός αριθμός.")
         if args["price"] <= 0:
             raise serializers.ValidationError("Η τιμή πρέπει να είναι θετικός αριθμός.")
         # για ό,τι είναι ήδη στη βάση αποθηκευμένο
@@ -114,7 +114,7 @@ class TicketTypeEditSerializer(serializers.ModelSerializer):
         if total_quant + new_quantity > capacity:
             raise serializers.ValidationError("Με τη νέα ποσότητα, ο συνολικός αριθμών εισιτηρίων ξεπερνάει τη συνολική χωρητικότητα.")
         if new_quantity <= 0:
-            raise serializers.ValidationError("Η ποσότητα πρέπει να είναι θετική.")
+            raise serializers.ValidationError("Η ποσότητα εισιτηρίων πρέπει να είναι θετική.")
         if new_price <= 0:
             raise serializers.ValidationError("Η τιμή πρέπει να είναι θετικός αριθμός.")
         return args
