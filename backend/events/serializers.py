@@ -21,6 +21,7 @@ class CreateEventSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         categories=validated_data.pop("category",[])
         latitude, longitude = get_coordinates(validated_data.get("address", ""), validated_data.get("city", ""), validated_data.get("country", ""))
+        print(latitude)
         event=Event(**validated_data, latitude=latitude, longitude=longitude)
         event.save()
         event.category.set(categories)
@@ -151,6 +152,7 @@ class EditEventSerializer(serializers.ModelSerializer):
             "country",
             "latitude",
             "longitude",
+            "status",
             "startDateTime",
             "endDateTime",
             "capacity",

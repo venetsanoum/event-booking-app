@@ -70,11 +70,11 @@ class PublishEventView(generics.CreateAPIView):
     permission_classes=[IsAuthenticated, isEventOrganizer]
     def post(self, request, *args, **kwargs):
         event=get_object_or_404(Event, id=kwargs["pk"])
-        if event.status != "DRAFT":
-            return Response(
-                {"error": "only draft events can be published"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        # if event.status != "DRAFT":
+        #     return Response(
+        #         {"error": "only draft events can be published"},
+        #         status=status.HTTP_400_BAD_REQUEST
+        #     )
         if not event.title:
             raise serializers.ValidationError("Ο τίτλος είναι υποχρεωτικός.")
         if not event.venue:
@@ -257,7 +257,7 @@ class AllTicketTypesView(generics.ListAPIView):
 # PATCH events/{event_id}/ticket-types/{ticket_id:pk}
 class EditTicketTypesView(generics.UpdateAPIView):
     serializer_class=TicketTypeEditSerializer
-    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition, isDraftedEventTicketTypeEdition]
+    permission_classes=[IsAuthenticated, isEventOrganizerTicketEdition]
     def get_queryset(self):
         return TicketType.objects.filter(event_id=self.kwargs["event_id"])
 # GET events/{id}/event-ticket-types
