@@ -244,7 +244,7 @@ class TicketTypeView(generics.CreateAPIView):
         print(self.get_serializer_class())
         serializer=self.get_serializer(data=request.data, context={"event":event}) 
         serializer.is_valid(raise_exception=True)
-        serializer.save(event=event, available=serializer.validated_data["quantity"]) # περνάμε και το event ωστε να αποθηκευτει
+        ticket_type=serializer.save(event=event, available=serializer.validated_data["quantity"]) # περνάμε και το event ωστε να αποθηκευτει
         return Response({
             "id": ticket_type.id,
             "message": "Ο τύπος εισιτηρίου δημιουργήθηκε."
