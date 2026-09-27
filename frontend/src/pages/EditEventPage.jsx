@@ -12,7 +12,7 @@ const EditEventPage = () => {
     const { id } = useParams();
     const isEditMode = Boolean(id);
     const navigate = useNavigate();
-
+    const [eventStatus, setEventStatus] = useState(null);
     const [initLoading, setInitLoading] = useState(isEditMode);
     const [initError, setInitError] = useState('');
     const [categories, setCategories] = useState([]);
@@ -73,10 +73,11 @@ const EditEventPage = () => {
                     address: event.address || '',
                     city: event.city || '',
                     country: event.country || '',
-                    startDateTime: event.startDateTime || '',
-                    endDateTime: event.endDateTime || '',
+                    startDateTime: event.startDateTime ? event.startDateTime.slice(0, 16) : '',
+                    endDateTime: event.endDateTime ? event.endDateTime.slice(0, 16) : '',
                     capacity: event.capacity || '',
                 });
+                setEventStatus(event.status);
                 if (event.ticket_types && event.ticket_types.length > 0) {
                     if (event.ticket_types && event.ticket_types.length > 0) {
                         setTicketTypes(event.ticket_types.map((tt) => ({
@@ -239,7 +240,9 @@ const EditEventPage = () => {
             }
 
             if (shouldPublish) {
-                await publishEvent(eventId);
+                if (eventStatus !== "PUBLISHED") {
+                    await publishEvent(eventId);
+                }
                 navigate(`/my-events/${eventId}`);
             } else {
                 navigate('/my-events');
@@ -851,12 +854,14 @@ return (
             >
                 Ακύρωση
             </Link>
-            <MyButton
-                onClick={(e) => handleSubmit(e, false)}
-                disabled={submitting}
-            >
-                {submitting ? "Αποθήκευση..." : "Προσωρινή αποθήκευση"}
-            </MyButton>
+            {eventStatus !== "PUBLISHED" && (
+                <MyButton
+                    onClick={(e) => handleSubmit(e, false)}
+                    disabled={submitting}
+                >
+                    {submitting ? "Αποθήκευση..." : "Προσωρινή αποθήκευση"}
+                </MyButton>
+            )}
             <MyButton
                 onClick={(e) => handleSubmit(e, true)}
                 disabled={submitting}
