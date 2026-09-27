@@ -7,7 +7,7 @@ import { formatEventDateRange } from "../utils/dateUtils";
 import { deleteEvent, getMyEvents, getMyCompletedEvents, getMyCancelledEvents, getMyDraftedEvents } from "../api/eventsApi";
 import Breadcrumbs from "../components/Breadcrumbs";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyEvents },

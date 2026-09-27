@@ -4,7 +4,7 @@ import { formatEventDateRange } from "../utils/dateUtils";
 import { getMyUpcomingBookings, getMyCompletedBookings, getMyCancelledBookings } from "../api/bookingsApi";
 import Breadcrumbs from "../components/Breadcrumbs";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const tabConfig = [
     { label: "Ενεργές", fetchFn: getMyUpcomingBookings },

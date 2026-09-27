@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import { getPendingUsers, setUserApproval } from "../api/adminApi";
 import Breadcrumbs from "../components/Breadcrumbs";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const roleLabels = {
     ORGANIZER: "Διοργανωτής",

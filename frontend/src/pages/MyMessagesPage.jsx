@@ -6,7 +6,7 @@ import MyButton from "../components/MyButton";
 import { getInbox, getSent, deleteFromInbox, deleteFromSent } from "../api/messagingApi";
 import Breadcrumbs from "../components/Breadcrumbs";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 const tabConfig = [
     { label: "Εισερχόμενα", fetchFn: getInbox, deleteFn: deleteFromInbox, personLabel: "Αποστολέας" },

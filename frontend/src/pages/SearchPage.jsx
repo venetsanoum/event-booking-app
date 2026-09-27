@@ -1,5 +1,5 @@
 import { searchEvents } from "../api/eventsApi";
-import { Box, TextField, CircularProgress, Typography, Select, MenuItem, Checkbox, ListItemText, OutlinedInput, Popover, IconButton, Slider, Button } from "@mui/material";
+import { Box, Pagination, TextField, CircularProgress, Typography, Select, MenuItem, Checkbox, ListItemText, OutlinedInput, Popover, IconButton, Slider, Button } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useState, useEffect } from "react";
 import SearchCard from "../components/SearchCard";
@@ -7,11 +7,15 @@ import { getCategories, getCities } from "../api/eventsApi";
 import { useLocation } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
 
+const PAGE_SIZE = 10;
+
 const SearchPage = () => {
     const location = useLocation();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [events, setEvents] = useState([]);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(0);
     const [filters, setFilters] = useState({
         search_bar: '',
         category: [],
@@ -25,9 +29,16 @@ const SearchPage = () => {
 
     useEffect(() => {
         const fetchEvents = async () => {
+            setLoading(true);
+            setError('');
             try {
-                const response = await searchEvents(filters);
-                setEvents(response.data.results);
+                const response = await searchEvents({
+                    ...filters,
+                    limit: PAGE_SIZE,
+                    offset: (page - 1) * PAGE_SIZE,
+                });
+                setEvents(response.data.results || response.data);
+                setCount(response.data.count || 0);
             } catch (err) {
                 console.log('Αποτυχία φόρτωσης εκδηλώσεων:', err);
                 setError('Δεν ήταν δυνατή η φόρτωση εκδηλώσεων.');
@@ -36,6 +47,10 @@ const SearchPage = () => {
             }
         };
         fetchEvents();
+    }, [filters, page]);
+
+    useEffect(() => {
+        setPage(1);
     }, [filters]);
 
     useEffect(() => {
@@ -363,6 +378,21 @@ const SearchPage = () => {
                     />
                 ))}
             </Box>
+            {count > PAGE_SIZE && (
+                <Pagination
+                    count={Math.ceil(count / PAGE_SIZE)}
+                    page={page}
+                    onChange={(e, value) => setPage(value)}
+                    sx={{
+                        alignSelf: "center",
+                        "& .MuiPaginationItem-root": {
+                            fontSize: "18px",
+                            color: "black",
+                            background: "rgba(255, 255, 255, 0.75)",
+                        },
+                    }}
+                />
+            )}
         </Box>
     )
 }
