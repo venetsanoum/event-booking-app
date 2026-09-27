@@ -95,3 +95,7 @@ export const getRecommendations = () => {
 export const deleteEvent = (id) => {
     return axiosInstance.delete(`events/${id}/edit/`);
 };
+
+export const deleteTicketType = (eventId, ticketId) => {
+    return axiosInstance.delete(`events/${eventId}/delete-ticket-types/${ticketId}/`);
+};

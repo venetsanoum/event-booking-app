@@ -11,6 +11,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { useAuth } from "../context/AuthContext";
 
+// Επεξεργασία των στοιχείων του συνδεδεμένου χρήστη. Τα πεδία κωδικού
+// είναι προαιρετικά: συμπληρώνονται μόνο αν ο χρήστης θέλει να τον αλλάξει.
 const AccountEditPage = () => {
 
     const[initLoading, setInitLoading] = useState(true);
@@ -40,6 +42,7 @@ const AccountEditPage = () => {
         password: '',
         passwordbar: '',
     });
+
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -758,7 +761,7 @@ const AccountEditPage = () => {
                             marginLeft: "-10px"
                         }}
                     >
-                                Επαλήθευση Νέου Κωδικού
+                        Επαλήθευση Νέου Κωδικού
                     </Typography>
                     <TextField 
                         name="passwordbar"

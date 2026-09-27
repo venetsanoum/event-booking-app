@@ -15,6 +15,9 @@ import { getUnreadCount } from "../api/messagingApi";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
+// Η μπάρα πλοήγησης προσαρμόζεται στον ρόλο του συνδεδεμένου χρήστη:
+// κάθε ρόλος βλέπει διαφορετικές επιλογές στο μενού του προφίλ, ενώ ο
+// επισκέπτης βλέπει μόνο τα κουμπιά σύνδεσης και εγγραφής.
 const NavBar = () => {
 
   const { user, logout } = useAuth();
@@ -23,6 +26,9 @@ const NavBar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const location = useLocation();
 
+  // Ο αριθμός των αδιάβαστων μηνυμάτων ξαναφορτώνεται σε κάθε αλλαγή σελίδας
+  // (location.pathname), ώστε να μειώνεται αμέσως μόλις ο χρήστης ανοίξει ένα
+  // μήνυμα, χωρίς να χρειάζεται ανανέωση της σελίδας.
   useEffect(() => {
     if (!user) {
         setUnreadCount(0);
@@ -81,7 +87,7 @@ const NavBar = () => {
           gap: "10px",
         }}
       >
-        {/* Aν ο χρήστης δεν έχει συνδεθεί ή δεν είναι admin  */}
+        {/* Ο διαχειριστής δεν κάνει κρατήσεις, οπότε δεν του εμφανίζεται η αναζήτηση */}
         {(!user || user.role !== "ADMIN") && ( 
           <Button
             component={Link}
@@ -99,16 +105,37 @@ const NavBar = () => {
         {/* Αν έχουμε attendee */}
         {user && user.role === "ATTENDEE" ? (
           <>
-          <IconButton component={Link} to="/my-messages">
-              <Badge badgeContent={unreadCount} color="error">
-                  <InboxIcon sx={{ fontSize: "28px", color: "#555" }} />
-              </Badge>
+          {/* Κουμπί που πάει κατευθείαν σε μηνύματα, έχει badge για πόσα έιναι unread*/}
+          <IconButton 
+            component={Link} 
+            to="/my-messages"
+          >
+            <Badge 
+              badgeContent={unreadCount} 
+              color="error"
+            >
+              <InboxIcon 
+                sx={{ 
+                  fontSize: "28px", 
+                  color: "#555" 
+                }} 
+              />
+            </Badge>
           </IconButton>
+
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box 
+              sx={{ 
+                display: "flex", 
+                alignItems: "center", 
+                gap: 0.5 
+              }}
+            >
               {user.profile_photo ? (
                 <Box
                   component="img"
+                  // Το backend επιστρέφει σχετικό path για τη φωτογραφία, οπότε
+                  // προσθέτουμε τη διεύθυνση του server όταν λείπει 
                   src={user.profile_photo.startsWith('http')
                       ? user.profile_photo
                       : `https://127.0.0.1:8000${user.profile_photo}`}
@@ -134,6 +161,7 @@ const NavBar = () => {
                 />
             </Box>
           </IconButton>
+
           <Menu
             anchorEl={profileAnchor}
             open = {Boolean(profileAnchor)}
@@ -195,12 +223,24 @@ const NavBar = () => {
             </MenuItem>
           </Menu>
           </>
+          // Αν έχουμε διοργανωτή
         ) : user && user.role === "ORGANIZER" ? (
           <>
-          <IconButton component={Link} to="/my-messages">
-              <Badge badgeContent={unreadCount} color="error">
-                  <InboxIcon sx={{ fontSize: "28px", color: "#555" }} />
-              </Badge>
+          <IconButton 
+            component={Link} 
+            to="/my-messages"
+          >
+            <Badge 
+              badgeContent={unreadCount} 
+              color="error"
+            >
+              <InboxIcon 
+                sx={{ 
+                  fontSize: "28px", 
+                  color: "#555" 
+                }} 
+              />
+            </Badge>
           </IconButton>
           <IconButton onClick={(e)=> setProfileAnchor(e.currentTarget)}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
@@ -303,6 +343,7 @@ const NavBar = () => {
             </MenuItem>
           </Menu>
           </>
+          // Ο διαχειριστής δεν ανταλλάσσει μηνύματα, γι' αυτό λείπει το εικονίδιο των εισερχομένων 
           ) : user && user.role === "ADMIN" ? (
               <>
                 <IconButton onClick={(e) => setProfileAnchor(e.currentTarget)}>

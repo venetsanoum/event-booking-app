@@ -2,6 +2,8 @@ import { Box, Typography } from "@mui/material";
 import MyButton from "./MyButton.jsx";
 import { Link } from "react-router-dom";
 
+// Κάρτα εκδήλωσης για τη σελίδα αναζήτησης. Δέχεται τα στοιχεία έτοιμα
+// από τη σελίδα, ώστε να μην ασχολείται με τη μορφοποίηση ημερομηνιών.
 const SearchCard = ({ event_id, event_photo, title, date_start, date_end, address, min_price }) => {
     return (
         <Box
@@ -20,7 +22,8 @@ const SearchCard = ({ event_id, event_photo, title, date_start, date_end, addres
         >     
             <Box
                 sx={{
-                    backgroundImage: `url(${event_photo})`,
+                    backgroundImage: event_photo ? `url(${event_photo})` : "none",
+                    backgroundColor: "#ddd",
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     backgroundRepeat: "no-repeat",
@@ -73,7 +76,7 @@ const SearchCard = ({ event_id, event_photo, title, date_start, date_end, addres
                     sx={{
                         display: "flex",
                         padding: "20px 10px",
-                        justifyContent: "flex-start",   // ← άλλαξε από "center"
+                        justifyContent: "flex-start",
                         alignSelf: "flex-start",
                         width: "100%",
                     }}
@@ -87,7 +90,7 @@ const SearchCard = ({ event_id, event_photo, title, date_start, date_end, addres
                         }}
                     >
                         Τοποθεσία: {address} <br />
-                        Τιμή: Από {min_price}
+                        Τιμή: Από {min_price}€
                     </Typography>
                 </Box>
                 </Box>
@@ -98,18 +101,6 @@ const SearchCard = ({ event_id, event_photo, title, date_start, date_end, addres
                     Μάθε Περισσότερα
                 </MyButton>
             </Box>
-            {/* <Box
-                sx={{
-                    width: "17px",
-                    height: "361px",
-                    position: "absolute",
-                    right: "0",
-                    borderRadius: "15px 0 0 15px",
-                    background: "#EA0000"
-                }}
-            >
-
-            </Box> */}
         </Box>
     );
 };

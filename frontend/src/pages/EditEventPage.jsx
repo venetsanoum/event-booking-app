@@ -8,7 +8,11 @@ import { createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadE
 import { Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from "@mui/material";
 import Breadcrumbs from "../components/Breadcrumbs";
 
+// Η ίδια σελίδα εξυπηρετεί και τη δημιουργία και την επεξεργασία εκδήλωσης.
+// Η διαφορά είναι το id στο URL: χωρίς αυτό (/my-events/new) δημιουργούμε
+// νέα εκδήλωση, με αυτό (/my-events/:id/edit) επεξεργαζόμαστε υπάρχουσα.
 const EditEventPage = () => {
+
     const { id } = useParams();
     const isEditMode = Boolean(id);
     const navigate = useNavigate();
@@ -16,7 +20,7 @@ const EditEventPage = () => {
     const [initLoading, setInitLoading] = useState(isEditMode);
     const [initError, setInitError] = useState('');
     const [categories, setCategories] = useState([]);
-
+    const [deletedTicketIds, setDeletedTicketIds] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
         description: '',
@@ -65,6 +69,8 @@ const EditEventPage = () => {
                 setFormData({
                     title: event.title || '',
                     description: event.description || '',
+                    // Το backend μπορεί να επιστρέψει τις κατηγορίες είτε ως πλήρη
+                    // αντικείμενα είτε ως σκέτα id, οπότε καλύπτουμε και τις δύο περιπτώσεις
                     category: event.category
                         ? event.category.map((c) => (typeof c === 'object' ? c.id : c))
                         : [],
@@ -73,6 +79,9 @@ const EditEventPage = () => {
                     address: event.address || '',
                     city: event.city || '',
                     country: event.country || '',
+                    // Το input type="datetime-local" δέχεται μόνο τη μορφή YYYY-MM-DDTHH:mm,
+                    // ενώ το backend στέλνει πλήρες ISO με δευτερόλεπτα και ζώνη ώρας.
+                    // Κρατάμε τους πρώτους 16 χαρακτήρες, αλλιώς το πεδίο εμφανίζεται κενό.
                     startDateTime: event.startDateTime ? event.startDateTime.slice(0, 16) : '',
                     endDateTime: event.endDateTime ? event.endDateTime.slice(0, 16) : '',
                     capacity: event.capacity || '',
@@ -85,6 +94,10 @@ const EditEventPage = () => {
                             name: tt.name,
                             price: tt.price,
                             quantity: tt.quantity,
+                            // Κρατάμε πόσα εισιτήρια έχουν ήδη πωληθεί, ώστε να μην επιτρέπεται
+                            // μείωση της ποσότητας κάτω από αυτόν τον αριθμό. Υπολογίζεται μία
+                            // φορά εδώ και όχι στο render, γιατί το quantity αλλάζει όσο
+                            // πληκτρολογεί ο χρήστης.
                             sold: tt.quantity - tt.available,
                         })));
                     }
@@ -113,6 +126,8 @@ const EditEventPage = () => {
         });
     };
 
+    // Ενημερώνει ένα πεδίο ενός συγκεκριμένου ticket type. Φτιάχνουμε νέο
+    // αντίγραφο του πίνακα αντί να τον τροποποιήσουμε
     const handleTicketTypeChange = (index, field, value) => {
         const updated = [...ticketTypes];
         updated[index] = { ...updated[index], [field]: value };
@@ -124,6 +139,10 @@ const EditEventPage = () => {
     };
 
     const handleRemoveTicketType = (index) => {
+        const tt = ticketTypes[index];
+        if (tt.id) {
+            setDeletedTicketIds([...deletedTicketIds, tt.id]);
+        }
         setTicketTypes(ticketTypes.filter((_, i) => i !== index));
     };
 
@@ -136,6 +155,9 @@ const EditEventPage = () => {
         setPhotoFiles(photoFiles.filter((_, i) => i !== index));
     };
 
+    // Έλεγχος ότι όλα τα πεδία έχουν συμπληρωθεί πριν την δημοσίευση
+    // και το backend κάνει το ίδιο αλλά το κάνουμε και εδώ έτσι ώστε να γνωρίζει ο χρήστης
+    // κατευθείαν ποιο πεδίο λείπει
     const getMissingFields = () => {
         const missing = [];
 
@@ -164,6 +186,8 @@ const EditEventPage = () => {
         e.preventDefault();
         setError('');
 
+        // Το shouldPublish καθορίζει αν έχει πατηθεί το προσωρινή
+        // αποθήκευση ή το δημοσίευση.
         if (shouldPublish) {
             const missing = getMissingFields();
             if (missing.length > 0) {
@@ -182,6 +206,9 @@ const EditEventPage = () => {
 
         try {
             let eventId = id;
+            // Αφαιρούμε τα κενά πεδία, ώστε ένα πρόχειρο να μπορεί να αποθηκευτεί
+            // ημιτελές. Αν στέλναμε π.χ. startDateTime: "", το Django θα το
+            // απέρριπτε ως μη έγκυρη ημερομηνία.
             const cleanedData = {};
             Object.keys(formData).forEach((key) => {
                 let value = formData[key];
@@ -202,9 +229,13 @@ const EditEventPage = () => {
                 eventId = response.data.event_id;
             }
 
+            for (const ticketId of deletedTicketIds) {
+                await deleteTicketType(eventId, ticketId);
+            }
+            setDeletedTicketIds([]);
+
             for (let i = 0; i < ticketTypes.length; i++) {
                 const tt = ticketTypes[i];
-
                 if (tt.id) {
                     await editTicketType(eventId, tt.id, {
                         name: tt.name,
@@ -238,7 +269,8 @@ const EditEventPage = () => {
                 imgFormData.append('photo', file);
                 await uploadEventImage(eventId, imgFormData);
             }
-
+            // Το publish καλείται μόνο για εκδηλώσεις που δεν έχουν ήδη δημοσιευτεί.
+            // Σε ήδη δημοσιευμένη απλά αποθηκεύουμε τις αλλαγές.
             if (shouldPublish) {
                 if (eventStatus !== "PUBLISHED") {
                     await publishEvent(eventId);
@@ -289,10 +321,15 @@ return (
                 marginTop: "-110px",
             }}
         />   
-        <Typography sx={{ color: "black", fontSize: "65px", fontWeight: "600" }}>
+        <Typography 
+            sx={{ 
+                color: "black", 
+                fontSize: "65px", 
+                fontWeight: "600" 
+            }}
+        >
             Επεξεργασία εκδήλωσης
         </Typography>
-
         <Box
             component="form"
             id="edit-event-form"
@@ -313,7 +350,6 @@ return (
                     {error}
                 </Typography>
             )}
-
             <Box
                 sx={{
                     display: "flex",
@@ -445,7 +481,6 @@ return (
                     </MyButton>
                 </Box>
             </Box>
-
             <Box
                 sx={{
                     display: "flex",
@@ -811,8 +846,22 @@ return (
                             size="small"
                         />
                     </Box>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: "20px" }}>
-                        <Typography sx={{ width: "160px", flexShrink: 0, fontSize: "22px", color: "black", textAlign: "left" }}>
+                    <Box 
+                        sx={{ 
+                            display: "flex", 
+                            alignItems: "center", 
+                            gap: "20px" 
+                        }}
+                    >
+                        <Typography 
+                            sx={{ 
+                                width: "160px", 
+                                flexShrink: 0, 
+                                fontSize: "22px", 
+                                color: "black", 
+                                textAlign: "left"
+                            }}
+                        >
                             Ποσότητα
                         </Typography>
                         <TextField
@@ -824,7 +873,7 @@ return (
                             slotProps={{ htmlInput: { min: tt.sold || 0 } }}
                             helperText={tt.sold > 0 ? `Έχουν ήδη πωληθεί ${tt.sold} εισιτήρια` : ''}
                         />
-                        {ticketTypes.length > 1 && (
+                        {ticketTypes.length > 1 && !tt.sold &&  (
                             <IconButton onClick={() => handleRemoveTicketType(index)} size="small">
                                 <DeleteIcon fontSize="small" />
                             </IconButton>
@@ -853,6 +902,7 @@ return (
             >
                 Ακύρωση
             </Link>
+            {/* Σε ήδη δημοσιευμένη εκδήλωση δεν έχει νόημα η προσωρινή αποθήκευση */}
             {eventStatus !== "PUBLISHED" && (
                 <MyButton
                     onClick={(e) => handleSubmit(e, false)}
