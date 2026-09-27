@@ -75,7 +75,7 @@ const Footer = () => {
                         </Button>
                         <Button
                             component = { Link }
-                            to="/personal-data"
+                            to="/privacy"
                             sx={{
                                 textTransform:"none",
                                 color:"#000",
@@ -87,7 +87,7 @@ const Footer = () => {
                         </Button>
                         <Button
                             component = { Link }
-                            to="/terms-of-use"
+                            to="/terms"
                             sx={{
                                 textTransform:"none",
                                 color:"#000",

@@ -18,6 +18,9 @@ import AdminUsersPage from "./pages/AdminUsersPage";
 import AdminRequestsPage from "./pages/AdminRequestPage";
 import AdminUserDetailsPage from "./pages/AdminUserDetailsPage";
 import EventBookingsPage from "./pages/EventBookingsPage";
+import FaqPage from "./pages/FaqPage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
 import { Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavBar from "./components/NavBar";
@@ -41,7 +44,11 @@ function App() {
       }}
     >
       <NavBar />
-      <MainBox>
+      <MainBox
+        sx = {{
+          flex: 1
+        }}
+      >
         <Routes>
           <Route path="/" element={<HomePage></HomePage>}/>
           <Route path="/login" element={<LoginPage></LoginPage>}/>
@@ -64,6 +71,9 @@ function App() {
           <Route path="/admin/requests" element={<AdminRequestsPage></AdminRequestsPage>}/>
           <Route path="/admin/users/:id" element={<AdminUserDetailsPage></AdminUserDetailsPage>}/>
           <Route path="/my-events/:id/bookings" element={<EventBookingsPage></EventBookingsPage>}/>
+          <Route path="/faq" element={<FaqPage></FaqPage>} />
+          <Route path="/privacy" element={<PrivacyPage></PrivacyPage>} />
+          <Route path="/terms" element={<TermsPage></TermsPage>} />
         </Routes>
       </MainBox>
       <Footer/>
