@@ -4,7 +4,7 @@ import { Box, Typography, TextField, CircularProgress, IconButton } from "@mui/m
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MyButton from "../components/MyButton";
-import { createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadEventImage, getCategories, publishEvent, editTicketType } from "../api/eventsApi";
+import { deleteTicketType, createDraftEvent, editEvent, getEventForEdit, createTicketType, uploadEventImage, getCategories, publishEvent, editTicketType } from "../api/eventsApi";
 import { Select, MenuItem, Checkbox, ListItemText, OutlinedInput } from "@mui/material";
 import Breadcrumbs from "../components/Breadcrumbs";
 
