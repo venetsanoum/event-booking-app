@@ -18,6 +18,5 @@ db.sqlite3
 backend/recommendation/rel_event_csvs/
 media/
 logs/
-mock_data/
 certs/
 backend/recommendation/saved_models/
