@@ -3,6 +3,7 @@ import { Box, Typography, CircularProgress } from "@mui/material";
 import { useParams } from "react-router-dom";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { getEventBookings } from "../api/bookingsApi";
+import { getEventPreview } from "../api/eventsApi";
 
 const EventBookingsPage = () => {
     const { id } = useParams();
@@ -23,6 +24,27 @@ const EventBookingsPage = () => {
             }
         };
         fetchBookings();
+    }, [id]);
+
+    const [event, setEvent] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [bookingsRes, eventRes] = await Promise.all([
+                    getEventBookings(id),
+                    getEventPreview(id),
+                ]);
+                setBookings(bookingsRes.data.results || bookingsRes.data);
+                setEvent(eventRes.data);
+            } catch (err) {
+                console.log('Αποτυχία φόρτωσης:', err);
+                setError('Δεν ήταν δυνατή η φόρτωση των κρατήσεων.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
     }, [id]);
 
     if (loading) {
@@ -60,7 +82,62 @@ const EventBookingsPage = () => {
                     marginTop: "-120px",
                 }}
             />
+            {event && (
+                <Box
+                    sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "16px",
+                        width: "905px",
+                        padding: "20px 30px",
+                        borderRadius: "15px",
+                        border: "5px solid #FFF",
+                        background: "radial-gradient(50% 50% at 50% 50%, rgba(255, 255, 255, 0.80) 22.6%, rgba(233, 255, 255, 0.80) 100%)",
+                    }}
+                >
+                    <Typography sx={{ fontSize: "28px", fontWeight: "600", color: "black" }}>
+                        Πληροφορίες εισιτηρίων
+                    </Typography>
 
+                    {event.ticket_types.map((tt) => (
+                        <Box
+                            key={tt.id}
+                            sx={{
+                                display: "flex",
+                                padding: "10px 15px",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                borderRadius: "5px",
+                                border: "1px solid #FFF",
+                                background: "linear-gradient(180deg, rgba(255, 255, 255, 0.70) 46.15%, rgba(255, 255, 255, 0.21) 100%)",
+                                boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25)",
+                            }}
+                        >
+                            <Typography sx={{ fontSize: "20px", color: "black", textAlign: "left" }}>
+                                {tt.name} <br />
+                                {tt.price}€
+                            </Typography>
+                            <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
+                                Συνολικά <br />
+                                {tt.quantity}
+                            </Typography>
+                            <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
+                                Κρατήσεις <br />
+                                {tt.quantity - tt.available}
+                            </Typography>
+                            <Typography sx={{ fontSize: "18px", color: "black", textAlign: "center" }}>
+                                Απομένουν <br />
+                                {tt.available}
+                            </Typography>
+                        </Box>
+                    ))}
+
+                    <Typography sx={{ fontSize: "22px", fontWeight: "600", color: "black" }}>
+                        Συνολικές Κρατήσεις: {event.reserved}&nbsp;&nbsp;&nbsp;
+                        Απομένουν: {event.capacity - event.reserved}
+                    </Typography>
+                </Box>
+            )}
             <Typography
                 sx={{
                     color: "black",
@@ -92,7 +169,7 @@ const EventBookingsPage = () => {
                 }}
             >
                 {bookings.length === 0 ? (
-                    <Typography sx={{ textAlign: "center", color: "#777", fontSize: "18px" }}>
+                    <Typography sx={{ textAlign: "center", color: "#000", fontSize: "22px" }}>
                         Δεν υπάρχουν κρατήσεις για αυτή την εκδήλωση.
                     </Typography>
                 ) : (
