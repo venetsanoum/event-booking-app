@@ -1,13 +1,10 @@
 # event-booking-app
-```django-admin startproject backend```
 * Run commands
     * ```source venv/bin/activate```
     * ```python manage.py makemigrations```
     * ```python manage.py migrate```
     * ```python manage.py runserver```
 
-* New app creation
-    * ```python manage.py startapp events```
 
 User App
 ---
@@ -92,10 +89,3 @@ Messaging App
     * PATCH /messages/sent/{id} : delete a message from sent
 
 
-TODO:
-* periodikh ergasia gia na ginontai completed ta events otan perasei h hmeromhnia : https://stackoverflow.com/questions/11788821/best-way-to-delete-a-django-model-instance-after-a-certain-date
-* proegkatesthmenos admin **check mallon**
-* ssl/tls
-* documentation gia logout
-* booking status?
-* polla h ena item ana booking?
